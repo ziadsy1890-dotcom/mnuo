@@ -237,7 +237,7 @@ const products = [
         id:2,
         name:"كنافة",
         description:"كنافة طازجة بالفستق",
-        price:120,
+        price:1200,
         category:"حلويات",
         image:"https://images.unsplash.com/photo-1571115177098-24ec42ed204d"
     },
