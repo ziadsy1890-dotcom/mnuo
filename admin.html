@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم | فستق حلب</title>
+  <style>
+    :root {
+      --primary: #0d5c3a;
+      --accent: #d4af37;
+      --bg: #f8f9fa;
+      --danger: #e74c3c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg); padding: 1rem; direction: rtl; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .card { background: white; padding: 1.2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 1.2rem; }
+    h2, h3 { color: var(--primary); margin-bottom: 1rem; }
+    .form-group { margin-bottom: 0.9rem; }
+    label { display: block; font-size: 0.9rem; font-weight: bold; margin-bottom: 0.3rem; }
+    input, select, textarea { width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 8px; font-size: 0.95rem; }
+    .btn { background: var(--primary); color: white; border: none; padding: 0.7rem 1.2rem; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
+    .btn-secondary { background: var(--accent); color: #000; }
+    .btn-danger { background: var(--danger); }
+    .product-row { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid #eee; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- نموذج تسجيل الدخول للأدمن -->
+    <div id="login-section" class="card">
+      <h2>تسجيل دخول الإدارة 🔐</h2>
+      <form id="login-form">
+        <div class="form-group">
+          <label>البريد الإلكتروني:</label>
+          <input type="email" id="login-email" required placeholder="admin@fustuq.com">
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور:</label>
+          <input type="password" id="login-password" required>
+        </div>
+        <button type="submit" class="btn">دخول</button>
+      </form>
+    </div>
+
+    <!-- لوحة التحكم -->
+    <div id="admin-panel" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2>لوحة إدارة المنتجات</h2>
+        <button class="btn btn-danger" id="logout-btn" style="width: auto; padding: 0.4rem 0.8rem;">خروج</button>
+      </div>
+
+      <!-- إعدادات الواتساب -->
+      <div class="card">
+        <h3>تعديل رقم الواتساب 💬</h3>
+        <form id="settings-form">
+          <div class="form-group">
+            <label>رقم الواتساب مع الرمز الدولي (بدون +):</label>
+            <input type="text" id="setting-whatsapp" placeholder="963912345678" required>
+          </div>
+          <button type="submit" class="btn btn-secondary">حفظ الرقم</button>
+        </form>
+      </div>
+
+      <!-- إضافة/تعديل منتج -->
+      <div class="card">
+        <h3 id="form-title">إضافة منتج جديد 🌰</h3>
+        <form id="product-form">
+          <input type="hidden" id="product-id">
+          <div class="form-group">
+            <label>اسم المنتج:</label>
+            <input type="text" id="product-name" required placeholder="مثال: بقلاوة بالفستق">
+          </div>
+          <div class="form-group">
+            <label>القسم:</label>
+            <select id="product-category" required>
+              <option value="حلويات">حلويات</option>
+              <option value="مكسرات">مكسرات</option>
+              <option value="معمول">معمول وغريبة</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>السعر ($):</label>
+            <input type="number" step="0.01" id="product-price" required placeholder="25.00">
+          </div>
+          <div class="form-group">
+            <label>رابط الصورة (URL):</label>
+            <input type="url" id="product-image" placeholder="https://example.com/photo.jpg">
+          </div>
+          <div class="form-group">
+            <label>وصف المنتج:</label>
+            <textarea id="product-desc" rows="2" placeholder="رقائق هشة ومقرمشة..."></textarea>
+          </div>
+          <button type="submit" class="btn">حفظ المنتج</button>
+        </form>
+      </div>
+
+      <!-- قائمة المنتجات الحالية -->
+      <div class="card">
+        <h3>المنتجات المضافة حالياً</h3>
+        <div id="admin-products-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { 
+      db, 
+      auth, 
+      collection, 
+      doc, 
+      setDoc, 
+      addDoc, 
+      updateDoc, 
+      deleteDoc, 
+      onSnapshot, 
+      getDoc, 
+      signInWithEmailAndPassword, 
+      signOut, 
+      onAuthStateChanged 
+    } from "./firebase-config.js";
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("login-section").style.display = "none";
+        document.getElementById("admin-panel").style.display = "block";
+        loadData();
+      } else {
+        document.getElementById("login-section").style.display = "block";
+        document.getElementById("admin-panel").style.display = "none";
+      }
+    });
+
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await signInWithEmailAndPassword(auth, document.getElementById("login-email").value, document.getElementById("login-password").value);
+      } catch (err) {
+        alert("خطأ في تسجيل الدخول: " + err.message);
+      }
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", () => signOut(auth));
+
+    function loadData() {
+      getDoc(doc(db, "settings", "store_config")).then(snap => {
+        if (snap.exists()) document.getElementById("setting-whatsapp").value = snap.data().whatsapp || "";
+      });
+
+      onSnapshot(collection(db, "products"), (snap) => {
+        let html = "";
+        snap.forEach(docSnap => {
+          const p = { id: docSnap.id, ...docSnap.data() };
+          html += `
+            <div class="product-row">
+              <div>
+                <strong>${p.name}</strong> (${p.category}) - <span style="color:var(--primary);">${p.price} $</span>
+              </div>
+              <div style="display:flex; gap:0.3rem;">
+                <button class="btn btn-secondary" style="width:auto; padding:0.3rem 0.6rem;" onclick="editProduct('${p.id}', '${p.name}', '${p.category}', ${p.price}, '${p.image||''}', '${p.description||''}')">تعديل</button>
+                <button class="btn btn-danger" style="width:auto; padding:0.3rem 0.6rem;" onclick="deleteProduct('${p.id}')">حذف</button>
+              </div>
+            </div>
+          `;
+        });
+        document.getElementById("admin-products-list").innerHTML = html || "<p>لا توجد منتجات حالياً.</p>";
+      });
+    }
+
+    document.getElementById("settings-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await setDoc(doc(db, "settings", "store_config"), { whatsapp: document.getElementById("setting-whatsapp").value });
+      alert("تم حفظ رقم الواتساب بنجاح!");
+    });
+
+    document.getElementById("product-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const id = document.getElementById("product-id").value;
+      const data = {
+        name: document.getElementById("product-name").value,
+        category: document.getElementById("product-category").value,
+        price: parseFloat(document.getElementById("product-price").value),
+        image: document.getElementById("product-image").value,
+        description: document.getElementById("product-desc").value
+      };
+
+      if (id) {
+        await updateDoc(doc(db, "products", id), data);
+        alert("تم تحديث المنتج!");
+      } else {
+        await addDoc(collection(db, "products"), data);
+        alert("تمت إضافة المنتج!");
+      }
+      document.getElementById("product-form").reset();
+      document.getElementById("product-id").value = "";
+    });
+
+    window.editProduct = (id, name, category, price, image, description) => {
+      document.getElementById("product-id").value = id;
+      document.getElementById("product-name").value = name;
+      document.getElementById("product-category").value = category;
+      document.getElementById("product-price").value = price;
+      document.getElementById("product-image").value = image;
+      document.getElementById("product-desc").value = description;
+    };
+
+    window.deleteProduct = async (id) => {
+      if (confirm("هل أنت تأكد من حذف المنتج؟")) await deleteDoc(doc(db, "products", id));
+    };
+  </script>
+</body>
+  </html>
+  
