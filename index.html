@@ -12,6 +12,7 @@
       --primary: #11261d;
       --accent: #d4af37;
       --bg-body: #11261d;
+      --header-bg: rgba(17, 38, 29, 0.9); /* لون مستطيل الهيدر الافتراضي */
       --card-bg: rgba(255, 255, 255, 0.94);
       --card-text: #0f172a;
       
@@ -51,10 +52,8 @@
       min-height: 100vh;
     }
 
-    /* تم إزالة طبقة التظليل والغطاء الشفاف نهائياً لتظهر الصورة بحيويتها الأصلية */
-
     header {
-      background: rgba(17, 38, 29, 0.9);
+      background: var(--header-bg); /* يتغير مباشرة بناءً على ما تختاره من لوحة التحكم */
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       color: #fff;
@@ -194,6 +193,7 @@
           if(theme.primaryColor) root.style.setProperty('--primary', theme.primaryColor);
           if(theme.accentColor) root.style.setProperty('--accent', theme.accentColor);
           if(theme.bgColor) root.style.setProperty('--menu-bg-color', theme.bgColor);
+          if(theme.headerBgColor) root.style.setProperty('--header-bg', theme.headerBgColor);
           if(theme.cardBgColor) root.style.setProperty('--card-bg', theme.cardBgColor);
           if(theme.cardTextColor) root.style.setProperty('--card-text', theme.cardTextColor);
           if(theme.catBgColor) root.style.setProperty('--cat-bg', theme.catBgColor);
@@ -342,7 +342,7 @@
         storeSettings = dSnap.data();
         
         if(storeSettings.storeName) {
-          document.getElementById("storeTitleLogo").innerText = " " + storeSettings.storeName;
+          document.getElementById("storeTitleLogo").innerText = "🍰 " + storeSettings.storeName;
           document.getElementById("pageTitle").innerText = storeSettings.storeName;
           localStorage.setItem('cached_store_name', storeSettings.storeName);
         }
@@ -369,6 +369,7 @@
       if(theme.primaryColor) root.style.setProperty('--primary', theme.primaryColor);
       if(theme.accentColor) root.style.setProperty('--accent', theme.accentColor);
       if(theme.bgColor) root.style.setProperty('--menu-bg-color', theme.bgColor);
+      if(theme.headerBgColor) root.style.setProperty('--header-bg', theme.headerBgColor);
       
       if(theme.cardBgColor) root.style.setProperty('--card-bg', theme.cardBgColor);
       if(theme.cardTextColor) root.style.setProperty('--card-text', theme.cardTextColor);
