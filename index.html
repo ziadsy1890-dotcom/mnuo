@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title id="pageTitle">فستق حلب | Pistach D'Alep</title>
+  <title id="pageTitle">بيستاش دي ألب | Pistache D'Alep</title>
   <link id="dynamicFontLink" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap">
   <!-- FontAwesome for Social Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,7 +12,7 @@
     :root {
       --primary: #11261d;
       --accent: #d4af37;
-      --bg-body: #f1f5f9;
+      --bg-body: #dbe6df;
       --card-bg: #ffffff;
       --card-text: #0f172a;
       
@@ -34,7 +34,7 @@
       --font-family: 'Tajawal', sans-serif;
       --card-shadow: 0 8px 25px -5px rgba(15, 23, 42, 0.08);
       --menu-bg-image: none;
-      --menu-bg-color: #f1f5f9;
+      --menu-bg-color: #dbe6df;
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); -webkit-tap-highlight-color: transparent; }
@@ -54,27 +54,72 @@
     header {
       background: var(--primary);
       color: #fff;
-      padding: 12px 16px;
+      padding: 16px;
       position: sticky;
       top: 0;
       z-index: 100;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
       border-bottom: 2px solid var(--accent);
     }
-    .header-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-    .logo-area h1 { font-size: 19px; font-weight: 900; color: var(--accent); cursor: pointer; white-space: nowrap; }
-    .search-bar { flex: 1; max-width: 380px; }
+    .header-container { 
+      max-width: 1100px; 
+      margin: 0 auto; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      gap: 14px; 
+    }
+
+    .brand-banner {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .header-logo-img {
+      max-width: 240px;
+      width: 100%;
+      height: auto;
+      border-radius: 14px;
+      object-fit: contain;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      background: #fff;
+      padding: 4px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .header-logo-img:active { transform: scale(0.97); }
+
+    .logo-text-title {
+      font-size: 22px; 
+      font-weight: 900; 
+      color: var(--accent); 
+      cursor: pointer; 
+      white-space: nowrap; 
+      text-align: center;
+    }
+
+    .header-bottom-row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-bar { flex: 1; max-width: 450px; }
     .search-bar input {
-      width: 100%; padding: 9px 15px; border-radius: 25px;
+      width: 100%; padding: 10px 16px; border-radius: 25px;
       border: 1.5px solid rgba(255, 255, 255, 0.25); background: rgba(255, 255, 255, 0.15);
-      color: #fff; font-size: 13px; font-weight: 700; outline: none; transition: all 0.3s ease;
+      color: #fff; font-size: 13.5px; font-weight: 700; outline: none; transition: all 0.3s ease;
     }
     .search-bar input::placeholder { color: rgba(255, 255, 255, 0.75); }
     .search-bar input:focus { background: rgba(255, 255, 255, 0.25); border-color: var(--accent); }
     
     .whatsapp-header-btn {
-      background: #25d366; border: none; color: #fff; padding: 8px 14px; border-radius: 20px;
-      font-size: 12px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 5px;
+      background: #25d366; border: none; color: #fff; padding: 9px 16px; border-radius: 20px;
+      font-size: 12.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px;
       box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); white-space: nowrap; text-decoration: none;
     }
 
@@ -122,10 +167,10 @@
     .add-btn:active { transform: scale(0.94); }
 
     @media (max-width: 480px) {
-      .header-container { gap: 8px; }
-      .logo-area h1 { font-size: 16px; }
+      .header-container { gap: 10px; }
+      .header-logo-img { max-width: 200px; }
       .search-bar input { padding: 8px 12px; font-size: 12px; }
-      .whatsapp-header-btn { padding: 7px 10px; font-size: 11px; }
+      .whatsapp-header-btn { padding: 7px 12px; font-size: 11.5px; }
       .products-grid { grid-template-columns: 1fr; gap: 12px; }
       .product-card { padding: 12px; gap: 12px; }
       :root { --card-img-size: 85px; --card-title-size: 15px; }
@@ -191,13 +236,22 @@
           if(theme.catTextColor) root.style.setProperty('--cat-text', theme.catTextColor);
           if(theme.catActiveBg) root.style.setProperty('--cat-active-bg', theme.catActiveBg);
           if(theme.catActiveText) root.style.setProperty('--cat-active-text', theme.catActiveText);
-          if(theme.menuBgImage) root.style.setProperty('--menu-bg-image', "url('" + theme.menuBgImage + "')");
+          
+          if(theme.menuBgImage) {
+            window.addEventListener('DOMContentLoaded', () => {
+              const headerLogo = document.getElementById("headerLogoImg");
+              if(headerLogo) {
+                headerLogo.src = theme.menuBgImage;
+                headerLogo.style.display = "block";
+              }
+            });
+          }
         }
         if (cachedName) {
           window.addEventListener('DOMContentLoaded', () => {
-            const logo = document.getElementById("storeTitleLogo");
+            const logoText = document.getElementById("storeTitleLogoText");
             const pageTitle = document.getElementById("pageTitle");
-            if(logo) logo.innerText = " " + cachedName;
+            if(logoText) logoText.innerText = " " + cachedName;
             if(pageTitle) pageTitle.innerText = cachedName;
           });
         }
@@ -209,11 +263,17 @@
 
   <header>
     <div class="header-container">
-      <div class="logo-area"><h1 id="storeTitleLogo" onclick="window.location.reload()"> </h1></div>
-      <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="ابحث عن حلوياتك..." oninput="window.filterProducts()">
+      <div class="brand-banner">
+        <img id="headerLogoImg" class="header-logo-img" src="" alt="لوجو المتجر" style="display:none;" onclick="window.location.reload()">
+        <h1 id="storeTitleLogoText" class="logo-text-title" onclick="window.location.reload()" style="display:none;">🍰 بيستاش دي ألب</h1>
       </div>
-      <button class="whatsapp-header-btn" onclick="window.openSocialModal()">💬 تواصل معنا</button>
+      
+      <div class="header-bottom-row">
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="ابحث عن حلوياتك..." oninput="window.filterProducts()">
+        </div>
+        <button class="whatsapp-header-btn" onclick="window.openSocialModal()">💬 تواصل معنا</button>
+      </div>
     </div>
   </header>
 
@@ -311,7 +371,7 @@
       
       const whatsapp = storeSettings.whatsappNumber || "201011406537";
       let cleanPhone = getCleanPhone(whatsapp);
-      const msg = encodeURIComponent("مرحباً، أود الاستفسار عن المنتجات في متجر " + (storeSettings.storeName || "فستق حلب"));
+      const msg = encodeURIComponent("مرحباً، أود الاستفسار عن المنتجات في متجر " + (storeSettings.storeName || "بيستاش دي ألب"));
       html += `<a href="https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}" target="_blank" class="social-btn btn-whatsapp"><i class="fa-brands fa-whatsapp fa-lg"></i> مراسلة عبر الواتساب</a>`;
 
       if(storeSettings.socialLinks) {
@@ -336,7 +396,7 @@
         storeSettings = dSnap.data();
         
         if(storeSettings.storeName) {
-          document.getElementById("storeTitleLogo").innerText = " " + storeSettings.storeName;
+          document.getElementById("storeTitleLogoText").innerText = "🍰 " + storeSettings.storeName;
           document.getElementById("pageTitle").innerText = storeSettings.storeName;
           localStorage.setItem('cached_store_name', storeSettings.storeName);
         }
@@ -372,10 +432,16 @@
       if(theme.catActiveBg) root.style.setProperty('--cat-active-bg', theme.catActiveBg);
       if(theme.catActiveText) root.style.setProperty('--cat-active-text', theme.catActiveText);
 
-      if(theme.menuBgImage) {
-        root.style.setProperty('--menu-bg-image', `url('${theme.menuBgImage}')`);
+      const imgElem = document.getElementById("headerLogoImg");
+      const textElem = document.getElementById("storeTitleLogoText");
+
+      if(theme.menuBgImage && theme.menuBgImage.trim() !== "") {
+        imgElem.src = theme.menuBgImage;
+        imgElem.style.display = "block";
+        textElem.style.display = "none";
       } else {
-        root.style.setProperty('--menu-bg-image', 'none');
+        imgElem.style.display = "none";
+        textElem.style.display = "block";
       }
 
       if(theme.fontFamily) {
@@ -586,7 +652,7 @@
       try {
         await addDoc(collection(db, "orders"), orderData);
 
-        let msg = "طلب جديد - فستق حلب\n\n";
+        let msg = "طلب جديد - بيستاش دي ألب\n\n";
         msg += "العميل: " + name + "\n";
         msg += "الهاتف: " + phone + "\n";
         msg += "العنوان: " + zone + " - " + address + "\n\n";
