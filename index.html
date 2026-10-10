@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>فستق حلب | Pistach D'Alep</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+  <link id="dynamicFontLink" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap">
+  <style id="themeStyles">
     :root {
       --primary: #1e3d2f;
       --accent: #c5a059;
@@ -15,8 +15,10 @@
       --text-muted: #6b7280;
       --border: #e5e7eb;
       --radius: 12px;
+      --font-family: 'Tajawal', sans-serif;
+      --card-shadow: 0 2px 5px rgba(0,0,0,0.03);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
     body { background-color: var(--bg-body); color: var(--text-main); direction: rtl; padding-bottom: 90px; }
 
     header {
@@ -67,7 +69,7 @@
     .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
     .product-card {
       background: var(--card-bg); border-radius: var(--radius); border: 1px solid var(--border);
-      display: flex; padding: 12px; gap: 12px; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+      display: flex; padding: 12px; gap: 12px; align-items: center; box-shadow: var(--card-shadow);
     }
     .product-card img { width: 90px; height: 90px; object-fit: cover; border-radius: 8px; background: #f3f4f6; }
     .product-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
@@ -244,6 +246,7 @@
       renderProducts();
     });
 
+    // استماع مباشر لتغييرات مظهر وإعدادات المتجر
     onSnapshot(doc(db, "settings", "store"), dSnap => {
       if(dSnap.exists()){
         const data = dSnap.data();
@@ -257,16 +260,36 @@
         } else if(data.categories) {
           extractCategories(data.categories);
         }
+
+        // تطبيق تخصيص المظهر ديناميكياً
+        if(data.theme) {
+          applyDynamicTheme(data.theme);
+        }
       }
     });
 
+    function applyDynamicTheme(theme) {
+      const root = document.documentElement;
+      if(theme.primaryColor) root.style.setProperty('--primary', theme.primaryColor);
+      if(theme.accentColor) root.style.setProperty('--accent', theme.accentColor);
+      if(theme.bgColor) root.style.setProperty('--bg-body', theme.bgColor);
+      if(theme.cardRadius) root.style.setProperty('--radius', theme.cardRadius + 'px');
+      if(theme.cardShadow === 'soft') root.style.setProperty('--card-shadow', '0 4px 12px rgba(0,0,0,0.05)');
+      if(theme.cardShadow === 'strong') root.style.setProperty('--card-shadow', '0 8px 20px rgba(0,0,0,0.12)');
+      if(theme.cardShadow === 'none') root.style.setProperty('--card-shadow', 'none');
+
+      if(theme.fontFamily) {
+        const fontLink = document.getElementById("dynamicFontLink");
+        fontLink.href = `https://fonts.googleapis.com/css2?family=${theme.fontFamily}:wght@400;500;700;800&display=swap`;
+        root.style.setProperty('--font-family', `'${theme.fontFamily}', sans-serif`);
+      }
+    }
+
     function extractCategories(settingsCats = []) {
       let orderedList = [];
-      // 1. استخدام الترتيب اليدوي المحدد من الإعدادات أولاً
       if(Array.isArray(settingsCats)) {
         settingsCats.forEach(c => { if(c.trim() && !orderedList.includes(c.trim())) orderedList.push(c.trim()); });
       }
-      // 2. إضافة أي أقسام أخرى من المنتجات لم تذكر بالترتيب
       allProducts.forEach(p => { 
         if(p.category && !orderedList.includes(p.category.trim())) {
           orderedList.push(p.category.trim());
@@ -311,14 +334,12 @@
       let sortedProducts = [];
 
       if(selectedCat === "الكل") {
-        // ترتيب المنتجات حسب ترتيب الأقسام المخزنة (القسم الأول أولاً مثل الأكثر مبيعاً، ثم الثاني...)
         dynamicCategories.forEach(catName => {
           const catProds = allProducts.filter(p => p.category && p.category.trim() === catName);
           catProds.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
           sortedProducts.push(...catProds);
         });
 
-        // إضافة المنتجات التي ليس لها قسم محدد في النهاية
         const otherProds = allProducts.filter(p => !p.category || !dynamicCategories.includes(p.category.trim()));
         otherProds.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
         sortedProducts.push(...otherProds);
