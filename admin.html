@@ -265,6 +265,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  const DEFAULT_IMAGE = "https://i.ibb.co/rGzLxC3Y/file-000000005c888210940dfd275750a5db.png";
   let products = [], orders = [], categoriesList = [], uploadedBase64Image = "";
 
   document.getElementById("loginBtn").addEventListener("click", async () => {
@@ -513,16 +514,19 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
   function renderProducts() {
     const c = document.getElementById("productsContainer");
     if(!products.length) return c.innerHTML = "<p>لا توجد منتجات.</p>";
-    c.innerHTML = products.map(p => `
-      <div class="product-row">
-        <img src="${p.images?.[0] || p.image || 'https://via.placeholder.com/75'}">
-        <div style="flex:1;"><strong>${escapeHtml(p.name)}</strong><br><small>القسم: ${escapeHtml(p.category || 'عام')}</small></div>
-        <div>
-          <button class="btn btn-warning" onclick="editProduct('${p.id}')">تعديل</button>
-          <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">حذف</button>
+    c.innerHTML = products.map(p => {
+      let imgSrc = p.images?.[0] || p.image || DEFAULT_IMAGE;
+      return `
+        <div class="product-row">
+          <img src="${imgSrc}" onerror="this.onerror=null; this.src='${DEFAULT_IMAGE}';">
+          <div style="flex:1;"><strong>${escapeHtml(p.name)}</strong><br><small>القسم: ${escapeHtml(p.category || 'عام')}</small></div>
+          <div>
+            <button class="btn btn-warning" onclick="editProduct('${p.id}')">تعديل</button>
+            <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">حذف</button>
+          </div>
         </div>
-      </div>
-    `).join("");
+      `;
+    }).join("");
   }
 
   function renderOrders() {
@@ -567,7 +571,10 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
     const category = document.getElementById("pCategorySelect").value;
     const saleType = document.getElementById("pSaleType").value;
     const description = document.getElementById("pDesc").value.trim();
-    const image = document.getElementById("pImage").value.trim();
+    const imageInput = document.getElementById("pImage").value.trim();
+    
+    // استخدام صورتك الافتراضية إذا ترك الحقل فارغاً
+    const image = imageInput || DEFAULT_IMAGE;
 
     if(!name) return alert("أدخل اسم المنتج!");
 
