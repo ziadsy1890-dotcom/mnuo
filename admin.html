@@ -239,7 +239,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
       </div>
     </div>
     <div class="form-group"><label>الوصف</label><textarea id="pDesc" rows="2"></textarea></div>
-    <div class="form-group"><label>رابط الصورة</label><input type="url" id="pImage"></div>
+    <div class="form-group"><label>رابط الصورة (اتركه فارغاً للاستخدام الافتراضي)</label><input type="url" id="pImage"></div>
     <div style="display: flex; gap: 10px; margin-top: 15px;">
       <button class="btn btn-success" style="flex:1;" id="saveProductBtn">حفظ المنتج</button>
       <button class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
@@ -265,6 +265,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  // الصورة الافتراضية
   const DEFAULT_IMAGE = "https://i.ibb.co/rGzLxC3Y/file-000000005c888210940dfd275750a5db.png";
   let products = [], orders = [], categoriesList = [], uploadedBase64Image = "";
 
@@ -515,10 +516,14 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
     const c = document.getElementById("productsContainer");
     if(!products.length) return c.innerHTML = "<p>لا توجد منتجات.</p>";
     c.innerHTML = products.map(p => {
-      let imgSrc = p.images?.[0] || p.image || DEFAULT_IMAGE;
+      // إسناد الصورة الافتراضية إذا كانت غير متوفرة
+      let imgSrc = p.images?.[0] || p.image;
+      if (!imgSrc || imgSrc.trim() === "" || imgSrc === "undefined") {
+        imgSrc = DEFAULT_IMAGE;
+      }
       return `
         <div class="product-row">
-          <img src="${imgSrc}" onerror="this.onerror=null; this.src='${DEFAULT_IMAGE}';">
+          <img src="${imgSrc}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null; this.src='${DEFAULT_IMAGE}';">
           <div style="flex:1;"><strong>${escapeHtml(p.name)}</strong><br><small>القسم: ${escapeHtml(p.category || 'عام')}</small></div>
           <div>
             <button class="btn btn-warning" onclick="editProduct('${p.id}')">تعديل</button>
@@ -562,7 +567,20 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
     document.getElementById("unitFields").style.display = type === 'unit' ? 'block' : 'none';
   };
 
-  window.openModal = () => { updateCategorySelectOptions(); document.getElementById("productModal").style.display = "flex"; };
+  window.openModal = () => { 
+    updateCategorySelectOptions(); 
+    document.getElementById("editId").value = "";
+    document.getElementById("pName").value = "";
+    document.getElementById("pKilo").value = "";
+    document.getElementById("pHalf").value = "";
+    document.getElementById("pQuarter").value = "";
+    document.getElementById("pUnitPrice").value = "";
+    document.getElementById("pUnitLabel").value = "";
+    document.getElementById("pDesc").value = "";
+    document.getElementById("pImage").value = "";
+    document.getElementById("productModal").style.display = "flex"; 
+  };
+
   window.closeModal = () => document.getElementById("productModal").style.display = "none";
 
   document.getElementById("saveProductBtn").addEventListener("click", async () => {
@@ -572,13 +590,20 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
     const saleType = document.getElementById("pSaleType").value;
     const description = document.getElementById("pDesc").value.trim();
     const imageInput = document.getElementById("pImage").value.trim();
-    
-    // استخدام صورتك الافتراضية إذا ترك الحقل فارغاً
-    const image = imageInput || DEFAULT_IMAGE;
+
+    // التحقق تلقائياً: إذا تركت الخانة فارغة يتم وضع صورتك الافتراضية
+    const finalImage = imageInput || DEFAULT_IMAGE;
 
     if(!name) return alert("أدخل اسم المنتج!");
 
-    let payload = { name, category, saleType, description, images: [image] };
+    let payload = { 
+      name, 
+      category, 
+      saleType, 
+      description, 
+      image: finalImage,
+      images: [finalImage] 
+    };
 
     if(saleType === 'weight') {
       const kilo = Number(document.getElementById("pKilo").value);
@@ -592,8 +617,13 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
       payload.price = uPrice;
     }
 
-    if(id) { await updateDoc(doc(db, "products", id), payload); }
-    else { payload.hidden = false; payload.createdAt = Date.now(); await addDoc(collection(db, "products"), payload); }
+    if(id) { 
+      await updateDoc(doc(db, "products", id), payload); 
+    } else { 
+      payload.hidden = false; 
+      payload.createdAt = Date.now(); 
+      await addDoc(collection(db, "products"), payload); 
+    }
     closeModal();
   });
 
@@ -610,7 +640,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
     document.getElementById("pUnitPrice").value = p.pricing?.unitPrice || "";
     document.getElementById("pUnitLabel").value = p.pricing?.unitLabel || "";
     document.getElementById("pDesc").value = p.description || "";
-    document.getElementById("pImage").value = p.images?.[0] || p.image || "";
+    document.getElementById("pImage").value = (p.images?.[0] === DEFAULT_IMAGE || p.image === DEFAULT_IMAGE) ? "" : (p.images?.[0] || p.image || "");
     togglePricing();
   };
 
