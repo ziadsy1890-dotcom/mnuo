@@ -12,9 +12,11 @@
       --bg-body: #f8faf9;
       --card-bg: #ffffff;
       --card-text: #0f172a;
+      
       --card-min-width: 300px;
       --card-padding: 15px;
       --card-img-size: 100px;
+      --card-title-size: 16.5px;
       
       --cat-bg: #ffffff;
       --cat-text: #64748b;
@@ -68,7 +70,6 @@
     .search-bar input::placeholder { color: rgba(255, 255, 255, 0.7); }
     .search-bar input:focus { background: rgba(255, 255, 255, 0.22); border-color: var(--accent); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
     
-    /* WhatsApp Direct Contact Button */
     .whatsapp-header-btn {
       background: #25d366;
       border: none;
@@ -117,7 +118,7 @@
     .product-card:hover { transform: translateY(-3px); box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.1); }
     .product-card img { width: var(--card-img-size); height: var(--card-img-size); object-fit: cover; border-radius: 16px; background: #f1f5f9; flex-shrink: 0; }
     .product-info { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-    .product-title { font-size: 16.5px; font-weight: 800; color: var(--card-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .product-title { font-size: var(--card-title-size); font-weight: 800; color: var(--card-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .product-desc { font-size: 11.5px; color: var(--text-muted); line-height: 1.4; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .product-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; gap: 8px; }
     .unit-select { padding: 6px 10px; border-radius: 10px; border: 1px solid var(--border); font-size: 12px; background: #fff; font-weight: 700; color: #0f172a; outline: none; }
@@ -129,40 +130,21 @@
     }
     .add-btn:active { transform: scale(0.95); }
 
-    /* Floating Circular Cart Button */
     .floating-cart-btn {
-      position: fixed;
-      bottom: 25px;
-      left: 25px;
-      width: 70px;
-      height: 70px;
-      background: var(--primary);
-      color: #fff;
-      border-radius: 50%;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-      cursor: pointer;
-      border: 2px solid var(--accent);
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: fixed; bottom: 25px; left: 25px; width: 70px; height: 70px;
+      background: var(--primary); color: #fff; border-radius: 50%;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; z-index: 999; cursor: pointer;
+      border: 2px solid var(--accent); transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .floating-cart-btn:active { transform: scale(0.9); }
     .cart-icon-container { position: relative; font-size: 25px; line-height: 1; margin-top: -2px; }
     .cart-badge {
-      position: absolute; top: -10px; right: -14px;
-      background: var(--accent); color: #111; padding: 3px 8px;
-      border-radius: 12px; font-size: 11px; font-weight: 900; border: 2px solid #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      position: absolute; top: -10px; right: -14px; background: var(--accent); color: #111; padding: 3px 8px;
+      border-radius: 12px; font-size: 11px; font-weight: 900; border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-    .cart-total-text {
-      font-size: 9.5px; font-weight: 800; margin-top: 4px; color: #f8fafc;
-      white-space: nowrap; max-width: 60px; overflow: hidden; text-overflow: ellipsis;
-    }
+    .cart-total-text { font-size: 9.5px; font-weight: 800; margin-top: 4px; color: #f8fafc; white-space: nowrap; max-width: 60px; overflow: hidden; text-overflow: ellipsis; }
 
-    /* Modals & Drawers */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); z-index: 1000; display: none; justify-content: flex-end; backdrop-filter: blur(6px); }
     .modal-drawer { background: #fff; width: 100%; max-width: 420px; height: 100%; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.15); }
     .drawer-header { padding: 18px 20px; background: var(--primary); color: #fff; display: flex; justify-content: space-between; align-items: center; }
@@ -280,7 +262,7 @@
         if(data.whatsappNumber) whatsappNumber = String(data.whatsappNumber);
         
         if(data.storeName) {
-          document.getElementById("storeTitleLogo").innerText = " " + data.storeName;
+          document.getElementById("storeTitleLogo").innerText = "🍰 " + data.storeName;
           document.getElementById("pageTitle").innerText = data.storeName;
         }
 
@@ -310,17 +292,20 @@
       if(theme.cardTextColor) root.style.setProperty('--card-text', theme.cardTextColor);
 
       if(theme.cardSize === 'small') {
-        root.style.setProperty('--card-min-width', '250px');
+        root.style.setProperty('--card-min-width', '220px');
         root.style.setProperty('--card-padding', '10px');
-        root.style.setProperty('--card-img-size', '85px');
+        root.style.setProperty('--card-img-size', '75px');
+        root.style.setProperty('--card-title-size', '14px');
       } else if(theme.cardSize === 'large') {
-        root.style.setProperty('--card-min-width', '340px');
-        root.style.setProperty('--card-padding', '18px');
-        root.style.setProperty('--card-img-size', '120px');
+        root.style.setProperty('--card-min-width', '360px');
+        root.style.setProperty('--card-padding', '20px');
+        root.style.setProperty('--card-img-size', '130px');
+        root.style.setProperty('--card-title-size', '19px');
       } else {
         root.style.setProperty('--card-min-width', '300px');
         root.style.setProperty('--card-padding', '15px');
         root.style.setProperty('--card-img-size', '100px');
+        root.style.setProperty('--card-title-size', '16.5px');
       }
 
       if(theme.catBgColor) root.style.setProperty('--cat-bg', theme.catBgColor);
@@ -329,11 +314,11 @@
       if(theme.catActiveText) root.style.setProperty('--cat-active-text', theme.catActiveText);
 
       if(theme.catSize === 'small') {
-        root.style.setProperty('--cat-padding', '7px 16px');
-        root.style.setProperty('--cat-font-size', '12px');
+        root.style.setProperty('--cat-padding', '6px 14px');
+        root.style.setProperty('--cat-font-size', '11.5px');
       } else if(theme.catSize === 'large') {
-        root.style.setProperty('--cat-padding', '12px 26px');
-        root.style.setProperty('--cat-font-size', '15px');
+        root.style.setProperty('--cat-padding', '12px 28px');
+        root.style.setProperty('--cat-font-size', '15.5px');
       } else {
         root.style.setProperty('--cat-padding', '10px 22px');
         root.style.setProperty('--cat-font-size', '13.5px');
@@ -430,9 +415,9 @@
         if(p.saleType === 'weight') {
           optionsHTML = `
             <select class="unit-select" id="opt-${p.id}" onchange="window.updateCardPrice('${p.id}')">
-              <option value="kilo" data-price="${p.pricing?.kilo || p.price}">كيلو (1000غ)</option>
-              <option value="half" data-price="${p.pricing?.half || p.price/2}">نصف كيلو (500غ)</option>
-              <option value="quarter" data-price="${p.pricing?.quarter || p.price/4}">ربع كيلو (250غ)</option>
+              <option value="kilo" data-price="${p.pricing?.kilo || p.price}">كيلو</option>
+              <option value="half" data-price="${p.pricing?.half || p.price/2}">نصف كيلو</option>
+              <option value="quarter" data-price="${p.pricing?.quarter || p.price/4}">ربع كيلو</option>
             </select>`;
           defaultPrice = p.pricing?.kilo || p.price;
         } else {
