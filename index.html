@@ -318,9 +318,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // الرابط الافتراضي للصورة
-    const DEFAULT_STORE_IMAGE = "https://i.ibb.co/rGzLxC3Y/file-000000005c888210940dfd275750a5db.png";
-
     let allProducts = [], cart = [], deliveryZones = [], storeSettings = {};
     let selectedCat = "الكل", currentFee = 0, dynamicCategories = [];
 
@@ -380,6 +377,8 @@
           applyDynamicTheme(storeSettings.theme);
           localStorage.setItem('cached_store_theme', JSON.stringify(storeSettings.theme));
         }
+
+        renderProducts();
       }
     });
 
@@ -484,6 +483,9 @@
         return; 
       }
 
+      // قراءة الصورة الافتراضية الديناميكية من إعدادات المتجر
+      const fallbackImg = storeSettings.defaultImage || "https://i.ibb.co/rGzLxC3Y/file-000000005c888210940dfd275750a5db.png";
+
       grid.innerHTML = filtered.map(p => {
         let optionsHTML = '', defaultPrice = p.price || 0;
         if(p.saleType === 'weight') {
@@ -499,15 +501,14 @@
           defaultPrice = p.pricing?.unitPrice || p.price;
         }
 
-        // فحص الصورة وإرجاع الصورة الافتراضية في حال عدم توفرها أو وجود خطأ
         let imgSrc = p.images?.[0] || p.image;
         if (!imgSrc || imgSrc.trim() === "" || imgSrc === "undefined") {
-          imgSrc = DEFAULT_STORE_IMAGE;
+          imgSrc = fallbackImg;
         }
 
         return `
           <div class="product-card">
-            <img src="${imgSrc}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null; this.src='${DEFAULT_STORE_IMAGE}';">
+            <img src="${imgSrc}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null; this.src='${fallbackImg}';">
             <div class="product-info">
               <div class="product-title">${escapeHtml(p.name)}</div>
               <div class="product-desc">${escapeHtml(p.description || '')}</div>
