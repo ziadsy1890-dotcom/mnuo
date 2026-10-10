@@ -5,16 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>لوحة التحكم - فستق حلب</title>
 <style>
-:root {
-    --primary: #2d5a27;
-    --border-color: #e5e0d8;
-    --text-dark: #1c1c1c;
-}
+:root { --primary: #2d5a27; --border-color: #e5e0d8; --text-dark: #1c1c1c; }
 body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 0; }
 .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
 .card { background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid var(--border-color); }
 .admin-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); }
-.admin-tabs button { background: #e9ecef; color: var(--text-dark); padding: 10px 18px; border-radius: 20px; font-weight: 700; white-space: nowrap; border: none; cursor: pointer; transition: all 0.2s; }
+.admin-tabs button { background: #e9ecef; color: var(--text-dark); padding: 10px 18px; border-radius: 20px; font-weight: 700; white-space: nowrap; border: none; cursor: pointer; }
 .admin-tabs button.active { background: var(--primary); color: #ffffff; }
 .tab-section { display: none; }
 .tab-section.active { display: block; }
@@ -60,7 +56,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       <input type="password" id="adminPassword" placeholder="••••••••">
     </div>
     
-    <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="adminLogin()">تسجيل الدخول</button>
+    <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" id="loginBtn">تسجيل الدخول</button>
     <p id="authError" style="color: #dc3545; font-size: 13px; text-align: center; margin-top: 10px; display: none;"></p>
   </div>
 
@@ -71,7 +67,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
         <h1 style="margin: 0; color: var(--primary);">🍰 فستق حلب</h1>
         <small style="color: #666;">إدارة المنتجات، الطلبات، والإعدادات</small>
       </div>
-      <button class="btn btn-danger" onclick="adminLogout()">تسجيل الخروج</button>
+      <button class="btn btn-danger" id="logoutBtn">تسجيل الخروج</button>
     </div>
 
     <!-- شريط التبويبات -->
@@ -110,7 +106,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
           <input type="text" id="zoneNameInput" placeholder="اسم المنطقة">
           <input type="number" id="zoneFeeInput" placeholder="تكلفة التوصيل (جنيه)">
         </div>
-        <button class="btn btn-primary" style="margin-top: 10px;" onclick="addDeliveryZone()">إضافة منطقة</button>
+        <button class="btn btn-primary" style="margin-top: 10px;" id="addZoneBtn">إضافة منطقة</button>
         <div id="zonesListContainer" style="margin-top: 15px;"></div>
       </div>
     </div>
@@ -127,7 +123,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
           <label>أقسام المتجر (افصل بينها بفاصلة):</label>
           <input type="text" id="categoriesInput" placeholder="حلويات, مكسرات, مشروبات">
         </div>
-        <button class="btn btn-primary" onclick="saveStoreSettings()">حفظ الإعدادات</button>
+        <button class="btn btn-primary" id="saveSettingsBtn">حفظ الإعدادات</button>
       </div>
     </div>
 
@@ -213,22 +209,37 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     </div>
 
     <div style="display: flex; gap: 10px; margin-top: 15px;">
-      <button class="btn btn-success" style="flex:1;" onclick="saveProduct()">حفظ المنتج</button>
+      <button class="btn btn-success" style="flex:1;" id="saveProductBtn">حفظ المنتج</button>
       <button class="btn btn-secondary" onclick="closeProductModal()">إلغاء</button>
     </div>
   </div>
 </div>
 
 <script type="module">
-import { auth, db } from "./firebase-config.js";
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-import { collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+// إعدادات مشروعك الحقيقي (pista-7a180)
+const firebaseConfig = {
+  apiKey: "AIzaSyBNy3ZPbr_cVJC2ZUzBVf8jxWdFlABYIiw",
+  authDomain: "pista-7a180.firebaseapp.com",
+  projectId: "pista-7a180",
+  storageBucket: "pista-7a180.firebasestorage.app",
+  messagingSenderId: "581989151860",
+  appId: "1:581989151860:web:ffb4a82297933ac6f90d21",
+  measurementId: "G-MZMW61H7QP"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 let currentCategories = ["حلويات", "مكسرات", "مشروبات", "فواكه مجففة"];
 let productsData = [];
 let ordersData = [];
 
-window.adminLogin = async () => {
+document.getElementById("loginBtn").addEventListener("click", async () => {
   const email = document.getElementById("adminEmail").value.trim();
   const pass = document.getElementById("adminPassword").value;
   const errEl = document.getElementById("authError");
@@ -236,12 +247,12 @@ window.adminLogin = async () => {
     await signInWithEmailAndPassword(auth, email, pass);
     errEl.style.display = "none";
   } catch (err) {
-    errEl.innerText = "بيانات الدخول غير صحيحة أو الخدمة غير مفعلة";
+    errEl.innerText = "بيانات الدخول غير صحيحة أو الحساب غير مضاف في Firebase";
     errEl.style.display = "block";
   }
-};
+});
 
-window.adminLogout = () => signOut(auth);
+document.getElementById("logoutBtn").addEventListener("click", () => signOut(auth));
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -374,7 +385,7 @@ window.openProductModal = (id = null) => {
 
 window.closeProductModal = () => document.getElementById("productModal").style.display = "none";
 
-window.saveProduct = async () => {
+document.getElementById("saveProductBtn").addEventListener("click", async () => {
   const id = document.getElementById("editProductId").value;
   const name = document.getElementById("pName").value.trim();
   const category = document.getElementById("pCategory").value;
@@ -386,25 +397,19 @@ window.saveProduct = async () => {
 
   if (!name) return alert("يرجى إدخال اسم المنتج");
 
-  let payload = {
-    name, category, saleType, stock, maxQuantity, description,
-    images: [image],
-    updatedAt: Date.now()
-  };
+  let payload = { name, category, saleType, stock, maxQuantity, description, images: [image], updatedAt: Date.now() };
 
   if (saleType === "weight") {
     const kilo = Number(document.getElementById("pPriceKilo").value);
     const half = Number(document.getElementById("pPriceHalf").value);
     const quarter = Number(document.getElementById("pPriceQuarter").value);
     if (!kilo) return alert("يرجى إدخال سعر الكيلو");
-
     payload.pricing = { kilo, half: half || kilo / 2, quarter: quarter || kilo / 4 };
     payload.price = kilo;
   } else {
     const uPrice = Number(document.getElementById("pUnitPrice").value);
     const uLabel = document.getElementById("pUnitLabel").value.trim() || "قطعة";
     if (!uPrice) return alert("يرجى تحديد سعر الوحدة");
-
     payload.pricing = { unitPrice: uPrice, unitLabel: uLabel };
     payload.price = uPrice;
   }
@@ -421,7 +426,7 @@ window.saveProduct = async () => {
   } catch (e) {
     alert("حدث خطأ أثناء حفظ البيانات");
   }
-};
+});
 
 window.toggleHide = async (id, hidden) => updateDoc(doc(db, "products", id), { hidden });
 window.deleteProduct = async (id) => { if (confirm("هل تريد حذف المنتج بالفعل؟")) await deleteDoc(doc(db, "products", id)); };
@@ -468,7 +473,7 @@ window.updateOrderStatus = async (id, status) => {
   }
 };
 
-window.addDeliveryZone = async () => {
+document.getElementById("addZoneBtn").addEventListener("click", async () => {
   const name = document.getElementById("zoneNameInput").value.trim();
   const fee = Number(document.getElementById("zoneFeeInput").value);
   if (!name || isNaN(fee)) return alert("يرجى إدخال اسم المنطقة والتكلفة بشكل صحيح");
@@ -481,7 +486,7 @@ window.addDeliveryZone = async () => {
   await setDoc(storeRef, { deliveryZones: currentZones }, { merge: true });
   document.getElementById("zoneNameInput").value = "";
   document.getElementById("zoneFeeInput").value = "";
-};
+});
 
 function renderZones(zones) {
   const container = document.getElementById("zonesListContainer");
@@ -503,7 +508,7 @@ window.deleteZone = async (index) => {
   }
 };
 
-window.saveStoreSettings = async () => {
+document.getElementById("saveSettingsBtn").addEventListener("click", async () => {
   const whatsappNumber = document.getElementById("whatsappInput").value.trim();
   const categories = document.getElementById("categoriesInput").value.split(",").map(c => c.trim()).filter(Boolean);
 
@@ -513,7 +518,7 @@ window.saveStoreSettings = async () => {
   } catch (e) {
     alert("حدث خطأ في حفظ الإعدادات");
   }
-};
+});
 
 function renderReports() {
   const container = document.getElementById("reportsContentContainer");
