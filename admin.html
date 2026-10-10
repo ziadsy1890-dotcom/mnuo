@@ -67,12 +67,12 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       <div class="card"><h2>قائمة المنتجات</h2><div id="productsContainer">جاري التحميل...</div></div>
     </div>
 
-    <!-- 2. إدارة الأقسام الحصرية -->
+    <!-- 2. إدارة الأقسام -->
     <div id="catTab" class="tab-section">
       <div class="card">
         <h2>➕ إضافة قسم جديد</h2>
         <div style="display: flex; gap: 10px; margin-top: 10px;">
-          <input type="text" id="newCatName" placeholder="اسم القسم الجديد (مثال: الشوكولاتة)" style="flex:1; padding:10px; border:1px solid #ccc; border-radius:6px;">
+          <input type="text" id="newCatName" placeholder="اسم القسم الجديد..." style="flex:1; padding:10px; border:1px solid #ccc; border-radius:6px;">
           <button class="btn btn-success" onclick="addNewCategory()">إضافة القسم</button>
         </div>
       </div>
@@ -237,7 +237,6 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     });
   }
 
-  // --- إدارة الأقسام ---
   window.addNewCategory = async () => {
     const input = document.getElementById("newCatName");
     const name = input.value.trim();
@@ -257,7 +256,6 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       const oldName = categoriesList[index].name;
       categoriesList[index].name = newName.trim();
       
-      // تحديث اسم القسم في المنتجات المربوطة به تلقائياً
       products.forEach(async (p) => {
         if(p.category === oldName) {
           await updateDoc(doc(db, "products", p.id), { category: newName.trim() });
@@ -315,7 +313,6 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     select.innerHTML = categoriesList.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)} ${c.hidden ? '(مخفي)' : ''}</option>`).join("");
   }
 
-  // --- إدارة المنتجات والطلبات ---
   function renderProducts() {
     const c = document.getElementById("productsContainer");
     if(!products.length) return c.innerHTML = "<p>لا توجد منتجات مسجلة.</p>";
@@ -377,6 +374,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
   window.closeModal = () => document.getElementById("productModal").style.display = "none";
 
   document.getElementById("saveProductBtn").addEventListener("click", async () => {
+    const saveBtn = document.getElementById("saveProductBtn");
     const id = document.getElementById("editId").value;
     const name = document.getElementById("pName").value.trim();
     const category = document.getElementById("pCategorySelect").value;
@@ -384,24 +382,46 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     const description = document.getElementById("pDesc").value.trim();
     const image = document.getElementById("pImage").value.trim();
 
-    if(!name) return alert("إدخل اسم المنتج!");
+    if(!name) return alert("يرجى إدخال اسم المنتج!");
+
+    saveBtn.disabled = true;
+    saveBtn.innerText = "جاري الحفظ...";
 
     let payload = { name, category, saleType, description, images: [image], updatedAt: Date.now() };
 
     if(saleType === 'weight') {
       const kilo = Number(document.getElementById("pKilo").value);
+      if(!kilo) {
+        saveBtn.disabled = false; saveBtn.innerText = "حفظ المنتج";
+        return alert("يرجى إدخال سعر الكيلو!");
+      }
       payload.pricing = { kilo, half: Number(document.getElementById("pHalf").value)||kilo/2, quarter: Number(document.getElementById("pQuarter").value)||kilo/4 };
       payload.price = kilo;
     } else {
       const uPrice = Number(document.getElementById("pUnitPrice").value);
+      if(!uPrice) {
+        saveBtn.disabled = false; saveBtn.innerText = "حفظ المنتج";
+        return alert("يرجى إدخال سعر الوحدة!");
+      }
       payload.pricing = { unitPrice: uPrice, unitLabel: document.getElementById("pUnitLabel").value.trim()||"علبة" };
       payload.price = uPrice;
     }
 
-    if(id) await updateDoc(doc(db, "products", id), payload);
-    else { payload.hidden = false; payload.createdAt = Date.now(); await addDoc(collection(db, "products"), payload); }
-
-    closeModal();
+    try {
+      if(id) {
+        await updateDoc(doc(db, "products", id), payload);
+      } else {
+        payload.hidden = false;
+        payload.createdAt = Date.now();
+        await addDoc(collection(db, "products"), payload);
+      }
+      closeModal();
+    } catch(e) {
+      alert("حدث خطأ أثناء الحفظ: " + e.message);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.innerText = "حفظ المنتج";
+    }
   });
 
   window.editProduct = (id) => {
