@@ -163,11 +163,10 @@
     }
     .product-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); }
     
-    /* زيادة ارتفاع صورة المنتج لتصبح أكبر وأكثر وضوحاً */
     .product-img-wrapper {
       position: relative;
       width: 100%;
-      height: 340px; /* تم زيادة الارتفاع لتبدو الصورة أكبر بشكل ملحوظ */
+      height: 340px;
       overflow: hidden;
       cursor: pointer;
     }
@@ -207,7 +206,6 @@
       background: var(--card-bg);
     }
 
-    /* تصغير حجم خط اسم الصنف */
     .product-title { 
       font-size: 13.5px; 
       font-weight: 800; 
@@ -243,21 +241,6 @@
       white-space: nowrap; 
     }
 
-    .add-btn { 
-      background: var(--primary); 
-      color: #fff; 
-      padding: 6px 10px; 
-      border-radius: 8px; 
-      font-size: 11.5px; 
-      font-weight: 900; 
-      border: none; 
-      cursor: pointer; 
-      transition: all 0.2s ease; 
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
-      white-space: nowrap;
-    }
-    .add-btn:active { transform: scale(0.94); }
-
     .product-desc { 
       font-size: 11px; 
       color: var(--text-muted); 
@@ -276,7 +259,7 @@
       .search-bar input { padding: 8px 12px; font-size: 12px; }
       .whatsapp-header-btn { padding: 7px 10px; font-size: 11px; }
       .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-      .product-img-wrapper { height: 260px; } /* حجم الصورة الكبير والبارز على الهواتف المحمولة */
+      .product-img-wrapper { height: 260px; }
       .product-info { padding: 8px 9px; gap: 5px; }
     }
 
@@ -601,7 +584,6 @@
 
         return `
           <div class="product-card">
-            <!-- إضافة حدث الضغط عند النقر على الصورة لإضافة الصنف مباشرة إلى السلة -->
             <div class="product-img-wrapper" onclick="window.addToCart('${p.id}')" title="اضغط لإضافة الصنف إلى السلة">
               <img src="${imgSrc}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null; this.src='${fallbackImg}';">
               <div class="img-gradient-overlay"></div>
@@ -611,7 +593,6 @@
               <div class="product-controls">
                 ${optionsHTML}
                 <span class="price-tag" id="price-${p.id}">${defaultPrice} ج</span>
-                <button class="add-btn" onclick="window.addToCart('${p.id}')">إضافة 🛒</button>
               </div>
               <div class="product-desc">${escapeHtml(p.description || '')}</div>
             </div>
