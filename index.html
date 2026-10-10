@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title id="pageTitle">فستق حلب | Pistach D'Alep</title>
   <link id="dynamicFontLink" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap">
+  <!-- FontAwesome for Social Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style id="themeStyles">
     :root {
       --primary: #11261d;
@@ -77,7 +80,6 @@
 
     .container { max-width: 1100px; margin: 20px auto; padding: 0 14px; }
 
-    /* الأقسام بتمرير ناعم */
     .categories-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
     .categories-bar::-webkit-scrollbar { display: none; }
     .cat-btn {
@@ -91,7 +93,6 @@
       box-shadow: 0 6px 18px rgba(17, 38, 29, 0.2); 
     }
 
-    /* شبكة العرض التكيفية الموزونة 100% */
     .products-grid { 
       display: grid; 
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
@@ -99,19 +100,9 @@
     }
     
     .product-card {
-      background: var(--card-bg); 
-      border-radius: var(--radius); 
-      border: 1.5px solid var(--border);
-      display: flex; 
-      padding: var(--card-padding); 
-      gap: 14px; 
-      align-items: center; 
-      box-shadow: var(--card-shadow);
-      color: var(--card-text);
-      transition: all 0.25s ease; 
-      position: relative; 
-      overflow: hidden;
-      width: 100%;
+      background: var(--card-bg); border-radius: var(--radius); border: 1.5px solid var(--border);
+      display: flex; padding: var(--card-padding); gap: 14px; align-items: center; box-shadow: var(--card-shadow);
+      color: var(--card-text); transition: all 0.25s ease; position: relative; overflow: hidden; width: 100%;
     }
     .product-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 12px 30px -5px rgba(15, 23, 42, 0.15); }
     .product-card img { width: var(--card-img-size); height: var(--card-img-size); object-fit: cover; border-radius: 14px; background: #e2e8f0; border: 1px solid var(--border); flex-shrink: 0; }
@@ -130,27 +121,16 @@
     }
     .add-btn:active { transform: scale(0.94); }
 
-    /* التكيف الكامل للموبايل والشاشات الصغيرة جداً */
     @media (max-width: 480px) {
       .header-container { gap: 8px; }
       .logo-area h1 { font-size: 16px; }
       .search-bar input { padding: 8px 12px; font-size: 12px; }
       .whatsapp-header-btn { padding: 7px 10px; font-size: 11px; }
-
-      .products-grid { grid-template-columns: 1fr; gap: 12px; } /* كارت واحد بعرض الشاشة بالكامل */
-      
+      .products-grid { grid-template-columns: 1fr; gap: 12px; }
       .product-card { padding: 12px; gap: 12px; }
-      :root {
-        --card-img-size: 85px;
-        --card-title-size: 15px;
-      }
-      .product-controls { gap: 4px; }
-      .unit-select { padding: 5px 8px; font-size: 11.5px; }
-      .price-tag { font-size: 15px; }
-      .add-btn { padding: 7px 12px; font-size: 11.5px; }
+      :root { --card-img-size: 85px; --card-title-size: 15px; }
     }
 
-    /* Floating Circular Cart Button */
     .floating-cart-btn {
       position: fixed; bottom: 20px; left: 20px; width: 65px; height: 65px;
       background: var(--primary); color: #fff; border-radius: 50%;
@@ -178,7 +158,52 @@
     .form-group label { display: block; font-size: 12.5px; font-weight: 900; margin-bottom: 6px; color: var(--text-main); }
     .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 13.5px; outline: none; font-weight: 700; }
     .btn-submit { width: 100%; padding: 14px; background: #10b981; color: #fff; font-weight: 900; border: none; border-radius: 12px; cursor: pointer; font-size: 15px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+
+    /* Social Media Modal Styling */
+    .social-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.7); z-index: 2000; display: none; justify-content: center; align-items: center; padding: 16px; backdrop-filter: blur(6px); }
+    .social-modal-card { background: #fff; border-radius: 20px; padding: 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25); border: 2px solid var(--accent); animation: popUp 0.3s ease; }
+    @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .social-links-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+    .social-btn { display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-radius: 14px; font-weight: 900; color: #fff; text-decoration: none; font-size: 14px; transition: transform 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .social-btn:hover { transform: translateY(-2px); }
+    .btn-whatsapp { background: #25d366; }
+    .btn-facebook { background: #1877f2; }
+    .btn-instagram { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+    .btn-telegram { background: #229ed9; }
+    .btn-tiktok { background: #000000; border: 1px solid #333; }
   </style>
+
+  <!-- تطبيق الثيم فوراً قبل أي عملية تحميل لمنع الفلاش -->
+  <script>
+    (function() {
+      try {
+        const cachedTheme = localStorage.getItem('cached_store_theme');
+        const cachedName = localStorage.getItem('cached_store_name');
+        if (cachedTheme) {
+          const theme = JSON.parse(cachedTheme);
+          const root = document.documentElement;
+          if(theme.primaryColor) root.style.setProperty('--primary', theme.primaryColor);
+          if(theme.accentColor) root.style.setProperty('--accent', theme.accentColor);
+          if(theme.bgColor) root.style.setProperty('--menu-bg-color', theme.bgColor);
+          if(theme.cardBgColor) root.style.setProperty('--card-bg', theme.cardBgColor);
+          if(theme.cardTextColor) root.style.setProperty('--card-text', theme.cardTextColor);
+          if(theme.catBgColor) root.style.setProperty('--cat-bg', theme.catBgColor);
+          if(theme.catTextColor) root.style.setProperty('--cat-text', theme.catTextColor);
+          if(theme.catActiveBg) root.style.setProperty('--cat-active-bg', theme.catActiveBg);
+          if(theme.catActiveText) root.style.setProperty('--cat-active-text', theme.catActiveText);
+          if(theme.menuBgImage) root.style.setProperty('--menu-bg-image', "url('" + theme.menuBgImage + "')");
+        }
+        if (cachedName) {
+          window.addEventListener('DOMContentLoaded', () => {
+            const logo = document.getElementById("storeTitleLogo");
+            const pageTitle = document.getElementById("pageTitle");
+            if(logo) logo.innerText = "🍰 " + cachedName;
+            if(pageTitle) pageTitle.innerText = cachedName;
+          });
+        }
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body>
 
@@ -188,7 +213,7 @@
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="ابحث عن حلوياتك..." oninput="window.filterProducts()">
       </div>
-      <button class="whatsapp-header-btn" id="headerWhatsappBtn" onclick="window.openDirectWhatsapp()">💬 تواصل</button>
+      <button class="whatsapp-header-btn" onclick="window.openSocialModal()">💬 تواصل معنا</button>
     </div>
   </header>
 
@@ -207,6 +232,16 @@
       <span class="cart-badge" id="cartCount">0</span>
     </div>
     <div class="cart-total-text" id="cartTotal">0 ج</div>
+  </div>
+
+  <!-- Social Media Selection Modal -->
+  <div class="social-modal-overlay" id="socialModal">
+    <div class="social-modal-card">
+      <h3 style="font-weight: 900; color: var(--primary); font-size: 20px; margin-bottom: 5px;">📞 تواصل معنا</h3>
+      <p style="color: var(--text-muted); font-size: 12.5px;">يسعدنا تواصلك معنا عبر وسائل الاتصال التالية:</p>
+      <div class="social-links-grid" id="socialLinksContainer"></div>
+      <button onclick="window.closeSocialModal()" style="margin-top: 20px; background: #e2e8f0; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 900; cursor: pointer; width: 100%; color: #334155;">إغلاق</button>
+    </div>
   </div>
 
   <!-- Cart Modal -->
@@ -261,14 +296,34 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let allProducts = [], cart = [], deliveryZones = [], whatsappNumber = "00201140653708";
+    let allProducts = [], cart = [], deliveryZones = [], storeSettings = {};
     let selectedCat = "الكل", currentFee = 0, dynamicCategories = [];
 
-    window.openDirectWhatsapp = () => {
-      let cleanPhone = getCleanPhone(whatsappNumber);
-      const msg = encodeURIComponent("مرحباً، أود الاستفسار عن المنيو والطلبات في متجر " + (document.getElementById("pageTitle").innerText || "فستق حلب"));
-      window.open(`https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}`, '_blank');
+    window.openSocialModal = () => {
+      renderSocialLinks();
+      document.getElementById("socialModal").style.display = "flex";
     };
+    window.closeSocialModal = () => document.getElementById("socialModal").style.display = "none";
+
+    function renderSocialLinks() {
+      const container = document.getElementById("socialLinksContainer");
+      let html = "";
+      
+      const whatsapp = storeSettings.whatsappNumber || "00201140653708";
+      let cleanPhone = getCleanPhone(whatsapp);
+      const msg = encodeURIComponent("مرحباً، أود الاستفسار عن المنتجات في متجر " + (storeSettings.storeName || "فستق حلب"));
+      html += `<a href="https://api.whatsapp.com/send?phone=${cleanPhone}&text=${msg}" target="_blank" class="social-btn btn-whatsapp"><i class="fa-brands fa-whatsapp fa-lg"></i> مراسلة عبر الواتساب</a>`;
+
+      if(storeSettings.socialLinks) {
+        const s = storeSettings.socialLinks;
+        if(s.facebook) html += `<a href="${s.facebook}" target="_blank" class="social-btn btn-facebook"><i class="fa-brands fa-facebook fa-lg"></i> صفحتنا على فيسبوك</a>`;
+        if(s.instagram) html += `<a href="${s.instagram}" target="_blank" class="social-btn btn-instagram"><i class="fa-brands fa-instagram fa-lg"></i> حسابنا على إنستغرام</a>`;
+        if(s.telegram) html += `<a href="${s.telegram}" target="_blank" class="social-btn btn-telegram"><i class="fa-brands fa-telegram fa-lg"></i> قناة تيليجرام</a>`;
+        if(s.tiktok) html += `<a href="${s.tiktok}" target="_blank" class="social-btn btn-tiktok"><i class="fa-brands fa-tiktok fa-lg"></i> حساب تيك توك</a>`;
+      }
+
+      container.innerHTML = html;
+    }
 
     onSnapshot(collection(db, "products"), snap => {
       allProducts = []; 
@@ -278,26 +333,27 @@
 
     onSnapshot(doc(db, "settings", "store"), dSnap => {
       if(dSnap.exists()){
-        const data = dSnap.data();
-        if(data.whatsappNumber) whatsappNumber = String(data.whatsappNumber);
+        storeSettings = dSnap.data();
         
-        if(data.storeName) {
-          document.getElementById("storeTitleLogo").innerText = "🍰 " + data.storeName;
-          document.getElementById("pageTitle").innerText = data.storeName;
+        if(storeSettings.storeName) {
+          document.getElementById("storeTitleLogo").innerText = "🍰 " + storeSettings.storeName;
+          document.getElementById("pageTitle").innerText = storeSettings.storeName;
+          localStorage.setItem('cached_store_name', storeSettings.storeName);
         }
 
-        if(data.deliveryZones) {
-          deliveryZones = data.deliveryZones;
+        if(storeSettings.deliveryZones) {
+          deliveryZones = storeSettings.deliveryZones;
           renderZonesSelect();
         }
-        if(data.categoriesList) {
-          extractCategories(data.categoriesList.filter(c => !c.hidden).map(c => c.name));
-        } else if(data.categories) {
-          extractCategories(data.categories);
+        if(storeSettings.categoriesList) {
+          extractCategories(storeSettings.categoriesList.filter(c => !c.hidden).map(c => c.name));
+        } else if(storeSettings.categories) {
+          extractCategories(storeSettings.categories);
         }
 
-        if(data.theme) {
-          applyDynamicTheme(data.theme);
+        if(storeSettings.theme) {
+          applyDynamicTheme(storeSettings.theme);
+          localStorage.setItem('cached_store_theme', JSON.stringify(storeSettings.theme));
         }
       }
     });
@@ -542,7 +598,8 @@
         msg += "التوصيل: " + currentFee + " ج\n";
         msg += "الإجمالي النهائي: " + grandTotal + " ج";
 
-        let cleanPhone = getCleanPhone(whatsappNumber);
+        let whatsappNum = storeSettings.whatsappNumber || "00201140653708";
+        let cleanPhone = getCleanPhone(whatsappNum);
         const encodedMessage = encodeURIComponent(msg);
         const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodedMessage}`;
 
