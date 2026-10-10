@@ -336,7 +336,7 @@
         storeSettings = dSnap.data();
         
         if(storeSettings.storeName) {
-          document.getElementById("storeTitleLogo").innerText = "🍰 " + storeSettings.storeName;
+          document.getElementById("storeTitleLogo").innerText = " " + storeSettings.storeName;
           document.getElementById("pageTitle").innerText = storeSettings.storeName;
           localStorage.setItem('cached_store_name', storeSettings.storeName);
         }
