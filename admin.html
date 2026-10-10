@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة التحكم الشاملة | بيستاش دي ألب</title>
+  <title>لوحة التحكم | بيستاش دي ألب</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -53,13 +53,16 @@
     .btn-main:active { transform: scale(0.98); }
 
     .item-row { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px 14px; border-radius: 10px; margin-bottom: 8px; border: 1px solid var(--border); }
-    .btn-danger { background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 12px; }
+    .btn-action { border: none; padding: 6px 12px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 12px; color: #fff; }
+    .btn-danger { background: #ef4444; }
+    .btn-warning { background: #f59e0b; }
+    .btn-success { background: #10b981; }
   </style>
 </head>
 <body>
 
   <div class="admin-container">
-    <h1 class="header-title">⚙️ لوحة التحكم الشاملة | بيستاش دي ألب</h1>
+    <h1 class="header-title">⚙️ لوحة التحكم | بيستاش دي ألب</h1>
 
     <!-- 1. الإعدادات الأساسية والهيدر والثيم -->
     <div class="admin-card">
@@ -117,7 +120,21 @@
       <button class="btn-main" onclick="window.saveStoreSettings()" style="margin-top: 15px;">💾 حفظ الإعدادات والألوان</button>
     </div>
 
-    <!-- 2. روابط التواصل الاجتماعي -->
+    <!-- 2. إدارة الأقسام والتصنيفات -->
+    <div class="admin-card">
+      <div class="card-title"><i class="fa-solid fa-list-check"></i> إدارة وتنسيق الأقسام</div>
+      <div class="form-group">
+        <label>إضافة قسم جديد</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="newCatInput" placeholder="مثال: مكسرات، شرقيات...">
+          <button class="btn-action btn-success" onclick="window.addNewCategory()" style="padding: 0 18px; font-size: 14px; white-space: nowrap;">إضافة</button>
+        </div>
+      </div>
+      <label style="margin-top: 15px;">الأقسام الحالية (يمكنك إعادة الترتيب والإخفاء/الإظهار):</label>
+      <div id="categoriesListContainer" style="margin-top: 10px;">جاري تحميل الأقسام...</div>
+    </div>
+
+    <!-- 3. روابط التواصل الاجتماعي -->
     <div class="admin-card">
       <div class="card-title"><i class="fa-solid fa-share-nodes"></i> روابط التواصل الاجتماعي</div>
       <div class="form-group">
@@ -139,7 +156,7 @@
       <button class="btn-main" onclick="window.saveSocialLinks()" style="background: #8b5cf6;">🔗 حفظ روابط التواصل</button>
     </div>
 
-    <!-- 3. إدارة مناطق التوصيل -->
+    <!-- 4. إدارة مناطق التوصيل -->
     <div class="admin-card">
       <div class="card-title"><i class="fa-solid fa-truck-fast"></i> مناطق التوصيل وأسعارها</div>
       <div class="form-group"><label>اسم المنطقة</label><input type="text" id="zoneNameInput" placeholder="مثال: المعادي"></div>
@@ -148,11 +165,14 @@
       <div id="zonesListContainer" style="margin-top: 15px;"></div>
     </div>
 
-    <!-- 4. إضافة منتج جديد -->
+    <!-- 5. إضافة منتج جديد -->
     <div class="admin-card">
       <div class="card-title"><i class="fa-solid fa-plus-circle"></i> إضافة منتج جديد للمنيو</div>
       <div class="form-group"><label>اسم المنتج</label><input type="text" id="prodNameInput" placeholder="مثال: بقلاوة بالفستق"></div>
-      <div class="form-group"><label>القسم / التصنيف</label><input type="text" id="prodCatInput" placeholder="مثال: شرقيات"></div>
+      <div class="form-group">
+        <label>القسم / التصنيف</label>
+        <select id="prodCatSelect"></select>
+      </div>
       <div class="form-group"><label>رابط الصورة (URL)</label><input type="url" id="prodImageInput" placeholder="https://..."></div>
       <div class="form-group"><label>وصف المنتج</label><textarea id="prodDescInput" rows="2" placeholder="مكونات المنتج..."></textarea></div>
       
@@ -180,7 +200,7 @@
       <button class="btn-main" onclick="window.addNewProduct()" style="background: #10b981;">➕ إضافة المنتج للمنيو</button>
     </div>
 
-    <!-- 5. قائمة المنتجات الحالية -->
+    <!-- 6. قائمة المنتجات الحالية -->
     <div class="admin-card">
       <div class="card-title"><i class="fa-solid fa-boxes-stacked"></i> المنتجات الحالية في المنيو</div>
       <div id="productsListContainer">جاري تحميل المنتجات...</div>
@@ -203,9 +223,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let deliveryZones = [], allProducts = [], socialLinks = {};
+    let deliveryZones = [], allProducts = [], socialLinks = {}, categoriesList = [];
 
-    // تحميل الإعدادات كاملة عند الفتح
+    // تحميل الإعدادات عند فتح اللوحة
     async function loadSettings() {
       try {
         const docSnap = await getDoc(doc(db, "settings", "store"));
@@ -213,6 +233,15 @@
           const data = docSnap.data();
           if (data.storeName) document.getElementById("storeNameInput").value = data.storeName;
           if (data.whatsappNumber) document.getElementById("whatsappInput").value = data.whatsappNumber;
+          
+          if (data.categoriesList) {
+            categoriesList = data.categoriesList;
+          } else if(data.categories) {
+            categoriesList = data.categories.map(c => ({ name: c, hidden: false }));
+          }
+          renderCategoriesAdmin();
+          updateCatSelectOptions();
+
           if (data.deliveryZones) {
             deliveryZones = data.deliveryZones;
             renderZonesAdmin();
@@ -235,6 +264,68 @@
           }
         }
       } catch (e) { console.error("خطأ أثناء تحميل البيانات:", e); }
+    }
+
+    // إدارة الأقسام
+    window.addNewCategory = async () => {
+      const input = document.getElementById("newCatInput");
+      const catName = input.value.trim();
+      if(!catName) return alert("يرجى كتابة اسم القسم!");
+      if(categoriesList.some(c => c.name === catName)) return alert("القسم موجود بالفعل!");
+
+      categoriesList.push({ name: catName, hidden: false });
+      input.value = "";
+      renderCategoriesAdmin();
+      updateCatSelectOptions();
+      await saveCategoriesToFirebase();
+    };
+
+    window.toggleHideCategory = async (idx) => {
+      categoriesList[idx].hidden = !categoriesList[idx].hidden;
+      renderCategoriesAdmin();
+      await saveCategoriesToFirebase();
+    };
+
+    window.moveCategory = async (idx, direction) => {
+      const newIdx = idx + direction;
+      if (newIdx < 0 || newIdx >= categoriesList.length) return;
+      const temp = categoriesList[idx];
+      categoriesList[idx] = categoriesList[newIdx];
+      categoriesList[newIdx] = temp;
+      renderCategoriesAdmin();
+      updateCatSelectOptions();
+      await saveCategoriesToFirebase();
+    };
+
+    function renderCategoriesAdmin() {
+      const container = document.getElementById("categoriesListContainer");
+      if(!categoriesList.length) { container.innerHTML = "<small style='color:#64748b;'>لا توجد أقسام مضافة بعد.</small>"; return; }
+      
+      container.innerHTML = categoriesList.map((c, i) => `
+        <div class="item-row" style="${c.hidden ? 'opacity: 0.55; background: #f1f5f9;' : ''}">
+          <span><strong>${c.name}</strong> ${c.hidden ? '<small>(مخفي)</small>' : ''}</span>
+          <div style="display:flex; gap: 5px;">
+            <button class="btn-action btn-warning" onclick="window.moveCategory(${i}, -1)">⬆️</button>
+            <button class="btn-action btn-warning" onclick="window.moveCategory(${i}, 1)">⬇️</button>
+            <button class="btn-action ${c.hidden ? 'btn-success' : 'btn-danger'}" onclick="window.toggleHideCategory(${i})">
+              ${c.hidden ? 'إظهار' : 'إخفاء'}
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function updateCatSelectOptions() {
+      const select = document.getElementById("prodCatSelect");
+      if(!categoriesList.length) {
+        select.innerHTML = '<option value="عام">عام</option>';
+        return;
+      }
+      select.innerHTML = categoriesList.map(c => `<option value="${c.name}">${c.name}</option>`).join("");
+    }
+
+    async function saveCategoriesToFirebase() {
+      await setDoc(doc(db, "settings", "store"), { categoriesList }, { merge: true });
     }
 
     // حفظ الأساسيات والألوان
@@ -304,7 +395,7 @@
       container.innerHTML = deliveryZones.map((z, i) => `
         <div class="item-row">
           <span><strong>${z.name}</strong> - ${z.fee} جنيه</span>
-          <button class="btn-danger" onclick="window.removeZone(${i})">حذف</button>
+          <button class="btn-action btn-danger" onclick="window.removeZone(${i})">حذف</button>
         </div>
       `).join("");
     }
@@ -328,7 +419,7 @@
     // إضافة منتج جديد
     window.addNewProduct = async () => {
       const name = document.getElementById("prodNameInput").value.trim();
-      const category = document.getElementById("prodCatInput").value.trim() || "عام";
+      const category = document.getElementById("prodCatSelect").value || "عام";
       const image = document.getElementById("prodImageInput").value.trim();
       const description = document.getElementById("prodDescInput").value.trim();
       const saleType = document.getElementById("prodSaleType").value;
@@ -375,7 +466,7 @@
       container.innerHTML = allProducts.map(p => `
         <div class="item-row">
           <div><strong>${p.name}</strong> <small style="color:#64748b">(${p.category})</small></div>
-          <button class="btn-danger" onclick="window.deleteProduct('${p.id}')">حذف</button>
+          <button class="btn-action btn-danger" onclick="window.deleteProduct('${p.id}')">حذف</button>
         </div>
       `).join("");
     }
