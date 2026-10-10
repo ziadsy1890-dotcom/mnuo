@@ -318,6 +318,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // الرابط الافتراضي للصورة
+    const DEFAULT_STORE_IMAGE = "https://i.ibb.co/rGzLxC3Y/file-000000005c888210940dfd275750a5db.png";
+
     let allProducts = [], cart = [], deliveryZones = [], storeSettings = {};
     let selectedCat = "الكل", currentFee = 0, dynamicCategories = [];
 
@@ -496,9 +499,15 @@
           defaultPrice = p.pricing?.unitPrice || p.price;
         }
 
+        // فحص الصورة وإرجاع الصورة الافتراضية في حال عدم توفرها أو وجود خطأ
+        let imgSrc = p.images?.[0] || p.image;
+        if (!imgSrc || imgSrc.trim() === "" || imgSrc === "undefined") {
+          imgSrc = DEFAULT_STORE_IMAGE;
+        }
+
         return `
           <div class="product-card">
-            <img src="${p.images?.[0] || p.image || 'https://via.placeholder.com/100'}" alt="">
+            <img src="${imgSrc}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null; this.src='${DEFAULT_STORE_IMAGE}';">
             <div class="product-info">
               <div class="product-title">${escapeHtml(p.name)}</div>
               <div class="product-desc">${escapeHtml(p.description || '')}</div>
