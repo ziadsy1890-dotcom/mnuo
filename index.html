@@ -27,6 +27,7 @@
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
+      background-repeat: no-repeat;
       color: var(--text-main); 
       direction: rtl; 
       padding-bottom: 90px; 
@@ -287,9 +288,8 @@
         const data = dSnap.data();
         if(data.whatsappNumber) whatsappNumber = String(data.whatsappNumber);
         
-        // تحديث اسم المتجر ديناميكياً
         if(data.storeName) {
-          document.getElementById("storeTitleLogo").innerText = "🍰 " + data.storeName;
+          document.getElementById("storeTitleLogo").innerText = " " + data.storeName;
           document.getElementById("pageTitle").innerText = data.storeName;
         }
 
@@ -309,15 +309,25 @@
       }
     });
 
+    function cleanImageUrl(url) {
+      if(!url) return '';
+      let clean = url.trim();
+      if(clean.includes('ibb.co/') && !clean.includes('i.ibb.co/')) {
+        const parts = clean.split('ibb.co/');
+        if(parts[1]) clean = 'https://i.ibb.co/' + parts[1] + '/IMG-20261007-WA0027.jpg';
+      }
+      return clean;
+    }
+
     function applyDynamicTheme(theme) {
       const root = document.documentElement;
       if(theme.primaryColor) root.style.setProperty('--primary', theme.primaryColor);
       if(theme.accentColor) root.style.setProperty('--accent', theme.accentColor);
       if(theme.bgColor) root.style.setProperty('--menu-bg-color', theme.bgColor);
       
-      // تطبيق خلفية صورة للمنيو في حال وجودها
       if(theme.menuBgImage) {
-        root.style.setProperty('--menu-bg-image', `url('${theme.menuBgImage}')`);
+        const bgUrl = cleanImageUrl(theme.menuBgImage);
+        root.style.setProperty('--menu-bg-image', `url('${bgUrl}')`);
       } else {
         root.style.setProperty('--menu-bg-image', 'none');
       }
