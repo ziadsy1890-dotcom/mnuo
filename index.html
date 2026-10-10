@@ -37,7 +37,7 @@
           window.addEventListener('DOMContentLoaded', () => {
             const logo = document.getElementById("storeTitleLogo");
             const pageTitle = document.getElementById("pageTitle");
-            if(logo) logo.innerText = "🍰 " + cachedName;
+            if(logo) logo.innerText = " " + cachedName;
             if(pageTitle) pageTitle.innerText = cachedName;
           });
         }
@@ -228,7 +228,7 @@
 
   <header>
     <div class="header-container">
-      <div class="logo-area"><h1 id="storeTitleLogo" onclick="window.location.reload()">🍰 بيستاش دي ألب</h1></div>
+      <div class="logo-area"><h1 id="storeTitleLogo" onclick="window.location.reload()"> بيستاش دي ألب</h1></div>
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="ابحث عن حلوياتك..." oninput="window.filterProducts()">
       </div>
