@@ -7,7 +7,6 @@
   <link id="dynamicFontLink" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- الحل الجذري لمنع الوميض وتطبيق الثيم والهيدر لحظياً -->
   <style id="antiFlickerStyle">
     body { opacity: 0 !important; visibility: hidden !important; }
     body.theme-ready { opacity: 1 !important; visibility: visible !important; transition: opacity 0.15s ease-in; }
@@ -292,7 +291,6 @@
         <div class="form-group"><label>رقم الهاتف *</label><input type="tel" id="custPhone" placeholder="01xxxxxxxxx"></div>
         <div class="form-group"><label>منطقة التوصيل *</label><select id="custZone" onchange="window.updateDeliveryFee()"></select></div>
         <div class="form-group"><label>العنوان التفصيلي *</label><textarea id="custAddress" rows="3" placeholder="اسم الشارع / العمارة / رقم الشقة"></textarea></div>
-        <!-- خانة الملاحظة العامة على الطلب -->
         <div class="form-group">
           <label>ملاحظات عامة على الطلب (اختياري)</label>
           <textarea id="orderGeneralNote" rows="2" placeholder="أي تعليمات خاصة للتوصيل أو التجهيز..."></textarea>
@@ -614,7 +612,7 @@
         customer: { name, phone, zone, address },
         generalNote: generalNote,
         items: cart, subtotal, deliveryFee: currentFee, grandTotal,
-        status: "pending", createdAt: Date.now()
+        status: "new", createdAt: Date.now()
       };
 
       try {
