@@ -241,10 +241,7 @@
     onSnapshot(collection(db, "products"), snap => {
       allProducts = []; 
       snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
-      
-      // تثبيت ترتيب المنتجات تنازلياً حسب وقت الإنشاء (الأحدث أولاً) لتجنب الحركة العشوائية
       allProducts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-      
       renderProducts();
     });
 
@@ -252,8 +249,7 @@
       if(dSnap.exists()){
         const data = dSnap.data();
         if(data.whatsappNumber) whatsappNumber = data.whatsappNumber;
-        if(data.categories) {
-          // تحديث الأقسام فقط إذا تغيرت حقاً لمنع اهتزاز الشريط
+        if(data.categories && Array.isArray(data.categories)) {
           const newCatsJSON = JSON.stringify(data.categories);
           if(newCatsJSON !== JSON.stringify(cachedCategories)) {
             cachedCategories = data.categories;
