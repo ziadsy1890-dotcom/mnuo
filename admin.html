@@ -4,132 +4,46 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>لوحة التحكم - فستق حلب</title>
-<link rel="stylesheet" href="css/main.css">
 <style>
-.admin-tabs {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    border-bottom: 2px solid var(--border-color, #e5e0d8);
+:root {
+    --primary: #2d5a27;
+    --border-color: #e5e0d8;
+    --text-dark: #1c1c1c;
 }
-.admin-tabs button {
-    background: #e9ecef;
-    color: var(--text-dark, #1c1c1c);
-    padding: 10px 18px;
-    border-radius: 20px;
-    font-weight: 700;
-    white-space: nowrap;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.admin-tabs button.active {
-    background: var(--primary, #2d5a27);
-    color: #ffffff;
-}
-.tab-section {
-    display: none;
-}
-.tab-section.active {
-    display: block;
-}
-.card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-    border: 1px solid var(--border-color, #e5e0d8);
-}
-.grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-@media(max-width: 600px) {
-    .grid-2 { grid-template-columns: 1fr; }
-}
-.btn {
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-    color: #fff;
-    display: inline-block;
-    text-align: center;
-}
-.btn-primary { background: var(--primary, #2d5a27); }
+body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 0; }
+.container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+.card { background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid var(--border-color); }
+.admin-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); }
+.admin-tabs button { background: #e9ecef; color: var(--text-dark); padding: 10px 18px; border-radius: 20px; font-weight: 700; white-space: nowrap; border: none; cursor: pointer; transition: all 0.2s; }
+.admin-tabs button.active { background: var(--primary); color: #ffffff; }
+.tab-section { display: none; }
+.tab-section.active { display: block; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+.btn { padding: 10px 16px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer; color: #fff; display: inline-block; text-align: center; }
+.btn-primary { background: var(--primary); }
 .btn-success { background: #198754; }
 .btn-danger { background: #dc3545; }
 .btn-warning { background: #ffc107; color: #000; }
 .btn-secondary { background: #6c757d; }
-
-.product-row {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-    padding: 12px 0;
-}
-.product-row img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-    background: #f0f0f0;
-}
-.product-details {
-    flex: 1;
-}
-.product-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-.badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: bold;
-}
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+.product-row { display: flex; gap: 15px; align-items: center; border-bottom: 1px solid #eee; padding: 12px 0; }
+.product-row img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; background: #f0f0f0; }
+.product-details { flex: 1; }
+.product-actions { display: flex; flex-direction: column; gap: 5px; }
+.badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
 .badge-visible { background: #d1e7dd; color: #0f5132; }
 .badge-hidden { background: #f8d7da; color: #842029; }
-
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 1000;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    padding: 15px;
-}
-.modal-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    max-width: 550px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-.order-box {
-    border: 1px solid #e5e0d8;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
-    background: #fff;
-}
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 15px; }
+.modal-card { background: #fff; border-radius: 12px; padding: 20px; max-width: 550px; width: 100%; max-height: 90vh; overflow-y: auto; }
+.order-box { border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; margin-bottom: 15px; background: #fff; }
 </style>
 </head>
 <body>
 
-<div class="container" style="max-width: 1000px; margin: 20px auto; padding: 0 15px;">
+<div class="container">
 
   <!-- واجهة تسجيل الدخول -->
   <div id="authPanel" class="card" style="max-width: 400px; margin: 80px auto;">
@@ -154,7 +68,7 @@
   <div id="dashboardPanel" style="display: none;">
     <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
       <div>
-        <h1 style="margin: 0; color: var(--primary, #2d5a27);">🍰 فستق حلب</h1>
+        <h1 style="margin: 0; color: var(--primary);">🍰 فستق حلب</h1>
         <small style="color: #666;">إدارة المنتجات، الطلبات، والإعدادات</small>
       </div>
       <button class="btn btn-danger" onclick="adminLogout()">تسجيل الخروج</button>
@@ -193,7 +107,7 @@
       <div class="card">
         <h2>🛵 إدارة مناطق التوصيل</h2>
         <div class="grid-2">
-          <input type="text" id="zoneNameInput" placeholder="اسم المنطقة (مثال: القاهرة الكبرى)">
+          <input type="text" id="zoneNameInput" placeholder="اسم المنطقة">
           <input type="number" id="zoneFeeInput" placeholder="تكلفة التوصيل (جنيه)">
         </div>
         <button class="btn btn-primary" style="margin-top: 10px;" onclick="addDeliveryZone()">إضافة منطقة</button>
@@ -210,8 +124,8 @@
           <input type="text" id="whatsappInput" placeholder="201140653708">
         </div>
         <div class="form-group">
-          <label>أقسام المتجر (افصل بفاصلة):</label>
-          <input type="text" id="categoriesInput" placeholder="حلويات, مكسرات, مشروبات, فواكه مجففة">
+          <label>أقسام المتجر (افصل بينها بفاصلة):</label>
+          <input type="text" id="categoriesInput" placeholder="حلويات, مكسرات, مشروبات">
         </div>
         <button class="btn btn-primary" onclick="saveStoreSettings()">حفظ الإعدادات</button>
       </div>
@@ -253,27 +167,25 @@
       </select>
     </div>
 
-    <!-- خيارات تسعير الوزن -->
     <div id="weightFields">
       <label style="font-size: 13px; font-weight: bold;">الأسعار حسب الوزن (جنيه):</label>
       <div class="grid-2">
-        <input type="number" id="pPriceQuarter" placeholder="سعر الربع كيلو (250غ)">
-        <input type="number" id="pPriceHalf" placeholder="سعر النصف كيلو (500غ)">
+        <input type="number" id="pPriceQuarter" placeholder="سعر الربع كيلو">
+        <input type="number" id="pPriceHalf" placeholder="سعر النصف كيلو">
       </div>
       <div class="form-group" style="margin-top: 8px;">
         <input type="number" id="pPriceKilo" placeholder="سعر الكيلو (1000غ) *">
       </div>
     </div>
 
-    <!-- خيارات تسعير القطعة/العلبة -->
     <div id="unitFields" style="display: none;">
       <div class="grid-2">
         <div>
           <label>مسمى الوحدة</label>
-          <input type="text" id="pUnitLabel" placeholder="مثال: علبة، قطعة">
+          <input type="text" id="pUnitLabel" placeholder="علبة، قطعة">
         </div>
         <div>
-          <label>سعر الوحدة (جنيه) *</label>
+          <label>سعر الوحدة *</label>
           <input type="number" id="pUnitPrice" placeholder="السعر">
         </div>
       </div>
@@ -292,7 +204,7 @@
 
     <div class="form-group">
       <label>وصف المنتج</label>
-      <textarea id="pDescription" rows="2" placeholder="وصف قصير للمكونات والطعم..."></textarea>
+      <textarea id="pDescription" rows="2" placeholder="وصف قصير للمكونات..."></textarea>
     </div>
 
     <div class="form-group">
@@ -329,7 +241,6 @@ let currentCategories = ["حلويات", "مكسرات", "مشروبات", "فو
 let productsData = [];
 let ordersData = [];
 
-// المصادقة وتتبع حالة الدخول
 window.adminLogin = async () => {
   const email = document.getElementById("adminEmail").value.trim();
   const pass = document.getElementById("adminPassword").value;
@@ -338,7 +249,7 @@ window.adminLogin = async () => {
     await signInWithEmailAndPassword(auth, email, pass);
     errEl.style.display = "none";
   } catch (err) {
-    errEl.innerText = "بيانات الدخول غير صحيحة";
+    errEl.innerText = "بيانات الدخول غير صحيحة أو الخدمة غير مفعلة";
     errEl.style.display = "block";
   }
 };
@@ -356,7 +267,6 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// التنقل بين التبويبات
 window.switchTab = (tabId, btn) => {
   document.querySelectorAll(".tab-section").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".admin-tabs button").forEach(b => b.classList.remove("active"));
@@ -364,9 +274,7 @@ window.switchTab = (tabId, btn) => {
   btn.classList.add("active");
 };
 
-// الاستماع للبيانات من Firestore Realtime
 function initRealtimeListeners() {
-  // المنتجات
   onSnapshot(collection(db, "products"), (snapshot) => {
     productsData = [];
     snapshot.forEach(docSnap => productsData.push({ id: docSnap.id, ...docSnap.data() }));
@@ -374,7 +282,6 @@ function initRealtimeListeners() {
     renderReports();
   });
 
-  // الطلبات
   onSnapshot(collection(db, "orders"), (snapshot) => {
     ordersData = [];
     snapshot.forEach(docSnap => ordersData.push({ id: docSnap.id, ...docSnap.data() }));
@@ -382,7 +289,6 @@ function initRealtimeListeners() {
     renderReports();
   });
 
-  // الإعدادات
   onSnapshot(doc(db, "settings", "store"), (docSnap) => {
     if (docSnap.exists()) {
       const data = docSnap.data();
@@ -402,7 +308,6 @@ function updateCategorySelect() {
   sel.innerHTML = currentCategories.map(c => `<option value="${c}">${c}</option>`).join("");
 }
 
-// عرض المنتجات
 function renderProducts() {
   const container = document.getElementById("productsListContainer");
   if (!productsData.length) {
@@ -440,7 +345,6 @@ function getPricingsText(p) {
   return `السعر: ${p.pricing?.unitPrice || p.unitPrice || p.price || 0} ج (${p.pricing?.unitLabel || 'قطعة'})`;
 }
 
-// نافذة تعديل وإضافة منتج
 window.togglePricingFields = () => {
   const saleType = document.getElementById("pSaleType").value;
   document.getElementById("weightFields").style.display = saleType === "weight" ? "block" : "none";
@@ -505,7 +409,7 @@ window.saveProduct = async () => {
     const kilo = Number(document.getElementById("pPriceKilo").value);
     const half = Number(document.getElementById("pPriceHalf").value);
     const quarter = Number(document.getElementById("pPriceQuarter").value);
-    if (!kilo) return alert("يرجى أدخال سعر الكيلو");
+    if (!kilo) return alert("يرجى إدخال سعر الكيلو");
 
     payload.pricing = { kilo, half: half || kilo / 2, quarter: quarter || kilo / 4 };
     payload.price = kilo;
@@ -535,7 +439,6 @@ window.saveProduct = async () => {
 window.toggleHide = async (id, hidden) => updateDoc(doc(db, "products", id), { hidden });
 window.deleteProduct = async (id) => { if (confirm("هل تريد حذف المنتج بالفعل؟")) await deleteDoc(doc(db, "products", id)); };
 
-// إدارة الطلبات
 function renderOrders() {
   const container = document.getElementById("ordersListContainer");
   if (!ordersData.length) {
@@ -547,17 +450,98 @@ function renderOrders() {
     <div class="order-box">
       <div style="display:flex; justify-content:space-between;">
         <strong>رقم الطلب: ${o.orderId || o.id}</strong>
-        <small>${new Date(o.createdAt).toLocaleString('ar-EG')}</small>
+        <small>${new Date(o.createdAt || Date.now()).toLocaleString('ar-EG')}</small>
       </div>
       <p style="margin:5px 0;">👤 العميل: ${escapeHtml(o.customer?.name || '')} | 📞 ${o.customer?.phone || ''}</p>
       <p style="margin:5px 0;">📍 العنوان: ${escapeHtml(o.customer?.address || '')} (${o.customer?.zone || o.customer?.state || ''})</p>
       <hr>
       <div>
-        ${(o.items || []).map(i => `<div>• ${escapeHtml(i.name)} (${i.unitLabel || i.selectedOption}) × ${i.quantity} =${i.unitPrice * i.quantity} ج</div>`).join("")}
+        ${(o.items || []).map(i => `<div>• ${escapeHtml(i.name)} (${i.unitLabel || i.selectedOption || ''}) × ${i.quantity} =${i.unitPrice * i.quantity} ج</div>`).join("")}
       </div>
       <hr>
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <strong>الإجمالي: ${o.grandTotal} جنيه</strong>
+        <strong>الإجمالي: ${o.grandTotal || 0} جنيه</strong>
         <select onchange="updateOrderStatus('${o.id}', this.value)">
           <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>قيد الانتظار</option>
-          <option value="confirmed" ${o.status === 'confirmed' ? 'selected' : ''}>تم ال
+          <option value="confirmed" ${o.status === 'confirmed' ? 'selected' : ''}>تم التأكيد</option>
+          <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>تم التوصيل</option>
+          <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>ملغي</option>
+        </select>
+      </div>
+    </div>
+  `).join("");
+}
+
+window.updateOrderStatus = async (id, status) => {
+  try {
+    await updateDoc(doc(db, "orders", id), { status });
+    alert("تم تحديث حالة الطلب");
+  } catch (e) {
+    alert("خطأ في تحديث الطلب");
+  }
+};
+
+window.addDeliveryZone = async () => {
+  const name = document.getElementById("zoneNameInput").value.trim();
+  const fee = Number(document.getElementById("zoneFeeInput").value);
+  if (!name || isNaN(fee)) return alert("يرجى إدخال اسم المنطقة والتكلفة بشكل صحيح");
+
+  const storeRef = doc(db, "settings", "store");
+  const docSnap = await getDoc(storeRef);
+  let currentZones = docSnap.exists() && docSnap.data().deliveryZones ? docSnap.data().deliveryZones : [];
+
+  currentZones.push({ name, fee });
+  await setDoc(storeRef, { deliveryZones: currentZones }, { merge: true });
+  document.getElementById("zoneNameInput").value = "";
+  document.getElementById("zoneFeeInput").value = "";
+};
+
+function renderZones(zones) {
+  const container = document.getElementById("zonesListContainer");
+  container.innerHTML = zones.map((z, idx) => `
+    <div style="display:flex; justify-content:space-between; margin-bottom:5px; background:#f9f9f9; padding:8px; border-radius:5px;">
+      <span>📌 ${escapeHtml(z.name)}: <strong>${z.fee} جنيه</strong></span>
+      <button class="btn btn-danger" style="padding:2px 8px;" onclick="deleteZone(${idx})">حذف</button>
+    </div>
+  `).join("");
+}
+
+window.deleteZone = async (index) => {
+  const storeRef = doc(db, "settings", "store");
+  const docSnap = await getDoc(storeRef);
+  if (docSnap.exists() && docSnap.data().deliveryZones) {
+    let zones = docSnap.data().deliveryZones;
+    zones.splice(index, 1);
+    await setDoc(storeRef, { deliveryZones: zones }, { merge: true });
+  }
+};
+
+window.saveStoreSettings = async () => {
+  const whatsappNumber = document.getElementById("whatsappInput").value.trim();
+  const categories = document.getElementById("categoriesInput").value.split(",").map(c => c.trim()).filter(Boolean);
+
+  try {
+    await setDoc(doc(db, "settings", "store"), { whatsappNumber, categories }, { merge: true });
+    alert("تم حفظ إعدادات المتجر بنجاح");
+  } catch (e) {
+    alert("حدث خطأ في حفظ الإعدادات");
+  }
+};
+
+function renderReports() {
+  const container = document.getElementById("reportsContentContainer");
+  const totalSales = ordersData.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
+  container.innerHTML = `
+    <p>📦 **إجمالي عدد المنتجات:** ${productsData.length}</p>
+    <p>📋 **إجمالي عدد الطلبات:** ${ordersData.length}</p>
+    <p>💰 **إجمالي المبيعات:** ${totalSales} جنيه</p>
+  `;
+}
+
+function escapeHtml(str) {
+  return String(str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+</script>
+
+</body>
+</html>
