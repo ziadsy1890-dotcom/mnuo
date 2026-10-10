@@ -16,7 +16,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
 .tab-section.active { display: block; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 @media(max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
-.btn { padding: 10px 16px; border-radius: 10px; font-weight: 800; border: none; cursor: pointer; color: #fff; text-align: center; }
+.btn { padding: 10px 16px; border-radius: 10px; font-weight: 800; border: none; cursor: pointer; color: #fff; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .btn-primary { background: var(--primary); }
 .btn-success { background: #10b981; }
 .btn-danger { background: #ef4444; }
@@ -35,6 +35,8 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
 .preset-card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 .preset-colors { display: flex; height: 18px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
 .preset-colors div { flex: 1; height: 100%; }
+
+.backup-tools { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; }
 
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 16px; backdrop-filter: blur(5px); }
 .modal-card { background: #fff; border-radius: 16px; padding: 22px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; }
@@ -64,16 +66,34 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
     <div class="admin-tabs">
       <button class="active" onclick="switchTab('pTab', this)">📦 المنتجات</button>
       <button onclick="switchTab('catTab', this)">🏷️ الأقسام</button>
-      <button onclick="switchTab('themeTab', this)">🎨 الثيمات والتصميم</button>
+      <button onclick="switchTab('themeTab', this)">🎨 الأبعاد والألوان</button>
       <button onclick="switchTab('oTab', this)">📋 الطلبات</button>
       <button onclick="switchTab('dTab', this)">🛵 التوصيل</button>
       <button onclick="switchTab('sTab', this)">⚙️ الإعدادات</button>
       <button onclick="switchTab('rTab', this)">📊 التقارير</button>
     </div>
 
-    <!-- 1. المنتجات -->
+    <!-- 1. المنتجات والنسخ الاحتياطي -->
     <div id="pTab" class="tab-section active">
-      <div class="card"><button class="btn btn-success" onclick="openModal()">➕ إضافة منتج جديد</button></div>
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <button class="btn btn-success" onclick="openModal()">➕ إضافة منتج جديد</button>
+        </div>
+        
+        <!-- أدوات النسخ الاحتياطي والحذف للمنتجات -->
+        <div class="backup-tools" style="margin-top: 15px;">
+          <strong style="width:100%; font-size:13px; margin-bottom:5px;">💾 النسخ الاحتياطي وإدارة المنتجات:</strong>
+          <button class="btn btn-primary" onclick="exportProductsBackup()">📥 تنزيل نسخة احتياطية</button>
+          
+          <label class="btn btn-secondary" style="cursor:pointer; margin:0;">
+            📤 استعادة نسخة
+            <input type="file" id="importProductsFile" accept=".json" style="display:none;" onchange="importProductsBackup(event)">
+          </label>
+
+          <button class="btn btn-danger" onclick="deleteAllProducts()">🗑️ حذف كافة المنتجات</button>
+        </div>
+      </div>
+
       <div class="card"><h2>قائمة المنتجات</h2><div id="productsContainer">جاري التحميل...</div></div>
     </div>
 
@@ -92,35 +112,103 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
       </div>
     </div>
 
-    <!-- 3. ثيمات عالمية فاخرة بنقرة زر -->
+    <!-- 3. تخصيص المظهر، الأبعاد والألوان كاملة -->
     <div id="themeTab" class="tab-section">
       <div class="card">
-        <h2>💎 اختر ثيم عالمي فاخر (Ultra-Modern Presets)</h2>
-        <p style="font-size:12.5px; color:#64748b; margin-bottom:15px; font-weight:600;">اختر أحد التصاميم الجاهزة ليتم تطبيق الألوان والتنسيقات المتناسقة فوراً:</p>
-
+        <h2>💎 ثيمات جاهزة سريعة</h2>
         <div class="preset-grid">
-          <div class="preset-card" onclick="applyPreset('#122b20', '#d4af37', '#f8faf9')">
-            <strong style="font-size:12.5px;">الزمرد والذهبي 👑</strong>
+          <div class="preset-card" onclick="applyPreset('#122b20', '#d4af37', '#f8faf9', '#ffffff', '#0f172a', '#ffffff', '#64748b', '#122b20', '#ffffff')">
+            <strong style="font-size:12px;">الزمرد والذهبي 👑</strong>
             <div class="preset-colors"><div style="background:#122b20;"></div><div style="background:#d4af37;"></div><div style="background:#f8faf9;"></div></div>
           </div>
-          <div class="preset-card" onclick="applyPreset('#701a75', '#f472b6', '#fdf4ff')">
-            <strong style="font-size:12.5px;">الوردي الفرنسي 🌸</strong>
+          <div class="preset-card" onclick="applyPreset('#701a75', '#f472b6', '#fdf4ff', '#ffffff', '#0f172a', '#ffffff', '#701a75', '#701a75', '#ffffff')">
+            <strong style="font-size:12px;">الوردي الفرنسي 🌸</strong>
             <div class="preset-colors"><div style="background:#701a75;"></div><div style="background:#f472b6;"></div><div style="background:#fdf4ff;"></div></div>
           </div>
-          <div class="preset-card" onclick="applyPreset('#0f172a', '#eab308', '#020617')">
-            <strong style="font-size:12.5px;">الأسود الملكي 🌙</strong>
+          <div class="preset-card" onclick="applyPreset('#0f172a', '#eab308', '#020617', '#1e293b', '#f8fafc', '#1e293b', '#e2e8f0', '#eab308', '#020617')">
+            <strong style="font-size:12px;">الأسود الملكي 🌙</strong>
             <div class="preset-colors"><div style="background:#0f172a;"></div><div style="background:#eab308;"></div><div style="background:#020617;"></div></div>
-          </div>
-          <div class="preset-card" onclick="applyPreset('#451a03', '#f59e0b', '#fffbeb')">
-            <strong style="font-size:12.5px;">الكافيه الدافئ ☕</strong>
-            <div class="preset-colors"><div style="background:#451a03;"></div><div style="background:#f59e0b;"></div><div style="background:#fffbeb;"></div></div>
           </div>
         </div>
 
-        <hr style="margin:22px 0; border:none; border-top:1px solid #e2e8f0;">
+        <hr style="margin:20px 0; border:none; border-top:1px solid #e2e8f0;">
 
-        <h2>✏️ تخصيص دقيق ومباشر</h2>
-        
+        <h2>🛍️ ضبط ألوان وحجم بطاقات الأصناف</h2>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>خلفية بطاقة المنتج:</label>
+            <div class="color-picker-group">
+              <input type="color" id="cardBgColorInput" value="#ffffff">
+              <span id="cardBgVal">#ffffff</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>لون نص اسم المنتج:</label>
+            <div class="color-picker-group">
+              <input type="color" id="cardTextColorInput" value="#0f172a">
+              <span id="cardTextVal">#0f172a</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>حجم وأبعاد بطاقة المنتج:</label>
+          <select id="cardSizeSelect">
+            <option value="medium">متوسط (افتراضي)</option>
+            <option value="small">صغير (مدمج)</option>
+            <option value="large">كبير (بارز)</option>
+          </select>
+        </div>
+
+        <hr style="margin:20px 0; border:none; border-top:1px solid #e2e8f0;">
+
+        <h2>🏷️ ضبط ألوان وحجم أزرار الأقسام</h2>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>خلفية زر القسم (غير النشط):</label>
+            <div class="color-picker-group">
+              <input type="color" id="catBgColorInput" value="#ffffff">
+              <span id="catBgVal">#ffffff</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>نص القسم (غير النشط):</label>
+            <div class="color-picker-group">
+              <input type="color" id="catTextColorInput" value="#64748b">
+              <span id="catTextVal">#64748b</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>خلفية القسم (المحدد / النشط):</label>
+            <div class="color-picker-group">
+              <input type="color" id="catActiveBgInput" value="#122b20">
+              <span id="catActiveBgVal">#122b20</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>نص القسم (المحدد / النشط):</label>
+            <div class="color-picker-group">
+              <input type="color" id="catActiveTextInput" value="#ffffff">
+              <span id="catActiveTextVal">#ffffff</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>حجم أزرار الأقسام:</label>
+          <select id="catSizeSelect">
+            <option value="medium">متوسط (افتراضي)</option>
+            <option value="small">صغير</option>
+            <option value="large">كبير</option>
+          </select>
+        </div>
+
+        <hr style="margin:20px 0; border:none; border-top:1px solid #e2e8f0;">
+
+        <h2>✏️ تخصيص الهيدر والخلفية العامة</h2>
         <div class="form-group">
           <label>اسم المتجر:</label>
           <input type="text" id="storeNameInput" placeholder="مثال: فستق حلب">
@@ -132,15 +220,9 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
           <div id="fileStatus" style="font-size: 12px; color: #10b981; font-weight: bold; margin-top: 5px;"></div>
         </div>
 
-        <div class="form-group">
-          <label>أو إدخال رابط الصورة بدلاً من الرفع:</label>
-          <input type="url" id="menuBgImageInput" placeholder="ضع رابط الصورة هنا إذا فضلت ذلك">
-          <button class="btn btn-secondary" style="margin-top: 6px; font-size: 11.5px;" onclick="clearBgImage()">🗑️ إزالة صورة الخلفية</button>
-        </div>
-
         <div class="grid-2">
           <div class="form-group">
-            <label>اللون الرئيسي:</label>
+            <label>اللون الرئيسي (الهيدر والأزرار):</label>
             <div class="color-picker-group">
               <input type="color" id="primaryColorInput" value="#122b20">
               <span id="primaryVal">#122b20</span>
@@ -157,7 +239,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
 
         <div class="grid-2">
           <div class="form-group">
-            <label>لون الخلفية (عند عدم وجود صورة):</label>
+            <label>خلفية المتجر العامة:</label>
             <div class="color-picker-group">
               <input type="color" id="bgColorInput" value="#f8faf9">
               <span id="bgVal">#f8faf9</span>
@@ -166,21 +248,30 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
           <div class="form-group">
             <label>نوع الخط العربي:</label>
             <select id="fontFamilySelect">
-              <option value="Tajawal">Tajawal (تجوال - عصري)</option>
-              <option value="Cairo">Cairo (القاهرة - واضح)</option>
-              <option value="Almarai">Almarai (المراعي - ناعم)</option>
+              <option value="Tajawal">Tajawal (تجوال)</option>
+              <option value="Cairo">Cairo (القاهرة)</option>
+              <option value="Almarai">Almarai (المراعي)</option>
               <option value="Readex Pro">Readex Pro (ريدكس)</option>
             </select>
           </div>
         </div>
 
-        <button class="btn btn-success" style="width: 100%; padding: 14px; margin-top: 10px; font-size:15px;" id="saveThemeBtn">💾 حفظ وتطبيق التغييرات فوراً</button>
+        <button class="btn btn-success" style="width: 100%; padding: 14px; margin-top: 10px; font-size:15px;" id="saveThemeBtn">💾 حفظ وتطبيق كافة التعديلات فوراً</button>
       </div>
     </div>
 
-    <!-- 4. الطلبات -->
+    <!-- 4. الطلبات والنسخ الاحتياطي لها -->
     <div id="oTab" class="tab-section">
-      <div class="card"><h2>الطلبات الواردة</h2><div id="ordersContainer">جاري التحميل...</div></div>
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:15px;">
+          <h2 style="margin:0;">الطلبات الواردة</h2>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-primary" onclick="exportOrdersBackup()">📥 تنزيل سجل الطلبات</button>
+            <button class="btn btn-danger" onclick="deleteAllOrders()">🗑️ تفريغ كافة الطلبات</button>
+          </div>
+        </div>
+        <div id="ordersContainer">جاري التحميل...</div>
+      </div>
     </div>
 
     <!-- 5. التوصيل -->
@@ -264,7 +355,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, setDoc, getDoc, writeBatch, getDocs } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBNy3ZPbr_cVJC2ZUzBVf8jxWdFlABYIiw",
@@ -341,26 +432,100 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
           document.getElementById("accentVal").innerText = data.theme.accentColor || '#d4af37';
           document.getElementById("bgColorInput").value = data.theme.bgColor || '#f8faf9';
           document.getElementById("bgVal").innerText = data.theme.bgColor || '#f8faf9';
-          
-          if(data.theme.menuBgImage && !data.theme.menuBgImage.startsWith('data:image')) {
-            document.getElementById("menuBgImageInput").value = data.theme.menuBgImage;
-          }
-          if(data.theme.menuBgImage) {
-            document.getElementById("fileStatus").innerText = "✨ توجد صورة خلفية مفعّلة حالياً";
-          }
+
+          document.getElementById("cardBgColorInput").value = data.theme.cardBgColor || '#ffffff';
+          document.getElementById("cardBgVal").innerText = data.theme.cardBgColor || '#ffffff';
+          document.getElementById("cardTextColorInput").value = data.theme.cardTextColor || '#0f172a';
+          document.getElementById("cardTextVal").innerText = data.theme.cardTextColor || '#0f172a';
+          document.getElementById("cardSizeSelect").value = data.theme.cardSize || 'medium';
+
+          document.getElementById("catBgColorInput").value = data.theme.catBgColor || '#ffffff';
+          document.getElementById("catBgVal").innerText = data.theme.catBgColor || '#ffffff';
+          document.getElementById("catTextColorInput").value = data.theme.catTextColor || '#64748b';
+          document.getElementById("catTextVal").innerText = data.theme.catTextColor || '#64748b';
+          document.getElementById("catActiveBgInput").value = data.theme.catActiveBg || '#122b20';
+          document.getElementById("catActiveBgVal").innerText = data.theme.catActiveBg || '#122b20';
+          document.getElementById("catActiveTextInput").value = data.theme.catActiveText || '#ffffff';
+          document.getElementById("catActiveTextVal").innerText = data.theme.catActiveText || '#ffffff';
+          document.getElementById("catSizeSelect").value = data.theme.catSize || 'medium';
+
           document.getElementById("fontFamilySelect").value = data.theme.fontFamily || 'Tajawal';
         }
       }
     });
   }
 
-  window.applyPreset = (p, a, bg) => {
-    document.getElementById("primaryColorInput").value = p;
-    document.getElementById("primaryVal").innerText = p;
-    document.getElementById("accentColorInput").value = a;
-    document.getElementById("accentVal").innerText = a;
-    document.getElementById("bgColorInput").value = bg;
-    document.getElementById("bgVal").innerText = bg;
+  /* ---- وظائف النسخ الاحتياطي والحذف ---- */
+  window.exportProductsBackup = () => {
+    if(!products.length) return alert("لا توجد منتجات لتصديرها!");
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(products, null, 2));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", `products_backup_${new Date().toISOString().slice(0,10)}.json`);
+    dlAnchorElem.click();
+  };
+
+  window.importProductsBackup = (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = async function(event) {
+      try {
+        const importedProds = JSON.parse(event.target.result);
+        if(!Array.isArray(importedProds)) return alert("الملف غير صالح!");
+        if(confirm(`هل أنت متأكد من استعادة ${importedProds.length} منتج؟`)) {
+          for(const item of importedProds) {
+            delete item.id;
+            await addDoc(collection(db, "products"), item);
+          }
+          alert("تمت استعادة المنتجات بنجاح!");
+        }
+      } catch(err) {
+        alert("خطأ في قراءة ملف النسخة الاحتياطية!");
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  window.deleteAllProducts = async () => {
+    if(confirm("⚠️ هل أنت متأكد تماماً من حذف كاااافة المنتجات؟ لا يمكن التراجع عن هذه الخطوة!")) {
+      const snap = await getDocs(collection(db, "products"));
+      const batch = writeBatch(db);
+      snap.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+      alert("تم حذف جميع المنتجات بنجاح!");
+    }
+  };
+
+  window.exportOrdersBackup = () => {
+    if(!orders.length) return alert("لا توجد طلبات لتصديرها!");
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(orders, null, 2));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", `orders_backup_${new Date().toISOString().slice(0,10)}.json`);
+    dlAnchorElem.click();
+  };
+
+  window.deleteAllOrders = async () => {
+    if(confirm("⚠️ هل أنت متأكد من تفريغ كافة سجلات الطلبات؟")) {
+      const snap = await getDocs(collection(db, "orders"));
+      const batch = writeBatch(db);
+      snap.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+      alert("تم تفريغ كافة الطلبات بنجاح!");
+    }
+  };
+
+  window.applyPreset = (p, a, bg, cBg, cText, catBg, catText, catActBg, catActText) => {
+    document.getElementById("primaryColorInput").value = p; document.getElementById("primaryVal").innerText = p;
+    document.getElementById("accentColorInput").value = a; document.getElementById("accentVal").innerText = a;
+    document.getElementById("bgColorInput").value = bg; document.getElementById("bgVal").innerText = bg;
+    document.getElementById("cardBgColorInput").value = cBg; document.getElementById("cardBgVal").innerText = cBg;
+    document.getElementById("cardTextColorInput").value = cText; document.getElementById("cardTextVal").innerText = cText;
+    document.getElementById("catBgColorInput").value = catBg; document.getElementById("catBgVal").innerText = catBg;
+    document.getElementById("catTextColorInput").value = catText; document.getElementById("catTextVal").innerText = catText;
+    document.getElementById("catActiveBgInput").value = catActBg; document.getElementById("catActiveBgVal").innerText = catActBg;
+    document.getElementById("catActiveTextInput").value = catActText; document.getElementById("catActiveTextVal").innerText = catActText;
   };
 
   document.getElementById("bgFileInput").addEventListener("change", function(e) {
@@ -375,33 +540,42 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
     }
   });
 
-  window.clearBgImage = () => {
-    uploadedBase64Image = "";
-    document.getElementById("menuBgImageInput").value = "";
-    document.getElementById("bgFileInput").value = "";
-    document.getElementById("fileStatus").innerText = "تمت إزالة صورة الخلفية";
+  const bindColorVal = (inputId, valId) => {
+    document.getElementById(inputId).addEventListener("input", (e) => document.getElementById(valId).innerText = e.target.value);
   };
-
-  document.getElementById("primaryColorInput").addEventListener("input", (e) => document.getElementById("primaryVal").innerText = e.target.value);
-  document.getElementById("accentColorInput").addEventListener("input", (e) => document.getElementById("accentVal").innerText = e.target.value);
-  document.getElementById("bgColorInput").addEventListener("input", (e) => document.getElementById("bgVal").innerText = e.target.value);
+  bindColorVal("primaryColorInput", "primaryVal");
+  bindColorVal("accentColorInput", "accentVal");
+  bindColorVal("bgColorInput", "bgVal");
+  bindColorVal("cardBgColorInput", "cardBgVal");
+  bindColorVal("cardTextColorInput", "cardTextVal");
+  bindColorVal("catBgColorInput", "catBgVal");
+  bindColorVal("catTextColorInput", "catTextVal");
+  bindColorVal("catActiveBgInput", "catActiveBgVal");
+  bindColorVal("catActiveTextInput", "catActiveTextVal");
 
   document.getElementById("saveThemeBtn").addEventListener("click", async () => {
     const storeName = document.getElementById("storeNameInput").value.trim() || "فستق حلب";
-    
-    let finalBgImage = uploadedBase64Image || document.getElementById("menuBgImageInput").value.trim();
+    let finalBgImage = uploadedBase64Image || "";
 
     const theme = {
       primaryColor: document.getElementById("primaryColorInput").value,
       accentColor: document.getElementById("accentColorInput").value,
       bgColor: document.getElementById("bgColorInput").value,
+      cardBgColor: document.getElementById("cardBgColorInput").value,
+      cardTextColor: document.getElementById("cardTextColorInput").value,
+      cardSize: document.getElementById("cardSizeSelect").value,
+      catBgColor: document.getElementById("catBgColorInput").value,
+      catTextColor: document.getElementById("catTextColorInput").value,
+      catActiveBg: document.getElementById("catActiveBgInput").value,
+      catActiveText: document.getElementById("catActiveTextInput").value,
+      catSize: document.getElementById("catSizeSelect").value,
       menuBgImage: finalBgImage,
       fontFamily: document.getElementById("fontFamilySelect").value
     };
 
     const storeRef = doc(db, "settings", "store");
     await setDoc(storeRef, { storeName, theme }, { merge: true });
-    alert("✨ تم حفظ وتطبيق التغييرات بنجاح!");
+    alert("✨ تم حفظ وتطبيق كافة الإعدادات والألوان بنجاح!");
   });
 
   window.addNewCategory = async () => {
