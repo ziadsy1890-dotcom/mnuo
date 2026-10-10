@@ -109,7 +109,7 @@
 
   <header>
     <div class="header-container">
-      <div class="logo-area"><h1 onclick="window.location.reload()">بيستاش دي الب </h1></div>
+      <div class="logo-area"><h1 onclick="window.location.reload()">🍰 فستق حلب</h1></div>
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="ابحث عن منتج..." oninput="window.filterProducts()">
       </div>
@@ -241,11 +241,6 @@
     onSnapshot(collection(db, "products"), snap => {
       allProducts = []; 
       snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
-      
-      // ثبات ترتيب المنتجات: ترتيب تصاعدي حسب وقت الإنشاء (الأول يظل في مكانه الأول دائماً)
-      allProducts.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-      
-      extractCategories();
       renderProducts();
     });
 
@@ -266,15 +261,21 @@
     });
 
     function extractCategories(settingsCats = []) {
-      let set = new Set();
+      let orderedList = [];
+      // 1. استخدام الترتيب اليدوي المحدد من الإعدادات أولاً
       if(Array.isArray(settingsCats)) {
-        settingsCats.forEach(c => { if(c.trim()) set.add(c.trim()); });
+        settingsCats.forEach(c => { if(c.trim() && !orderedList.includes(c.trim())) orderedList.push(c.trim()); });
       }
-      allProducts.forEach(p => { if(p.category) set.add(p.category.trim()); });
+      // 2. إضافة أي أقسام أخرى من المنتجات لم تذكر بالترتيب
+      allProducts.forEach(p => { 
+        if(p.category && !orderedList.includes(p.category.trim())) {
+          orderedList.push(p.category.trim());
+        } 
+      });
       
-      // تثبيت ترتيب الأقسام أبجدياً أو حسب الإعدادات لكي لا تتحرك أبداً
-      dynamicCategories = Array.from(set).sort((a, b) => a.localeCompare(b, 'ar'));
+      dynamicCategories = orderedList;
       renderCategories(dynamicCategories);
+      renderProducts();
     }
 
     function renderCategories(cats) {
@@ -307,14 +308,32 @@
       const grid = document.getElementById("productsGrid");
       const query = document.getElementById("searchInput").value.trim().toLowerCase();
       
-      const filtered = allProducts.filter(p => {
-        const matchCategory = (selectedCat === "الكل" || (p.category && p.category.trim() === selectedCat));
+      let sortedProducts = [];
+
+      if(selectedCat === "الكل") {
+        // ترتيب المنتجات حسب ترتيب الأقسام المخزنة (القسم الأول أولاً مثل الأكثر مبيعاً، ثم الثاني...)
+        dynamicCategories.forEach(catName => {
+          const catProds = allProducts.filter(p => p.category && p.category.trim() === catName);
+          catProds.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+          sortedProducts.push(...catProds);
+        });
+
+        // إضافة المنتجات التي ليس لها قسم محدد في النهاية
+        const otherProds = allProducts.filter(p => !p.category || !dynamicCategories.includes(p.category.trim()));
+        otherProds.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+        sortedProducts.push(...otherProds);
+      } else {
+        sortedProducts = allProducts.filter(p => p.category && p.category.trim() === selectedCat);
+        sortedProducts.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+      }
+
+      const filtered = sortedProducts.filter(p => {
         const matchSearch = p.name.toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query));
-        return !p.hidden && matchCategory && matchSearch;
+        return !p.hidden && matchSearch;
       });
 
       if(!filtered.length) { 
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">لا توجد منتجات مطابقة في هذا القسم.</div>'; 
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">لا توجد منتجات مطابقة.</div>'; 
         return; 
       }
 
