@@ -7,12 +7,51 @@
   <link id="dynamicFontLink" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- السكريبت المسئول عن منع الوميض والتطبيق الفوري للتصميم الجديد قبل تحميل العناصر -->
+  <script>
+    (function() {
+      try {
+        const cachedTheme = localStorage.getItem('cached_store_theme');
+        const cachedName = localStorage.getItem('cached_store_name');
+        
+        let customStyles = '';
+        if (cachedTheme) {
+          const theme = JSON.parse(cachedTheme);
+          if (theme.primaryColor) customStyles += `--primary: ${theme.primaryColor} !important;`;
+          if (theme.accentColor) customStyles += `--accent: ${theme.accentColor} !important;`;
+          if (theme.bgColor) customStyles += `--menu-bg-color: ${theme.bgColor} !important;`;
+          if (theme.headerBgColor) customStyles += `--header-bg: ${theme.headerBgColor} !important;`;
+          if (theme.cardBgColor) customStyles += `--card-bg: ${theme.cardBgColor} !important;`;
+          if (theme.cardTextColor) customStyles += `--card-text: ${theme.cardTextColor} !important;`;
+          if (theme.catBgColor) customStyles += `--cat-bg: ${theme.catBgColor} !important;`;
+          if (theme.catTextColor) customStyles += `--cat-text: ${theme.catTextColor} !important;`;
+          if (theme.catActiveBg) customStyles += `--cat-active-bg: ${theme.catActiveBg} !important;`;
+          if (theme.catActiveText) customStyles += `--cat-active-text: ${theme.catActiveText} !important;`;
+          if (theme.menuBgImage) customStyles += `--menu-bg-image: url('${theme.menuBgImage}') !important;`;
+        }
+
+        if (customStyles) {
+          document.write('<style>:root {' + customStyles + '}</style>');
+        }
+
+        if (cachedName) {
+          window.addEventListener('DOMContentLoaded', () => {
+            const logo = document.getElementById("storeTitleLogo");
+            const pageTitle = document.getElementById("pageTitle");
+            if(logo) logo.innerText = "🍰 " + cachedName;
+            if(pageTitle) pageTitle.innerText = cachedName;
+          });
+        }
+      } catch(e) {}
+    })();
+  </script>
+
   <style id="themeStyles">
     :root {
       --primary: #11261d;
       --accent: #d4af37;
       --bg-body: #11261d;
-      --header-bg: rgba(17, 38, 29, 0.9); /* لون مستطيل الهيدر الافتراضي */
+      --header-bg: rgba(17, 38, 29, 0.9);
       --card-bg: rgba(255, 255, 255, 0.94);
       --card-text: #0f172a;
       
@@ -53,7 +92,7 @@
     }
 
     header {
-      background: var(--header-bg); /* يتغير مباشرة بناءً على ما تختاره من لوحة التحكم */
+      background: var(--header-bg);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       color: #fff;
@@ -181,38 +220,6 @@
     .btn-telegram { background: #229ed9; }
     .btn-tiktok { background: #000000; border: 1px solid #333; }
   </style>
-
-  <script>
-    (function() {
-      try {
-        const cachedTheme = localStorage.getItem('cached_store_theme');
-        const cachedName = localStorage.getItem('cached_store_name');
-        if (cachedTheme) {
-          const theme = JSON.parse(cachedTheme);
-          const root = document.documentElement;
-          if(theme.primaryColor) root.style.setProperty('--primary', theme.primaryColor);
-          if(theme.accentColor) root.style.setProperty('--accent', theme.accentColor);
-          if(theme.bgColor) root.style.setProperty('--menu-bg-color', theme.bgColor);
-          if(theme.headerBgColor) root.style.setProperty('--header-bg', theme.headerBgColor);
-          if(theme.cardBgColor) root.style.setProperty('--card-bg', theme.cardBgColor);
-          if(theme.cardTextColor) root.style.setProperty('--card-text', theme.cardTextColor);
-          if(theme.catBgColor) root.style.setProperty('--cat-bg', theme.catBgColor);
-          if(theme.catTextColor) root.style.setProperty('--cat-text', theme.catTextColor);
-          if(theme.catActiveBg) root.style.setProperty('--cat-active-bg', theme.catActiveBg);
-          if(theme.catActiveText) root.style.setProperty('--cat-active-text', theme.catActiveText);
-          if(theme.menuBgImage) root.style.setProperty('--menu-bg-image', "url('" + theme.menuBgImage + "')");
-        }
-        if (cachedName) {
-          window.addEventListener('DOMContentLoaded', () => {
-            const logo = document.getElementById("storeTitleLogo");
-            const pageTitle = document.getElementById("pageTitle");
-            if(logo) logo.innerText = " " + cachedName;
-            if(pageTitle) pageTitle.innerText = cachedName;
-          });
-        }
-      } catch(e) {}
-    })();
-  </script>
 </head>
 <body>
 
@@ -342,7 +349,7 @@
         storeSettings = dSnap.data();
         
         if(storeSettings.storeName) {
-          document.getElementById("storeTitleLogo").innerText = "🍰 " + storeSettings.storeName;
+          document.getElementById("storeTitleLogo").innerText = " " + storeSettings.storeName;
           document.getElementById("pageTitle").innerText = storeSettings.storeName;
           localStorage.setItem('cached_store_name', storeSettings.storeName);
         }
