@@ -119,7 +119,7 @@
 
   <div class="container">
     <div class="categories-bar" id="categoriesBar">
-      <button class="cat-btn active" onclick="selectCategory('الكل', event)">الكل</button>
+      <button class="cat-btn active" data-cat="الكل" onclick="selectCategory('الكل')">الكل</button>
     </div>
     <div class="products-grid" id="productsGrid">
       <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">جاري تحميل المنتجات...</div>
@@ -274,16 +274,26 @@
 
     function renderCategories(cats) {
       const bar = document.getElementById("categoriesBar");
-      bar.innerHTML = `<button class="cat-btn ${selectedCat === 'الكل' ? 'active':''}" onclick="selectCategory('الكل', event)">الكل</button>` +
-        cats.map(c => `<button class="cat-btn ${selectedCat === c ? 'active':''}" onclick="selectCategory('${c}', event)">${c}</button>`).join("");
+      let html = `<button class="cat-btn ${selectedCat === 'الكل' ? 'active':''}" data-cat="الكل" onclick="selectCategory('الكل')">الكل</button>`;
+      
+      cats.forEach(c => {
+        const isActive = (selectedCat === c) ? 'active' : '';
+        html += `<button class="cat-btn ${isActive}" data-cat="${escapeHtml(c)}" onclick="selectCategory('${escapeHtml(c)}')">${escapeHtml(c)}</button>`;
+      });
+
+      bar.innerHTML = html;
     }
 
-    window.selectCategory = (cat, event) => {
+    // دالة تصفية الأقسام المصححة لتعمل مباشرة بنقرة واحدة
+    window.selectCategory = (cat) => {
       selectedCat = cat;
-      document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
-      if(event && event.currentTarget) {
-        event.currentTarget.classList.add("active");
-      }
+      document.querySelectorAll(".cat-btn").forEach(b => {
+        if(b.getAttribute("data-cat") === cat) {
+          b.classList.add("active");
+        } else {
+          b.classList.remove("active");
+        }
+      });
       renderProducts();
     };
 
@@ -409,7 +419,6 @@
       updateCartUI();
     };
 
-    // معالجة الواتساب المباشرة والمضمونة
     window.submitOrder = async () => {
       const name = document.getElementById("custName").value.trim();
       const phone = document.getElementById("custPhone").value.trim();
@@ -442,22 +451,15 @@
         msg += "التوصيل: " + currentFee + " ج\n";
         msg += "الإجمالي النهائي: " + grandTotal + " ج";
 
-        // تنظيف متقدم للرقم: استخراج الأرقام فقط
         let cleanPhone = whatsappNumber.replace(/[^0-9]/g, '');
-        
-        // إزالة أصفار البداية إن وجدت
         while(cleanPhone.startsWith('0')) {
           cleanPhone = cleanPhone.substring(1);
         }
-
-        // إدراج مفتاح مصر 20 في حال عدم وجوده
         if(!cleanPhone.startsWith('20')) {
           cleanPhone = '20' + cleanPhone;
         }
 
         const encodedMessage = encodeURIComponent(msg);
-        
-        // استخدام API المباشر لواتساب المضمون لجميع المتصفحات والهواتف
         const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodedMessage}`;
 
         cart = [];
