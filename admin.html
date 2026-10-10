@@ -25,7 +25,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 .form-group { margin-bottom: 15px; }
 .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
 .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-.product-row { display: flex; gap: 12px; align-items: center; border-bottom: 1px solid #eee; padding: 12px 0; }
+.product-row, .category-row { display: flex; gap: 12px; align-items: center; border-bottom: 1px solid #eee; padding: 12px 0; justify-content: space-between; }
 .product-row img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; background: #f0f0f0; }
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 15px; }
 .modal-card { background: #fff; border-radius: 12px; padding: 20px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; }
@@ -54,21 +54,40 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 
     <div class="admin-tabs">
       <button class="active" onclick="switchTab('pTab', this)">📦 المنتجات</button>
+      <button onclick="switchTab('catTab', this)">🏷️ إدارة الأقسام</button>
       <button onclick="switchTab('oTab', this)">📋 الطلبات</button>
       <button onclick="switchTab('dTab', this)">🛵 التوصيل</button>
-      <button onclick="switchTab('sTab', this)">⚙️ إعدادات المتجر والأقسام</button>
+      <button onclick="switchTab('sTab', this)">⚙️ إعدادات المتجر</button>
       <button onclick="switchTab('rTab', this)">📊 التقارير</button>
     </div>
 
+    <!-- 1. المنتجات -->
     <div id="pTab" class="tab-section active">
       <div class="card"><button class="btn btn-success" onclick="openModal()">➕ إضافة منتج جديد</button></div>
       <div class="card"><h2>قائمة المنتجات</h2><div id="productsContainer">جاري التحميل...</div></div>
     </div>
 
+    <!-- 2. إدارة الأقسام الحصرية -->
+    <div id="catTab" class="tab-section">
+      <div class="card">
+        <h2>➕ إضافة قسم جديد</h2>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+          <input type="text" id="newCatName" placeholder="اسم القسم الجديد (مثال: الشوكولاتة)" style="flex:1; padding:10px; border:1px solid #ccc; border-radius:6px;">
+          <button class="btn btn-success" onclick="addNewCategory()">إضافة القسم</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>🏷️ الأقسام المتاحة حالياً</h2>
+        <div id="categoriesListContainer">جاري التحميل...</div>
+      </div>
+    </div>
+
+    <!-- 3. الطلبات -->
     <div id="oTab" class="tab-section">
       <div class="card"><h2>الطلبات الواردة</h2><div id="ordersContainer">جاري التحميل...</div></div>
     </div>
 
+    <!-- 4. التوصيل -->
     <div id="dTab" class="tab-section">
       <div class="card">
         <h2>🛵 مناطق التوصيل</h2>
@@ -81,19 +100,16 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       </div>
     </div>
 
+    <!-- 5. الإعدادات -->
     <div id="sTab" class="tab-section">
       <div class="card">
-        <h2>⚙️ إدارة الأقسام والإعدادات العامة</h2>
+        <h2>⚙️ الإعدادات العامة</h2>
         <div class="form-group"><label>رقم الواتساب لاستقبال الطلبات:</label><input type="text" id="whatsappInput"></div>
-        <div class="form-group">
-          <label>أقسام المتجر الرئيسية (افصل بين كل قسم وآخر بفاصلة ,):</label>
-          <input type="text" id="categoriesInput" placeholder="حلويات, مكسرات, مشروبات, فواكه مجففة">
-          <small style="color:#666; font-size:12px; display:block; margin-top:4px;">يمكنك إضافة أو حذف أي قسم هنا مع الفصل بفاصلة عادية.</small>
-        </div>
-        <button class="btn btn-primary" id="saveSettingsBtn">حفظ الأقسام والإعدادات</button>
+        <button class="btn btn-primary" id="saveSettingsBtn">حفظ الإعدادات</button>
       </div>
     </div>
 
+    <!-- 6. التقارير -->
     <div id="rTab" class="tab-section">
       <div class="card"><h2>📊 الإحصائيات العامة</h2><div id="reportsContainer">جاري الحساب...</div></div>
     </div>
@@ -108,11 +124,12 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     <h3 id="modalTitle">إضافة منتج</h3>
     <input type="hidden" id="editId">
     <div class="form-group"><label>اسم المنتج *</label><input type="text" id="pName"></div>
+    
     <div class="form-group">
       <label>القسم *</label>
-      <input type="text" id="pCategoryInput" list="categoriesList" placeholder="اكتب اسم القسم أو اختره من القائمة">
-      <datalist id="categoriesList"></datalist>
+      <select id="pCategorySelect"></select>
     </div>
+
     <div class="form-group">
       <label>نوع البيع *</label>
       <select id="pSaleType" onchange="togglePricing()">
@@ -166,7 +183,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  let products = [], orders = [], categories = ["حلويات", "مكسرات", "مشروبات"];
+  let products = [], orders = [], categoriesList = [];
 
   document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("adminEmail").value.trim();
@@ -196,7 +213,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
   function initListeners() {
     onSnapshot(collection(db, "products"), snap => {
       products = []; snap.forEach(d => products.push({ id: d.id, ...d.data() }));
-      renderProducts(); renderReports(); updateDataList();
+      renderProducts(); renderReports();
     });
 
     onSnapshot(collection(db, "orders"), snap => {
@@ -208,16 +225,97 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       if(snap.exists()){
         const data = snap.data();
         if(data.whatsappNumber) document.getElementById("whatsappInput").value = data.whatsappNumber;
-        if(data.categories) {
-          categories = Array.isArray(data.categories) ? data.categories : data.categories.split(",").map(c=>c.trim());
-          document.getElementById("categoriesInput").value = categories.join(", ");
-          updateDataList();
+        if(data.categoriesList) {
+          categoriesList = data.categoriesList;
+        } else if(data.categories) {
+          categoriesList = Array.isArray(data.categories) ? data.categories.map(c=>({ name: c, hidden: false })) : [];
         }
+        renderCategoriesAdmin();
+        updateCategorySelectOptions();
         if(data.deliveryZones) renderZones(data.deliveryZones);
       }
     });
   }
 
+  // --- إدارة الأقسام ---
+  window.addNewCategory = async () => {
+    const input = document.getElementById("newCatName");
+    const name = input.value.trim();
+    if(!name) return alert("يرجى إدخال اسم القسم");
+
+    if(categoriesList.some(c => c.name === name)) return alert("هذا القسم موجود بالفعل");
+
+    categoriesList.push({ name: name, hidden: false });
+    await saveCategoriesToFirebase();
+    input.value = "";
+  };
+
+  window.editCategoryName = async (index) => {
+    const current = categoriesList[index].name;
+    const newName = prompt("تعديل اسم القسم:", current);
+    if(newName && newName.trim() !== "" && newName !== current) {
+      const oldName = categoriesList[index].name;
+      categoriesList[index].name = newName.trim();
+      
+      // تحديث اسم القسم في المنتجات المربوطة به تلقائياً
+      products.forEach(async (p) => {
+        if(p.category === oldName) {
+          await updateDoc(doc(db, "products", p.id), { category: newName.trim() });
+        }
+      });
+
+      await saveCategoriesToFirebase();
+    }
+  };
+
+  window.toggleCategoryHide = async (index) => {
+    categoriesList[index].hidden = !categoriesList[index].hidden;
+    await saveCategoriesToFirebase();
+  };
+
+  window.deleteCategory = async (index) => {
+    if(confirm(`هل أنت تأكد من حذف قسم "${categoriesList[index].name}"؟`)) {
+      categoriesList.splice(index, 1);
+      await saveCategoriesToFirebase();
+    }
+  };
+
+  async function saveCategoriesToFirebase() {
+    const storeRef = doc(db, "settings", "store");
+    const catNamesOnly = categoriesList.filter(c => !c.hidden).map(c => c.name);
+    await setDoc(storeRef, { categoriesList: categoriesList, categories: catNamesOnly }, { merge: true });
+  }
+
+  function renderCategoriesAdmin() {
+    const container = document.getElementById("categoriesListContainer");
+    if(!categoriesList.length) {
+      container.innerHTML = "<p>لا توجد أقسام مسجلة حتى الآن.</p>";
+      return;
+    }
+
+    container.innerHTML = categoriesList.map((cat, idx) => `
+      <div class="category-row">
+        <div>
+          <strong>📌 ${escapeHtml(cat.name)}</strong>
+          <small style="margin-right:10px; color:${cat.hidden ? '#dc3545' : '#198754'}; font-weight:bold;">
+            ${cat.hidden ? '🔴 مخفي من المتجر' : '🟢 ظاهر في المتجر'}
+          </small>
+        </div>
+        <div>
+          <button class="btn btn-warning" onclick="editCategoryName(${idx})">✏️ تعديل</button>
+          <button class="btn btn-secondary" onclick="toggleCategoryHide(${idx})">${cat.hidden ? '👁️ إظهار' : '🚫 إخفاء'}</button>
+          <button class="btn btn-danger" onclick="deleteCategory(${idx})">🗑️ حذف</button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function updateCategorySelectOptions() {
+    const select = document.getElementById("pCategorySelect");
+    select.innerHTML = categoriesList.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)} ${c.hidden ? '(مخفي)' : ''}</option>`).join("");
+  }
+
+  // --- إدارة المنتجات والطلبات ---
   function renderProducts() {
     const c = document.getElementById("productsContainer");
     if(!products.length) return c.innerHTML = "<p>لا توجد منتجات مسجلة.</p>";
@@ -256,6 +354,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
   function renderReports() {
     document.getElementById("reportsContainer").innerHTML = `
       <p>📦 إجمالي المنتجات: <strong>${products.length}</strong></p>
+      <p>🏷️ إجمالي الأقسام: <strong>${categoriesList.length}</strong></p>
       <p>📋 إجمالي الطلبات: <strong>${orders.length}</strong></p>
       <p>💰 إجمالي المبيعات: <strong>${orders.reduce((sum,o)=>sum+(o.grandTotal||0),0)} جنيه</strong></p>
     `;
@@ -274,20 +373,13 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     document.getElementById("unitFields").style.display = type === 'unit' ? 'block' : 'none';
   };
 
-  window.openModal = () => { updateDataList(); document.getElementById("productModal").style.display = "flex"; };
+  window.openModal = () => { updateCategorySelectOptions(); document.getElementById("productModal").style.display = "flex"; };
   window.closeModal = () => document.getElementById("productModal").style.display = "none";
-
-  function updateDataList() {
-    const list = document.getElementById("categoriesList");
-    let set = new Set(categories);
-    products.forEach(p => { if(p.category) set.add(p.category.trim()); });
-    list.innerHTML = Array.from(set).map(c=>`<option value="${c}">`).join("");
-  }
 
   document.getElementById("saveProductBtn").addEventListener("click", async () => {
     const id = document.getElementById("editId").value;
     const name = document.getElementById("pName").value.trim();
-    const category = document.getElementById("pCategoryInput").value.trim() || "عام";
+    const category = document.getElementById("pCategorySelect").value;
     const saleType = document.getElementById("pSaleType").value;
     const description = document.getElementById("pDesc").value.trim();
     const image = document.getElementById("pImage").value.trim();
@@ -317,7 +409,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     openModal();
     document.getElementById("editId").value = id;
     document.getElementById("pName").value = p.name || "";
-    document.getElementById("pCategoryInput").value = p.category || "";
+    document.getElementById("pCategorySelect").value = p.category || "";
     document.getElementById("pSaleType").value = p.saleType || "weight";
     document.getElementById("pKilo").value = p.pricing?.kilo || p.price || "";
     document.getElementById("pHalf").value = p.pricing?.half || "";
@@ -366,9 +458,8 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 
   document.getElementById("saveSettingsBtn").addEventListener("click", async () => {
     const whatsappNumber = document.getElementById("whatsappInput").value.trim();
-    const categoriesInput = document.getElementById("categoriesInput").value.split(",").map(c=>c.trim()).filter(Boolean);
-    await setDoc(doc(db, "settings", "store"), { whatsappNumber, categories: categoriesInput }, { merge: true });
-    alert("تم حفظ الأقسام والإعدادات بنجاح");
+    await setDoc(doc(db, "settings", "store"), { whatsappNumber }, { merge: true });
+    alert("تم حفظ الإعدادات بنجاح");
   });
 
   function escapeHtml(s) { return String(s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
