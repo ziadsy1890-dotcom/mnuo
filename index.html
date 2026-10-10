@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title id="pageTitle">بيستاش دي ألب | Pistache D'Alep</title>
   <link id="dynamicFontLink" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap">
-  <!-- FontAwesome for Social Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style id="themeStyles">
@@ -13,14 +12,14 @@
       --primary: #11261d;
       --accent: #d4af37;
       --bg-body: #11261d;
-      --card-bg: rgba(255, 255, 255, 0.92);
+      --card-bg: rgba(255, 255, 255, 0.94);
       --card-text: #0f172a;
       
       --card-padding: 14px;
       --card-img-size: 100px;
       --card-title-size: 16px;
       
-      --cat-bg: rgba(255, 255, 255, 0.85);
+      --cat-bg: rgba(255, 255, 255, 0.9);
       --cat-text: #0f172a;
       --cat-active-bg: #11261d;
       --cat-active-text: #ffffff;
@@ -29,10 +28,10 @@
 
       --text-main: #0f172a;
       --text-muted: #475569;
-      --border: rgba(255, 255, 255, 0.4);
+      --border: rgba(17, 38, 29, 0.15);
       --radius: 18px;
       --font-family: 'Tajawal', sans-serif;
-      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
       --menu-bg-image: none;
       --menu-bg-color: #11261d;
     }
@@ -52,26 +51,18 @@
       min-height: 100vh;
     }
 
-    /* طبقة تظليل جمالية لضمان قراءة المنيو فوق أي صورة */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.35);
-      backdrop-filter: blur(3px);
-      z-index: -1;
-    }
+    /* تم إزالة طبقة التظليل والغطاء الشفاف نهائياً لتظهر الصورة بحيويتها الأصلية */
 
     header {
-      background: rgba(17, 38, 29, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(17, 38, 29, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       color: #fff;
       padding: 14px 16px;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
       border-bottom: 2px solid var(--accent);
     }
     .header-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
@@ -95,23 +86,21 @@
 
     .container { max-width: 1100px; margin: 20px auto; padding: 0 14px; }
 
-    /* الأقسام العائمة */
     .categories-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
     .categories-bar::-webkit-scrollbar { display: none; }
     .cat-btn {
       background: var(--cat-bg); 
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(8px);
       padding: var(--cat-padding); border-radius: 30px;
-      border: 1.5px solid rgba(255, 255, 255, 0.6); white-space: nowrap; font-size: var(--cat-font-size); font-weight: 800;
+      border: 1.5px solid rgba(255, 255, 255, 0.7); white-space: nowrap; font-size: var(--cat-font-size); font-weight: 800;
       cursor: pointer; color: var(--cat-text); transition: all 0.25s ease;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
     .cat-btn.active, .cat-btn:hover { 
       background: var(--cat-active-bg); color: var(--cat-active-text); border-color: var(--accent); 
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); 
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); 
     }
 
-    /* كروت المنتجات العائمة بأسلوب Glassmorphism */
     .products-grid { 
       display: grid; 
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
@@ -120,14 +109,14 @@
     
     .product-card {
       background: var(--card-bg); 
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       border-radius: var(--radius); 
-      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      border: 1.5px solid rgba(255, 255, 255, 0.7);
       display: flex; padding: var(--card-padding); gap: 14px; align-items: center; box-shadow: var(--card-shadow);
       color: var(--card-text); transition: all 0.25s ease; position: relative; overflow: hidden; width: 100%;
     }
-    .product-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25); }
+    .product-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); }
     .product-card img { width: var(--card-img-size); height: var(--card-img-size); object-fit: cover; border-radius: 14px; background: #e2e8f0; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
     
     .product-info { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
@@ -169,7 +158,6 @@
     }
     .cart-total-text { font-size: 9px; font-weight: 900; margin-top: 3px; color: #f8fafc; white-space: nowrap; }
 
-    /* Modals & Drawers */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.7); z-index: 1000; display: none; justify-content: flex-end; backdrop-filter: blur(6px); }
     .modal-drawer { background: #fff; width: 100%; max-width: 420px; height: 100%; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.3); }
     .drawer-header { padding: 18px; background: var(--primary); color: #fff; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); }
@@ -182,7 +170,6 @@
     .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 13px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 13.5px; outline: none; font-weight: 700; }
     .btn-submit { width: 100%; padding: 14px; background: #10b981; color: #fff; font-weight: 900; border: none; border-radius: 12px; cursor: pointer; font-size: 15px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
 
-    /* Social Media Modal Styling */
     .social-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.7); z-index: 2000; display: none; justify-content: center; align-items: center; padding: 16px; backdrop-filter: blur(6px); }
     .social-modal-card { background: #fff; border-radius: 20px; padding: 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25); border: 2px solid var(--accent); animation: popUp 0.3s ease; }
     @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -196,7 +183,6 @@
     .btn-tiktok { background: #000000; border: 1px solid #333; }
   </style>
 
-  <!-- تطبيق الثيم المخبأ فوراً قبل تحميل الصفحة لمنع الفلاش -->
   <script>
     (function() {
       try {
@@ -257,7 +243,6 @@
     <div class="cart-total-text" id="cartTotal">0 ج</div>
   </div>
 
-  <!-- Social Media Selection Modal -->
   <div class="social-modal-overlay" id="socialModal">
     <div class="social-modal-card">
       <h3 style="font-weight: 900; color: var(--primary); font-size: 20px; margin-bottom: 5px;">📞 تواصل معنا</h3>
@@ -267,7 +252,6 @@
     </div>
   </div>
 
-  <!-- Cart Modal -->
   <div class="modal-overlay" id="cartModal">
     <div class="modal-drawer">
       <div class="drawer-header">
@@ -284,7 +268,6 @@
     </div>
   </div>
 
-  <!-- Checkout Modal -->
   <div class="modal-overlay" id="checkoutModal">
     <div class="modal-drawer">
       <div class="drawer-header">
