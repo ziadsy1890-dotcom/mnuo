@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة التحكم - فستق حلب</title>
+<title>لوحة التحكم - المتجر</title>
 <style>
 :root { --primary: #1e3d2f; --border-color: #e5e0d8; --text-dark: #1c1c1c; }
 body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 0; }
@@ -50,14 +50,14 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
   <!-- Dashboard Panel -->
   <div id="dashboardPanel" style="display: none;">
     <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
-      <h1 style="margin: 0; color: var(--primary); font-size: 22px;">🍰 لوحة تحكم فستق حلب</h1>
+      <h1 style="margin: 0; color: var(--primary); font-size: 22px;" id="dashboardTitle">🍰 لوحة التحكم</h1>
       <button class="btn btn-danger" id="logoutBtn">تسجيل الخروج</button>
     </div>
 
     <div class="admin-tabs">
       <button class="active" onclick="switchTab('pTab', this)">📦 المنتجات</button>
-      <button onclick="switchTab('catTab', this)">🏷️ إدارة الأقسام</button>
-      <button onclick="switchTab('themeTab', this)">🎨 تخصيص المظهر</button>
+      <button onclick="switchTab('catTab', this)">🏷️ الأقسام</button>
+      <button onclick="switchTab('themeTab', this)">🎨 المظهر والخلفية</button>
       <button onclick="switchTab('oTab', this)">📋 الطلبات</button>
       <button onclick="switchTab('dTab', this)">🛵 التوصيل</button>
       <button onclick="switchTab('sTab', this)">⚙️ الإعدادات</button>
@@ -85,20 +85,32 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       </div>
     </div>
 
-    <!-- 3. تخصيص المظهر المباشر -->
+    <!-- 3. تخصيص المظهر والخلفية واسم المتجر -->
     <div id="themeTab" class="tab-section">
       <div class="card">
-        <h2>🎨 تخصيص ألوان وشكل المتجر</h2>
+        <h2>🎨 تخصيص اسم المظهر والخلفية</h2>
+        
+        <div class="form-group">
+          <label>اسم المتجر (الذي يظهر في أعلى الشعار):</label>
+          <input type="text" id="storeNameInput" placeholder="مثال: فستق حلب">
+        </div>
+
+        <div class="form-group">
+          <label>رابط صورة خلفية المنيو (Menu Background Image URL):</label>
+          <input type="url" id="menuBgImageInput" placeholder="ضع رابط الصورة هنا (اتركه فارغاً للاكتفاء باللون)">
+          <small style="color: #666;">يمكنك وضع رابط أي صورة تريدها لتظهر كخلفية لصفحة المتجر.</small>
+        </div>
+
         <div class="grid-2">
           <div class="form-group">
-            <label>اللون الرئيسي (الهيدر والأزرار):</label>
+            <label>اللون الرئيسي:</label>
             <div class="color-picker-group">
               <input type="color" id="primaryColorInput" value="#1e3d2f">
               <span id="primaryVal">#1e3d2f</span>
             </div>
           </div>
           <div class="form-group">
-            <label>اللون الفرعي (الشعار والتنبيهات):</label>
+            <label>اللون الفرعي:</label>
             <div class="color-picker-group">
               <input type="color" id="accentColorInput" value="#c5a059">
               <span id="accentVal">#c5a059</span>
@@ -108,7 +120,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 
         <div class="grid-2">
           <div class="form-group">
-            <label>لون خلفية المتجر:</label>
+            <label>لون الخلفية (الافتراضي أو خلفية لونية مع الصورة):</label>
             <div class="color-picker-group">
               <input type="color" id="bgColorInput" value="#f4f5f7">
               <span id="bgVal">#f4f5f7</span>
@@ -117,10 +129,10 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
           <div class="form-group">
             <label>نوع الخط العربي:</label>
             <select id="fontFamilySelect">
-              <option value="Tajawal">Tajawal (تجوال - عصري)</option>
-              <option value="Cairo">Cairo (القاهرة - واضح وحاد)</option>
-              <option value="Almarai">Almarai (المراعي - ناعم وبسيط)</option>
-              <option value="Readex Pro">Readex Pro (ريدكس - تقني مريح)</option>
+              <option value="Tajawal">Tajawal (تجوال)</option>
+              <option value="Cairo">Cairo (القاهرة)</option>
+              <option value="Almarai">Almarai (المراعي)</option>
+              <option value="Readex Pro">Readex Pro (ريدكس)</option>
             </select>
           </div>
         </div>
@@ -133,14 +145,14 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
           <div class="form-group">
             <label>بروز ظلال بطاقة المنتج:</label>
             <select id="cardShadowSelect">
-              <option value="soft">خفيف ناعم (مستحسن)</option>
+              <option value="soft">خفيف ناعم</option>
               <option value="strong">قوي وبارز</option>
-              <option value="none">بدون ظلال (مسطح)</option>
+              <option value="none">بدون ظلال</option>
             </select>
           </div>
         </div>
 
-        <button class="btn btn-success" style="width: 100%; padding: 12px; margin-top: 10px;" id="saveThemeBtn">💾 حفظ وتطبيق المظهر فوراً</button>
+        <button class="btn btn-success" style="width: 100%; padding: 12px; margin-top: 10px;" id="saveThemeBtn">💾 حفظ وتطبيق التغييرات فوراً</button>
       </div>
     </div>
 
@@ -166,7 +178,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     <div id="sTab" class="tab-section">
       <div class="card">
         <h2>⚙️ الإعدادات العامة</h2>
-        <div class="form-group"><label>رقم الواتساب لاستقبال الطلبات:</label><input type="text" id="whatsappInput"></div>
+        <div class="form-group"><label>رقم الواتساب (صيغة لاتي مثل 00201140653708):</label><input type="text" id="whatsappInput"></div>
         <button class="btn btn-primary" id="saveSettingsBtn">حفظ الإعدادات</button>
       </div>
     </div>
@@ -287,6 +299,10 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       if(snap.exists()){
         const data = snap.data();
         if(data.whatsappNumber) document.getElementById("whatsappInput").value = data.whatsappNumber;
+        if(data.storeName) {
+          document.getElementById("storeNameInput").value = data.storeName;
+          document.getElementById("dashboardTitle").innerText = "🍰 " + data.storeName;
+        }
         if(data.categoriesList) {
           categoriesList = data.categoriesList;
         } else if(data.categories) {
@@ -296,7 +312,6 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
         updateCategorySelectOptions();
         if(data.deliveryZones) renderZones(data.deliveryZones);
 
-        // تعبئة إعدادات المظهر المحددة سابقاً
         if(data.theme) {
           document.getElementById("primaryColorInput").value = data.theme.primaryColor || '#1e3d2f';
           document.getElementById("primaryVal").innerText = data.theme.primaryColor || '#1e3d2f';
@@ -304,6 +319,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
           document.getElementById("accentVal").innerText = data.theme.accentColor || '#c5a059';
           document.getElementById("bgColorInput").value = data.theme.bgColor || '#f4f5f7';
           document.getElementById("bgVal").innerText = data.theme.bgColor || '#f4f5f7';
+          document.getElementById("menuBgImageInput").value = data.theme.menuBgImage || '';
           document.getElementById("fontFamilySelect").value = data.theme.fontFamily || 'Tajawal';
           document.getElementById("cardRadiusInput").value = data.theme.cardRadius || 12;
           document.getElementById("cardShadowSelect").value = data.theme.cardShadow || 'soft';
@@ -312,25 +328,25 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     });
   }
 
-  // ربط ملتقط الألوان بالنصوص الحية
   document.getElementById("primaryColorInput").addEventListener("input", (e) => document.getElementById("primaryVal").innerText = e.target.value);
   document.getElementById("accentColorInput").addEventListener("input", (e) => document.getElementById("accentVal").innerText = e.target.value);
   document.getElementById("bgColorInput").addEventListener("input", (e) => document.getElementById("bgVal").innerText = e.target.value);
 
-  // حفظ المظهر في Firebase
   document.getElementById("saveThemeBtn").addEventListener("click", async () => {
+    const storeName = document.getElementById("storeNameInput").value.trim() || "فستق حلب";
     const theme = {
       primaryColor: document.getElementById("primaryColorInput").value,
       accentColor: document.getElementById("accentColorInput").value,
       bgColor: document.getElementById("bgColorInput").value,
+      menuBgImage: document.getElementById("menuBgImageInput").value.trim(),
       fontFamily: document.getElementById("fontFamilySelect").value,
       cardRadius: Number(document.getElementById("cardRadiusInput").value),
       cardShadow: document.getElementById("cardShadowSelect").value
     };
 
     const storeRef = doc(db, "settings", "store");
-    await setDoc(storeRef, { theme }, { merge: true });
-    alert("✨ تم حفظ المظهر وتطبيقه على المتجر بنجاح!");
+    await setDoc(storeRef, { storeName, theme }, { merge: true });
+    alert("✨ تم حفظ اسم المتجر والمظهر بنجاح!");
   });
 
   window.addNewCategory = async () => {
@@ -510,6 +526,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       const uPrice = Number(document.getElementById("pUnitPrice").value);
       if(!uPrice) {
         saveBtn.disabled = false; saveBtn.innerText = "حفظ المنتج";
+        return alert("حفظ المنتج");
         return alert("يرجى إدخال سعر الوحدة!");
       }
       payload.pricing = { unitPrice: uPrice, unitLabel: document.getElementById("pUnitLabel").value.trim()||"علبة" };
