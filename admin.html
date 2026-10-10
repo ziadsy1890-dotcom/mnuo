@@ -16,7 +16,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 .tab-section.active { display: block; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 @media(max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
-.btn { padding: 10px 16px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer; color: #fff; text-align: center; }
+.btn { padding: 8px 12px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer; color: #fff; text-align: center; }
 .btn-primary { background: var(--primary); }
 .btn-success { background: #198754; }
 .btn-danger { background: #dc3545; }
@@ -54,7 +54,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 
     <div class="admin-tabs">
       <button class="active" onclick="switchTab('pTab', this)">📦 المنتجات</button>
-      <button onclick="switchTab('catTab', this)">🏷️ إدارة الأقسام</button>
+      <button onclick="switchTab('catTab', this)">🏷️ إدارة الأقسام وتنسيقها</button>
       <button onclick="switchTab('oTab', this)">📋 الطلبات</button>
       <button onclick="switchTab('dTab', this)">🛵 التوصيل</button>
       <button onclick="switchTab('sTab', this)">⚙️ إعدادات المتجر</button>
@@ -67,17 +67,18 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       <div class="card"><h2>قائمة المنتجات</h2><div id="productsContainer">جاري التحميل...</div></div>
     </div>
 
-    <!-- 2. إدارة الأقسام -->
+    <!-- 2. إدارة وترتيب الأقسام -->
     <div id="catTab" class="tab-section">
       <div class="card">
         <h2>➕ إضافة قسم جديد</h2>
         <div style="display: flex; gap: 10px; margin-top: 10px;">
-          <input type="text" id="newCatName" placeholder="اسم القسم الجديد..." style="flex:1; padding:10px; border:1px solid #ccc; border-radius:6px;">
+          <input type="text" id="newCatName" placeholder="اسم القسم الجديد (مثال: الأكثر مبيعاً)" style="flex:1; padding:10px; border:1px solid #ccc; border-radius:6px;">
           <button class="btn btn-success" onclick="addNewCategory()">إضافة القسم</button>
         </div>
       </div>
       <div class="card">
-        <h2>🏷️ الأقسام المتاحة حالياً</h2>
+        <h2>🏷️ ترتيب الأقسام (حدد موقع كل قسم)</h2>
+        <p style="font-size:12px; color:#666; margin-bottom:10px;">القسم الأول في الأعلى هو الذي سيظهر أولاً في متجرك وتظهر منتجاته أولاً للزبائن.</p>
         <div id="categoriesListContainer">جاري التحميل...</div>
       </div>
     </div>
@@ -237,6 +238,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     });
   }
 
+  // --- إدارة وترتيب الأقسام ---
   window.addNewCategory = async () => {
     const input = document.getElementById("newCatName");
     const name = input.value.trim();
@@ -247,6 +249,17 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     categoriesList.push({ name: name, hidden: false });
     await saveCategoriesToFirebase();
     input.value = "";
+  };
+
+  window.moveCategory = async (index, direction) => {
+    const newIndex = index + direction;
+    if(newIndex < 0 || newIndex >= categoriesList.length) return;
+
+    const temp = categoriesList[index];
+    categoriesList[index] = categoriesList[newIndex];
+    categoriesList[newIndex] = temp;
+
+    await saveCategoriesToFirebase();
   };
 
   window.editCategoryName = async (index) => {
@@ -294,12 +307,14 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     container.innerHTML = categoriesList.map((cat, idx) => `
       <div class="category-row">
         <div>
-          <strong>📌 ${escapeHtml(cat.name)}</strong>
+          <strong>📌 ${idx + 1}. ${escapeHtml(cat.name)}</strong>
           <small style="margin-right:10px; color:${cat.hidden ? '#dc3545' : '#198754'}; font-weight:bold;">
-            ${cat.hidden ? '🔴 مخفي من المتجر' : '🟢 ظاهر في المتجر'}
+            ${cat.hidden ? '🔴 مخفي' : '🟢 ظاهر'}
           </small>
         </div>
-        <div>
+        <div style="display:flex; gap:4px;">
+          <button class="btn btn-secondary" onclick="moveCategory(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>⬆️ أعلى</button>
+          <button class="btn btn-secondary" onclick="moveCategory(${idx}, 1)" ${idx === categoriesList.length - 1 ? 'disabled' : ''}>⬇️ أسفل</button>
           <button class="btn btn-warning" onclick="editCategoryName(${idx})">✏️ تعديل</button>
           <button class="btn btn-secondary" onclick="toggleCategoryHide(${idx})">${cat.hidden ? '👁️ إظهار' : '🚫 إخفاء'}</button>
           <button class="btn btn-danger" onclick="deleteCategory(${idx})">🗑️ حذف</button>
