@@ -483,8 +483,8 @@
         return; 
       }
 
-      // قراءة الصورة الافتراضية الديناميكية من إعدادات المتجر
-      const fallbackImg = storeSettings.defaultImage || "https://i.ibb.co/rGzLxC3Y/file-000000005c888210940dfd275750a5db.png";
+      // اعتماد رابط الصورة من إعدادات المتجر في لوحة التحكم حصراً
+      const fallbackImg = storeSettings.defaultImage || "";
 
       grid.innerHTML = filtered.map(p => {
         let optionsHTML = '', defaultPrice = p.price || 0;
