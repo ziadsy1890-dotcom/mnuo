@@ -5,33 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>لوحة التحكم - المتجر</title>
 <style>
-:root { --primary: #1e3d2f; --border-color: #e5e0d8; --text-dark: #1c1c1c; }
-body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 0; }
-.container { max-width: 950px; margin: 20px auto; padding: 0 15px; }
-.card { background: #ffffff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid var(--border-color); }
-.admin-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color); }
-.admin-tabs button { background: #e9ecef; color: var(--text-dark); padding: 10px 18px; border-radius: 20px; font-weight: 700; white-space: nowrap; border: none; cursor: pointer; }
+:root { --primary: #122b20; --border-color: #e2e8f0; --text-dark: #0f172a; }
+body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; padding: 0; color: var(--text-dark); }
+.container { max-width: 980px; margin: 25px auto; padding: 0 16px; }
+.card { background: #ffffff; border-radius: 16px; padding: 22px; margin-bottom: 22px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+.admin-tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 22px; border-bottom: 2px solid var(--border-color); }
+.admin-tabs button { background: #f1f5f9; color: var(--text-dark); padding: 11px 20px; border-radius: 30px; font-weight: 800; white-space: nowrap; border: none; cursor: pointer; transition: all 0.2s; }
 .admin-tabs button.active { background: var(--primary); color: #ffffff; }
 .tab-section { display: none; }
 .tab-section.active { display: block; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 @media(max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
-.btn { padding: 8px 12px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer; color: #fff; text-align: center; }
+.btn { padding: 10px 16px; border-radius: 10px; font-weight: 800; border: none; cursor: pointer; color: #fff; text-align: center; }
 .btn-primary { background: var(--primary); }
-.btn-success { background: #198754; }
-.btn-danger { background: #dc3545; }
-.btn-warning { background: #ffc107; color: #000; }
-.btn-secondary { background: #6c757d; }
-.form-group { margin-bottom: 15px; }
-.form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-.color-picker-group { display: flex; align-items: center; gap: 10px; }
-.color-picker-group input[type="color"] { width: 45px; height: 38px; border: none; cursor: pointer; background: transparent; }
-.product-row, .category-row { display: flex; gap: 12px; align-items: center; border-bottom: 1px solid #eee; padding: 12px 0; justify-content: space-between; }
-.product-row img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; background: #f0f0f0; }
-.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 15px; }
-.modal-card { background: #fff; border-radius: 12px; padding: 20px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; }
-.order-box { border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; margin-bottom: 15px; background: #fff; }
+.btn-success { background: #10b981; }
+.btn-danger { background: #ef4444; }
+.btn-warning { background: #f59e0b; color: #fff; }
+.btn-secondary { background: #64748b; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 13.5px; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; outline: none; }
+.color-picker-group { display: flex; align-items: center; gap: 12px; }
+.color-picker-group input[type="color"] { width: 48px; height: 42px; border: none; cursor: pointer; background: transparent; }
+.product-row, .category-row { display: flex; gap: 14px; align-items: center; border-bottom: 1px solid #f1f5f9; padding: 14px 0; justify-content: space-between; }
+.product-row img { width: 75px; height: 75px; object-fit: cover; border-radius: 12px; background: #f1f5f9; }
+
+.preset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.preset-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.25s; background: #fff; }
+.preset-card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+.preset-colors { display: flex; height: 18px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
+.preset-colors div { flex: 1; height: 100%; }
+
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 16px; backdrop-filter: blur(5px); }
+.modal-card { background: #fff; border-radius: 16px; padding: 22px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; }
+.order-box { border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 16px; background: #fff; }
 </style>
 </head>
 <body>
@@ -40,24 +47,24 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 
   <!-- Auth Panel -->
   <div id="authPanel" class="card" style="max-width: 400px; margin: 80px auto;">
-    <h2 style="text-align: center; margin-bottom: 10px;">🔐 تسجيل الدخول للإدارة</h2>
+    <h2 style="text-align: center; margin-bottom: 12px; font-weight:800;">🔐 تسجيل الدخول للإدارة</h2>
     <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="adminEmail"></div>
     <div class="form-group"><label>كلمة المرور</label><input type="password" id="adminPassword"></div>
     <button class="btn btn-primary" style="width: 100%;" id="loginBtn">تسجيل الدخول</button>
-    <p id="authError" style="color: #dc3545; font-size: 13px; text-align: center; margin-top: 10px; display: none;"></p>
+    <p id="authError" style="color: #ef4444; font-size: 13px; text-align: center; margin-top: 10px; display: none; font-weight:700;"></p>
   </div>
 
   <!-- Dashboard Panel -->
   <div id="dashboardPanel" style="display: none;">
     <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
-      <h1 style="margin: 0; color: var(--primary); font-size: 22px;" id="dashboardTitle">🍰 لوحة التحكم</h1>
+      <h1 style="margin: 0; color: var(--primary); font-size: 22px; font-weight:900;" id="dashboardTitle">🍰 لوحة التحكم</h1>
       <button class="btn btn-danger" id="logoutBtn">تسجيل الخروج</button>
     </div>
 
     <div class="admin-tabs">
       <button class="active" onclick="switchTab('pTab', this)">📦 المنتجات</button>
       <button onclick="switchTab('catTab', this)">🏷️ الأقسام</button>
-      <button onclick="switchTab('themeTab', this)">🎨 المظهر والخلفية</button>
+      <button onclick="switchTab('themeTab', this)">🎨 الثيمات والتصميم</button>
       <button onclick="switchTab('oTab', this)">📋 الطلبات</button>
       <button onclick="switchTab('dTab', this)">🛵 التوصيل</button>
       <button onclick="switchTab('sTab', this)">⚙️ الإعدادات</button>
@@ -85,74 +92,89 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       </div>
     </div>
 
-    <!-- 3. تخصيص المظهر والخلفية واسم المتجر -->
+    <!-- 3. ثيمات عالمية فاخرة بنقرة زر -->
     <div id="themeTab" class="tab-section">
       <div class="card">
-        <h2>🎨 تخصيص اسم المتجر والخلفية</h2>
+        <h2>💎 اختر ثيم عالمي فاخر (Ultra-Modern Presets)</h2>
+        <p style="font-size:12.5px; color:#64748b; margin-bottom:15px; font-weight:600;">اختر أحد التصاميم الجاهزة ليتم تطبيق الألوان والتنسيقات المتناسقة فوراً:</p>
+
+        <div class="preset-grid">
+          <div class="preset-card" onclick="applyPreset('#122b20', '#d4af37', '#f8faf9')">
+            <strong style="font-size:12.5px;">الزمرد والذهبي 👑</strong>
+            <div class="preset-colors"><div style="background:#122b20;"></div><div style="background:#d4af37;"></div><div style="background:#f8faf9;"></div></div>
+          </div>
+          <div class="preset-card" onclick="applyPreset('#701a75', '#f472b6', '#fdf4ff')">
+            <strong style="font-size:12.5px;">الوردي الفرنسي 🌸</strong>
+            <div class="preset-colors"><div style="background:#701a75;"></div><div style="background:#f472b6;"></div><div style="background:#fdf4ff;"></div></div>
+          </div>
+          <div class="preset-card" onclick="applyPreset('#0f172a', '#eab308', '#020617')">
+            <strong style="font-size:12.5px;">الأسود الملكي 🌙</strong>
+            <div class="preset-colors"><div style="background:#0f172a;"></div><div style="background:#eab308;"></div><div style="background:#020617;"></div></div>
+          </div>
+          <div class="preset-card" onclick="applyPreset('#451a03', '#f59e0b', '#fffbeb')">
+            <strong style="font-size:12.5px;">الكافيه الدافئ ☕</strong>
+            <div class="preset-colors"><div style="background:#451a03;"></div><div style="background:#f59e0b;"></div><div style="background:#fffbeb;"></div></div>
+          </div>
+        </div>
+
+        <hr style="margin:22px 0; border:none; border-top:1px solid #e2e8f0;">
+
+        <h2>✏️ تخصيص دقيق ومباشر</h2>
         
         <div class="form-group">
-          <label>اسم المتجر (الذي يظهر في أعلى الشعار):</label>
+          <label>اسم المتجر:</label>
           <input type="text" id="storeNameInput" placeholder="مثال: فستق حلب">
         </div>
 
         <div class="form-group">
-          <label>رابط صورة خلفية المنيو (Menu Background Image URL):</label>
-          <input type="url" id="menuBgImageInput" placeholder="ضع رابط الصورة هنا">
-          <small style="color: #666;">يمكنك استخدام رابط الصورة مباشرة أو رابط ImgBB مثل: https://i.ibb.co/C31M5pTr/IMG-20261007-WA0027.jpg</small>
+          <label>رفع صورة خلفية للمنيو من جهازك 🖼️:</label>
+          <input type="file" id="bgFileInput" accept="image/*" style="padding: 5px;">
+          <div id="fileStatus" style="font-size: 12px; color: #10b981; font-weight: bold; margin-top: 5px;"></div>
+        </div>
+
+        <div class="form-group">
+          <label>أو إدخال رابط الصورة بدلاً من الرفع:</label>
+          <input type="url" id="menuBgImageInput" placeholder="ضع رابط الصورة هنا إذا فضلت ذلك">
+          <button class="btn btn-secondary" style="margin-top: 6px; font-size: 11.5px;" onclick="clearBgImage()">🗑️ إزالة صورة الخلفية</button>
         </div>
 
         <div class="grid-2">
           <div class="form-group">
             <label>اللون الرئيسي:</label>
             <div class="color-picker-group">
-              <input type="color" id="primaryColorInput" value="#1e3d2f">
-              <span id="primaryVal">#1e3d2f</span>
+              <input type="color" id="primaryColorInput" value="#122b20">
+              <span id="primaryVal">#122b20</span>
             </div>
           </div>
           <div class="form-group">
             <label>اللون الفرعي:</label>
             <div class="color-picker-group">
-              <input type="color" id="accentColorInput" value="#c5a059">
-              <span id="accentVal">#c5a059</span>
+              <input type="color" id="accentColorInput" value="#d4af37">
+              <span id="accentVal">#d4af37</span>
             </div>
           </div>
         </div>
 
         <div class="grid-2">
           <div class="form-group">
-            <label>لون الخلفية (في حال عدم وجود صورة):</label>
+            <label>لون الخلفية (عند عدم وجود صورة):</label>
             <div class="color-picker-group">
-              <input type="color" id="bgColorInput" value="#f4f5f7">
-              <span id="bgVal">#f4f5f7</span>
+              <input type="color" id="bgColorInput" value="#f8faf9">
+              <span id="bgVal">#f8faf9</span>
             </div>
           </div>
           <div class="form-group">
             <label>نوع الخط العربي:</label>
             <select id="fontFamilySelect">
-              <option value="Tajawal">Tajawal (تجوال)</option>
-              <option value="Cairo">Cairo (القاهرة)</option>
-              <option value="Almarai">Almarai (المراعي)</option>
+              <option value="Tajawal">Tajawal (تجوال - عصري)</option>
+              <option value="Cairo">Cairo (القاهرة - واضح)</option>
+              <option value="Almarai">Almarai (المراعي - ناعم)</option>
               <option value="Readex Pro">Readex Pro (ريدكس)</option>
             </select>
           </div>
         </div>
 
-        <div class="grid-2">
-          <div class="form-group">
-            <label>تدوير حواف البطاقات (Pixels):</label>
-            <input type="number" id="cardRadiusInput" value="12" min="0" max="30">
-          </div>
-          <div class="form-group">
-            <label>بروز ظلال بطاقة المنتج:</label>
-            <select id="cardShadowSelect">
-              <option value="soft">خفيف ناعم</option>
-              <option value="strong">قوي وبارز</option>
-              <option value="none">بدون ظلال</option>
-            </select>
-          </div>
-        </div>
-
-        <button class="btn btn-success" style="width: 100%; padding: 12px; margin-top: 10px;" id="saveThemeBtn">💾 حفظ وتطبيق التغييرات فوراً</button>
+        <button class="btn btn-success" style="width: 100%; padding: 14px; margin-top: 10px; font-size:15px;" id="saveThemeBtn">💾 حفظ وتطبيق التغييرات فوراً</button>
       </div>
     </div>
 
@@ -257,7 +279,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  let products = [], orders = [], categoriesList = [];
+  let products = [], orders = [], categoriesList = [], uploadedBase64Image = "";
 
   document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("adminEmail").value.trim();
@@ -313,20 +335,52 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
         if(data.deliveryZones) renderZones(data.deliveryZones);
 
         if(data.theme) {
-          document.getElementById("primaryColorInput").value = data.theme.primaryColor || '#1e3d2f';
-          document.getElementById("primaryVal").innerText = data.theme.primaryColor || '#1e3d2f';
-          document.getElementById("accentColorInput").value = data.theme.accentColor || '#c5a059';
-          document.getElementById("accentVal").innerText = data.theme.accentColor || '#c5a059';
-          document.getElementById("bgColorInput").value = data.theme.bgColor || '#f4f5f7';
-          document.getElementById("bgVal").innerText = data.theme.bgColor || '#f4f5f7';
-          document.getElementById("menuBgImageInput").value = data.theme.menuBgImage || '';
+          document.getElementById("primaryColorInput").value = data.theme.primaryColor || '#122b20';
+          document.getElementById("primaryVal").innerText = data.theme.primaryColor || '#122b20';
+          document.getElementById("accentColorInput").value = data.theme.accentColor || '#d4af37';
+          document.getElementById("accentVal").innerText = data.theme.accentColor || '#d4af37';
+          document.getElementById("bgColorInput").value = data.theme.bgColor || '#f8faf9';
+          document.getElementById("bgVal").innerText = data.theme.bgColor || '#f8faf9';
+          
+          if(data.theme.menuBgImage && !data.theme.menuBgImage.startsWith('data:image')) {
+            document.getElementById("menuBgImageInput").value = data.theme.menuBgImage;
+          }
+          if(data.theme.menuBgImage) {
+            document.getElementById("fileStatus").innerText = "✨ توجد صورة خلفية مفعّلة حالياً";
+          }
           document.getElementById("fontFamilySelect").value = data.theme.fontFamily || 'Tajawal';
-          document.getElementById("cardRadiusInput").value = data.theme.cardRadius || 12;
-          document.getElementById("cardShadowSelect").value = data.theme.cardShadow || 'soft';
         }
       }
     });
   }
+
+  window.applyPreset = (p, a, bg) => {
+    document.getElementById("primaryColorInput").value = p;
+    document.getElementById("primaryVal").innerText = p;
+    document.getElementById("accentColorInput").value = a;
+    document.getElementById("accentVal").innerText = a;
+    document.getElementById("bgColorInput").value = bg;
+    document.getElementById("bgVal").innerText = bg;
+  };
+
+  document.getElementById("bgFileInput").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        uploadedBase64Image = event.target.result;
+        document.getElementById("fileStatus").innerText = "✔ تم تجهيز الصورة المرفوعة لحفظها!";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  window.clearBgImage = () => {
+    uploadedBase64Image = "";
+    document.getElementById("menuBgImageInput").value = "";
+    document.getElementById("bgFileInput").value = "";
+    document.getElementById("fileStatus").innerText = "تمت إزالة صورة الخلفية";
+  };
 
   document.getElementById("primaryColorInput").addEventListener("input", (e) => document.getElementById("primaryVal").innerText = e.target.value);
   document.getElementById("accentColorInput").addEventListener("input", (e) => document.getElementById("accentVal").innerText = e.target.value);
@@ -334,19 +388,20 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 
   document.getElementById("saveThemeBtn").addEventListener("click", async () => {
     const storeName = document.getElementById("storeNameInput").value.trim() || "فستق حلب";
+    
+    let finalBgImage = uploadedBase64Image || document.getElementById("menuBgImageInput").value.trim();
+
     const theme = {
       primaryColor: document.getElementById("primaryColorInput").value,
       accentColor: document.getElementById("accentColorInput").value,
       bgColor: document.getElementById("bgColorInput").value,
-      menuBgImage: document.getElementById("menuBgImageInput").value.trim(),
-      fontFamily: document.getElementById("fontFamilySelect").value,
-      cardRadius: Number(document.getElementById("cardRadiusInput").value),
-      cardShadow: document.getElementById("cardShadowSelect").value
+      menuBgImage: finalBgImage,
+      fontFamily: document.getElementById("fontFamilySelect").value
     };
 
     const storeRef = doc(db, "settings", "store");
     await setDoc(storeRef, { storeName, theme }, { merge: true });
-    alert("✨ تم حفظ اسم المتجر والمظهر بنجاح!");
+    alert("✨ تم حفظ وتطبيق التغييرات بنجاح!");
   });
 
   window.addNewCategory = async () => {
@@ -418,7 +473,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       <div class="category-row">
         <div>
           <strong>📌 ${idx + 1}. ${escapeHtml(cat.name)}</strong>
-          <small style="margin-right:10px; color:${cat.hidden ? '#dc3545' : '#198754'}; font-weight:bold;">
+          <small style="margin-right:10px; color:${cat.hidden ? '#ef4444' : '#10b981'}; font-weight:bold;">
             ${cat.hidden ? '🔴 مخفي' : '🟢 ظاهر'}
           </small>
         </div>
@@ -443,7 +498,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     if(!products.length) return c.innerHTML = "<p>لا توجد منتجات مسجلة.</p>";
     c.innerHTML = products.map(p => `
       <div class="product-row">
-        <img src="${p.images?.[0] || p.image || 'https://via.placeholder.com/70'}">
+        <img src="${p.images?.[0] || p.image || 'https://via.placeholder.com/75'}">
         <div style="flex:1;">
           <strong>${escapeHtml(p.name)}</strong><br>
           <small>القسم: ${escapeHtml(p.category || 'عام')} | الحالة: ${p.hidden ? '🔴 مخفي' : '🟢 ظاهر'}</small>
