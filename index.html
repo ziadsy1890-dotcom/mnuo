@@ -109,7 +109,7 @@
 
   <header>
     <div class="header-container">
-      <div class="logo-area"><h1>🍰 فستق حلب</h1></div>
+      <div class="logo-area"><h1 onclick="window.location.reload()">🍰 فستق حلب</h1></div>
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="ابحث عن منتج..." oninput="filterProducts()">
       </div>
@@ -119,7 +119,7 @@
 
   <div class="container">
     <div class="categories-bar" id="categoriesBar">
-      <button class="cat-btn active" onclick="selectCategory('الكل', this)">الكل</button>
+      <button class="cat-btn active" onclick="selectCategory('الكل', event)">الكل</button>
     </div>
     <div class="products-grid" id="productsGrid">
       <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">جاري تحميل المنتجات...</div>
@@ -206,9 +206,8 @@
     const db = getFirestore(app);
 
     let allProducts = [], cart = [], deliveryZones = [], whatsappNumber = "201140653708";
-    let selectedCat = "الكل", currentFee = 0;
+    let selectedCat = "الكل", currentFee = 0, cachedCategories = [];
 
-    // حالة الأزرار حسب تسجيل الدخول
     onAuthStateChanged(auth, user => {
       const btn = document.getElementById("adminKeyBtn");
       if(user) {
@@ -240,7 +239,12 @@
     };
 
     onSnapshot(collection(db, "products"), snap => {
-      allProducts = []; snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+      allProducts = []; 
+      snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+      
+      // تثبيت ترتيب المنتجات تنازلياً حسب وقت الإنشاء (الأحدث أولاً) لتجنب الحركة العشوائية
+      allProducts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      
       renderProducts();
     });
 
@@ -248,7 +252,14 @@
       if(dSnap.exists()){
         const data = dSnap.data();
         if(data.whatsappNumber) whatsappNumber = data.whatsappNumber;
-        if(data.categories) renderCategories(data.categories);
+        if(data.categories) {
+          // تحديث الأقسام فقط إذا تغيرت حقاً لمنع اهتزاز الشريط
+          const newCatsJSON = JSON.stringify(data.categories);
+          if(newCatsJSON !== JSON.stringify(cachedCategories)) {
+            cachedCategories = data.categories;
+            renderCategories(cachedCategories);
+          }
+        }
         if(data.deliveryZones) {
           deliveryZones = data.deliveryZones;
           renderZonesSelect();
@@ -258,14 +269,16 @@
 
     function renderCategories(cats) {
       const bar = document.getElementById("categoriesBar");
-      bar.innerHTML = `<button class="cat-btn ${selectedCat === 'الكل' ? 'active':''}" onclick="selectCategory('الكل', this)">الكل</button>` +
-        cats.map(c => `<button class="cat-btn ${selectedCat === c ? 'active':''}" onclick="selectCategory('${c}', this)">${c}</button>`).join("");
+      bar.innerHTML = `<button class="cat-btn ${selectedCat === 'الكل' ? 'active':''}" onclick="selectCategory('الكل', event)">الكل</button>` +
+        cats.map(c => `<button class="cat-btn ${selectedCat === c ? 'active':''}" onclick="selectCategory('${c}', event)">${c}</button>`).join("");
     }
 
-    window.selectCategory = (cat, btn) => {
+    window.selectCategory = (cat, event) => {
       selectedCat = cat;
       document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+      if(event && event.currentTarget) {
+        event.currentTarget.classList.add("active");
+      }
       renderProducts();
     };
 
@@ -273,10 +286,15 @@
 
     function renderProducts() {
       const grid = document.getElementById("productsGrid");
-      const query = document.getElementById("searchInput").value.toLowerCase();
-      const filtered = allProducts.filter(p => !p.hidden && (selectedCat === "الكل" || p.category === selectedCat) && p.name.toLowerCase().includes(query));
+      const query = document.getElementById("searchInput").value.trim().toLowerCase();
+      
+      const filtered = allProducts.filter(p => {
+        const matchCategory = (selectedCat === "الكل" || p.category === selectedCat);
+        const matchSearch = p.name.toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query));
+        return !p.hidden && matchCategory && matchSearch;
+      });
 
-      if(!filtered.length) { grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">لا توجد منتجات مطابقة.</div>'; return; }
+      if(!filtered.length) { grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">لا توجد منتجات مطابقة في هذا القسم.</div>'; return; }
 
       grid.innerHTML = filtered.map(p => {
         let optionsHTML = '', defaultPrice = p.price || 0;
@@ -386,7 +404,6 @@
       updateCartUI();
     };
 
-    // إرسال الطلب وإصلاح فتح الواتساب
     window.submitOrder = async () => {
       const name = document.getElementById("custName").value.trim();
       const phone = document.getElementById("custPhone").value.trim();
