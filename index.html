@@ -12,29 +12,29 @@
     :root {
       --primary: #11261d;
       --accent: #d4af37;
-      --bg-body: #dbe6df;
-      --card-bg: #ffffff;
+      --bg-body: #11261d;
+      --card-bg: rgba(255, 255, 255, 0.92);
       --card-text: #0f172a;
       
       --card-padding: 14px;
       --card-img-size: 100px;
       --card-title-size: 16px;
       
-      --cat-bg: #ffffff;
-      --cat-text: #334155;
+      --cat-bg: rgba(255, 255, 255, 0.85);
+      --cat-text: #0f172a;
       --cat-active-bg: #11261d;
       --cat-active-text: #ffffff;
       --cat-padding: 9px 20px;
       --cat-font-size: 13.5px;
 
       --text-main: #0f172a;
-      --text-muted: #64748b;
-      --border: #cbd5e1;
+      --text-muted: #475569;
+      --border: rgba(255, 255, 255, 0.4);
       --radius: 18px;
       --font-family: 'Tajawal', sans-serif;
-      --card-shadow: 0 8px 25px -5px rgba(15, 23, 42, 0.08);
+      --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       --menu-bg-image: none;
-      --menu-bg-color: #dbe6df;
+      --menu-bg-color: #11261d;
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); -webkit-tap-highlight-color: transparent; }
@@ -49,95 +49,69 @@
       color: var(--text-main); 
       direction: rtl; 
       padding-bottom: 100px; 
+      min-height: 100vh;
+    }
+
+    /* طبقة تظليل جمالية لضمان قراءة المنيو فوق أي صورة */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.35);
+      backdrop-filter: blur(3px);
+      z-index: -1;
     }
 
     header {
-      background: var(--primary);
+      background: rgba(17, 38, 29, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       color: #fff;
-      padding: 16px;
+      padding: 14px 16px;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
       border-bottom: 2px solid var(--accent);
     }
-    .header-container { 
-      max-width: 1100px; 
-      margin: 0 auto; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      gap: 14px; 
-    }
-
-    .brand-banner {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .header-logo-img {
-      max-width: 240px;
-      width: 100%;
-      height: auto;
-      border-radius: 14px;
-      object-fit: contain;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      background: #fff;
-      padding: 4px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    .header-logo-img:active { transform: scale(0.97); }
-
-    .logo-text-title {
-      font-size: 22px; 
-      font-weight: 900; 
-      color: var(--accent); 
-      cursor: pointer; 
-      white-space: nowrap; 
-      text-align: center;
-    }
-
-    .header-bottom-row {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .search-bar { flex: 1; max-width: 450px; }
+    .header-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .logo-area h1 { font-size: 20px; font-weight: 900; color: var(--accent); cursor: pointer; white-space: nowrap; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    
+    .search-bar { flex: 1; max-width: 380px; }
     .search-bar input {
-      width: 100%; padding: 10px 16px; border-radius: 25px;
-      border: 1.5px solid rgba(255, 255, 255, 0.25); background: rgba(255, 255, 255, 0.15);
-      color: #fff; font-size: 13.5px; font-weight: 700; outline: none; transition: all 0.3s ease;
+      width: 100%; padding: 9px 15px; border-radius: 25px;
+      border: 1.5px solid rgba(255, 255, 255, 0.3); background: rgba(0, 0, 0, 0.25);
+      color: #fff; font-size: 13px; font-weight: 700; outline: none; transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
     }
-    .search-bar input::placeholder { color: rgba(255, 255, 255, 0.75); }
-    .search-bar input:focus { background: rgba(255, 255, 255, 0.25); border-color: var(--accent); }
+    .search-bar input::placeholder { color: rgba(255, 255, 255, 0.85); }
+    .search-bar input:focus { background: rgba(0, 0, 0, 0.45); border-color: var(--accent); }
     
     .whatsapp-header-btn {
-      background: #25d366; border: none; color: #fff; padding: 9px 16px; border-radius: 20px;
-      font-size: 12.5px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px;
-      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); white-space: nowrap; text-decoration: none;
+      background: #25d366; border: none; color: #fff; padding: 8px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 5px;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4); white-space: nowrap; text-decoration: none;
     }
 
     .container { max-width: 1100px; margin: 20px auto; padding: 0 14px; }
 
+    /* الأقسام العائمة */
     .categories-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
     .categories-bar::-webkit-scrollbar { display: none; }
     .cat-btn {
-      background: var(--cat-bg); padding: var(--cat-padding); border-radius: 30px;
-      border: 1.5px solid var(--border); white-space: nowrap; font-size: var(--cat-font-size); font-weight: 800;
+      background: var(--cat-bg); 
+      backdrop-filter: blur(10px);
+      padding: var(--cat-padding); border-radius: 30px;
+      border: 1.5px solid rgba(255, 255, 255, 0.6); white-space: nowrap; font-size: var(--cat-font-size); font-weight: 800;
       cursor: pointer; color: var(--cat-text); transition: all 0.25s ease;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     }
     .cat-btn.active, .cat-btn:hover { 
-      background: var(--cat-active-bg); color: var(--cat-active-text); border-color: var(--cat-active-bg); 
-      box-shadow: 0 6px 18px rgba(17, 38, 29, 0.2); 
+      background: var(--cat-active-bg); color: var(--cat-active-text); border-color: var(--accent); 
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); 
     }
 
+    /* كروت المنتجات العائمة بأسلوب Glassmorphism */
     .products-grid { 
       display: grid; 
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
@@ -145,32 +119,36 @@
     }
     
     .product-card {
-      background: var(--card-bg); border-radius: var(--radius); border: 1.5px solid var(--border);
+      background: var(--card-bg); 
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius); 
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
       display: flex; padding: var(--card-padding); gap: 14px; align-items: center; box-shadow: var(--card-shadow);
       color: var(--card-text); transition: all 0.25s ease; position: relative; overflow: hidden; width: 100%;
     }
-    .product-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 12px 30px -5px rgba(15, 23, 42, 0.15); }
-    .product-card img { width: var(--card-img-size); height: var(--card-img-size); object-fit: cover; border-radius: 14px; background: #e2e8f0; border: 1px solid var(--border); flex-shrink: 0; }
+    .product-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25); }
+    .product-card img { width: var(--card-img-size); height: var(--card-img-size); object-fit: cover; border-radius: 14px; background: #e2e8f0; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
     
     .product-info { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
     .product-title { font-size: var(--card-title-size); font-weight: 900; color: var(--card-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .product-desc { font-size: 11.5px; color: var(--text-muted); line-height: 1.4; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-weight: 500; }
+    .product-desc { font-size: 11.5px; color: var(--text-muted); line-height: 1.4; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-weight: 600; }
     
     .product-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; gap: 6px; flex-wrap: wrap; }
-    .unit-select { padding: 6px 10px; border-radius: 8px; border: 1.5px solid var(--border); font-size: 12px; background: #ffffff; font-weight: 800; color: #0f172a; outline: none; cursor: pointer; }
+    .unit-select { padding: 6px 10px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 12px; background: #ffffff; font-weight: 800; color: #0f172a; outline: none; cursor: pointer; }
     .price-tag { font-size: 16.5px; font-weight: 900; color: var(--primary); white-space: nowrap; }
     .add-btn { 
       background: var(--primary); color: #fff; padding: 8px 14px; border-radius: 10px; 
       font-size: 12.5px; font-weight: 900; border: none; cursor: pointer; transition: all 0.2s ease; 
-      box-shadow: 0 4px 12px rgba(17, 38, 29, 0.2); white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); white-space: nowrap;
     }
     .add-btn:active { transform: scale(0.94); }
 
     @media (max-width: 480px) {
-      .header-container { gap: 10px; }
-      .header-logo-img { max-width: 200px; }
+      .header-container { gap: 8px; }
+      .logo-area h1 { font-size: 16px; }
       .search-bar input { padding: 8px 12px; font-size: 12px; }
-      .whatsapp-header-btn { padding: 7px 12px; font-size: 11.5px; }
+      .whatsapp-header-btn { padding: 7px 10px; font-size: 11px; }
       .products-grid { grid-template-columns: 1fr; gap: 12px; }
       .product-card { padding: 12px; gap: 12px; }
       :root { --card-img-size: 85px; --card-title-size: 15px; }
@@ -179,7 +157,7 @@
     .floating-cart-btn {
       position: fixed; bottom: 20px; left: 20px; width: 65px; height: 65px;
       background: var(--primary); color: #fff; border-radius: 50%;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); display: flex; flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column;
       align-items: center; justify-content: center; z-index: 999; cursor: pointer;
       border: 2px solid var(--accent); transition: transform 0.2s ease;
     }
@@ -192,16 +170,16 @@
     .cart-total-text { font-size: 9px; font-weight: 900; margin-top: 3px; color: #f8fafc; white-space: nowrap; }
 
     /* Modals & Drawers */
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.65); z-index: 1000; display: none; justify-content: flex-end; backdrop-filter: blur(5px); }
-    .modal-drawer { background: #fff; width: 100%; max-width: 420px; height: 100%; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.2); }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.7); z-index: 1000; display: none; justify-content: flex-end; backdrop-filter: blur(6px); }
+    .modal-drawer { background: #fff; width: 100%; max-width: 420px; height: 100%; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.3); }
     .drawer-header { padding: 18px; background: var(--primary); color: #fff; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); }
     .drawer-body { padding: 18px; flex: 1; overflow-y: auto; }
-    .drawer-footer { padding: 18px; border-top: 1.5px solid var(--border); background: #f8fafc; }
-    .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding: 12px 0; }
-    .qty-btn { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--border); background: #f1f5f9; cursor: pointer; font-weight: 900; }
+    .drawer-footer { padding: 18px; border-top: 1.5px solid #e2e8f0; background: #f8fafc; }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding: 12px 0; }
+    .qty-btn { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid #cbd5e1; background: #f1f5f9; cursor: pointer; font-weight: 900; }
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; font-size: 12.5px; font-weight: 900; margin-bottom: 6px; color: var(--text-main); }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 13px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 13.5px; outline: none; font-weight: 700; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 13px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 13.5px; outline: none; font-weight: 700; }
     .btn-submit { width: 100%; padding: 14px; background: #10b981; color: #fff; font-weight: 900; border: none; border-radius: 12px; cursor: pointer; font-size: 15px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
 
     /* Social Media Modal Styling */
@@ -236,22 +214,13 @@
           if(theme.catTextColor) root.style.setProperty('--cat-text', theme.catTextColor);
           if(theme.catActiveBg) root.style.setProperty('--cat-active-bg', theme.catActiveBg);
           if(theme.catActiveText) root.style.setProperty('--cat-active-text', theme.catActiveText);
-          
-          if(theme.menuBgImage) {
-            window.addEventListener('DOMContentLoaded', () => {
-              const headerLogo = document.getElementById("headerLogoImg");
-              if(headerLogo) {
-                headerLogo.src = theme.menuBgImage;
-                headerLogo.style.display = "block";
-              }
-            });
-          }
+          if(theme.menuBgImage) root.style.setProperty('--menu-bg-image', "url('" + theme.menuBgImage + "')");
         }
         if (cachedName) {
           window.addEventListener('DOMContentLoaded', () => {
-            const logoText = document.getElementById("storeTitleLogoText");
+            const logo = document.getElementById("storeTitleLogo");
             const pageTitle = document.getElementById("pageTitle");
-            if(logoText) logoText.innerText = " " + cachedName;
+            if(logo) logo.innerText = "🍰 " + cachedName;
             if(pageTitle) pageTitle.innerText = cachedName;
           });
         }
@@ -263,17 +232,11 @@
 
   <header>
     <div class="header-container">
-      <div class="brand-banner">
-        <img id="headerLogoImg" class="header-logo-img" src="" alt="لوجو المتجر" style="display:none;" onclick="window.location.reload()">
-        <h1 id="storeTitleLogoText" class="logo-text-title" onclick="window.location.reload()" style="display:none;">🍰 بيستاش دي ألب</h1>
+      <div class="logo-area"><h1 id="storeTitleLogo" onclick="window.location.reload()">🍰 بيستاش دي ألب</h1></div>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="ابحث عن حلوياتك..." oninput="window.filterProducts()">
       </div>
-      
-      <div class="header-bottom-row">
-        <div class="search-bar">
-          <input type="text" id="searchInput" placeholder="ابحث عن حلوياتك..." oninput="window.filterProducts()">
-        </div>
-        <button class="whatsapp-header-btn" onclick="window.openSocialModal()">💬 تواصل معنا</button>
-      </div>
+      <button class="whatsapp-header-btn" onclick="window.openSocialModal()">💬 تواصل معنا</button>
     </div>
   </header>
 
@@ -282,7 +245,7 @@
       <button class="cat-btn active" data-cat="الكل" onclick="window.selectCategory('الكل')">الكل</button>
     </div>
     <div class="products-grid" id="productsGrid">
-      <div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #94a3b8; font-weight: 700;">جاري تحميل المنتجات...</div>
+      <div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #ffffff; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">جاري تحميل المنتجات...</div>
     </div>
   </div>
 
@@ -298,7 +261,7 @@
   <div class="social-modal-overlay" id="socialModal">
     <div class="social-modal-card">
       <h3 style="font-weight: 900; color: var(--primary); font-size: 20px; margin-bottom: 5px;">📞 تواصل معنا</h3>
-      <p style="color: var(--text-muted); font-size: 12.5px;">يسعدنا تواصلك معنا عبر وسائل الاتصال التالية:</p>
+      <p style="color: #64748b; font-size: 12.5px;">يسعدنا تواصلك معنا عبر وسائل الاتصال التالية:</p>
       <div class="social-links-grid" id="socialLinksContainer"></div>
       <button onclick="window.closeSocialModal()" style="margin-top: 20px; background: #e2e8f0; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 900; cursor: pointer; width: 100%; color: #334155;">إغلاق</button>
     </div>
@@ -396,7 +359,7 @@
         storeSettings = dSnap.data();
         
         if(storeSettings.storeName) {
-          document.getElementById("storeTitleLogoText").innerText = "🍰 " + storeSettings.storeName;
+          document.getElementById("storeTitleLogo").innerText = " " + storeSettings.storeName;
           document.getElementById("pageTitle").innerText = storeSettings.storeName;
           localStorage.setItem('cached_store_name', storeSettings.storeName);
         }
@@ -432,16 +395,10 @@
       if(theme.catActiveBg) root.style.setProperty('--cat-active-bg', theme.catActiveBg);
       if(theme.catActiveText) root.style.setProperty('--cat-active-text', theme.catActiveText);
 
-      const imgElem = document.getElementById("headerLogoImg");
-      const textElem = document.getElementById("storeTitleLogoText");
-
-      if(theme.menuBgImage && theme.menuBgImage.trim() !== "") {
-        imgElem.src = theme.menuBgImage;
-        imgElem.style.display = "block";
-        textElem.style.display = "none";
+      if(theme.menuBgImage) {
+        root.style.setProperty('--menu-bg-image', `url('${theme.menuBgImage}')`);
       } else {
-        imgElem.style.display = "none";
-        textElem.style.display = "block";
+        root.style.setProperty('--menu-bg-image', 'none');
       }
 
       if(theme.fontFamily) {
@@ -520,7 +477,7 @@
       });
 
       if(!filtered.length) { 
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #94a3b8; font-weight:700;">لا توجد منتجات مطابقة.</div>'; 
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #ffffff; font-weight:800; text-shadow:0 2px 4px rgba(0,0,0,0.5);">لا توجد منتجات مطابقة.</div>'; 
         return; 
       }
 
