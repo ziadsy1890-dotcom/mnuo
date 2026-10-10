@@ -195,7 +195,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
         </div>
         <div class="form-group">
           <label>🖼️ رابط الصورة الافتراضية للمتجر (Fallback Image):</label>
-          <input type="url" id="defaultImageInput" placeholder="https://i.ibb.co/rGzLxC3Y/file-000000005c888210940dfd275750a5db.png">
+          <input type="url" id="defaultImageInput" placeholder="أدخل رابط الصورة الافتراضية هنا...">
           <small style="color: #64748b;">تُستخدم هذه الصورة تلقائياً لأي منتج بدون صورة.</small>
         </div>
         <hr style="margin: 20px 0; border:none; border-top:1px solid #e2e8f0;">
@@ -270,7 +270,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  let currentDefaultImage = "https://i.ibb.co/rGzLxC3Y/file-000000005c888210940dfd275750a5db.png";
+  let currentDefaultImage = "";
   let products = [], orders = [], categoriesList = [], uploadedBase64Image = "";
 
   document.getElementById("loginBtn").addEventListener("click", async () => {
@@ -314,12 +314,8 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
         const data = snap.data();
         if(data.whatsappNumber) document.getElementById("whatsappInput").value = data.whatsappNumber;
         
-        if(data.defaultImage) {
-          currentDefaultImage = data.defaultImage;
-          document.getElementById("defaultImageInput").value = data.defaultImage;
-        } else {
-          document.getElementById("defaultImageInput").value = currentDefaultImage;
-        }
+        currentDefaultImage = data.defaultImage || "";
+        document.getElementById("defaultImageInput").value = currentDefaultImage;
 
         if(data.socialLinks) {
           document.getElementById("fbInput").value = data.socialLinks.facebook || "";
@@ -449,7 +445,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f8fafc; margin: 0; p
 
   document.getElementById("saveSettingsBtn").addEventListener("click", async () => {
     const whatsappNumber = document.getElementById("whatsappInput").value.trim();
-    const defaultImage = document.getElementById("defaultImageInput").value.trim() || currentDefaultImage;
+    const defaultImage = document.getElementById("defaultImageInput").value.trim();
     const socialLinks = {
       facebook: document.getElementById("fbInput").value.trim(),
       instagram: document.getElementById("instaInput").value.trim(),
