@@ -88,7 +88,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     <!-- 3. تخصيص المظهر والخلفية واسم المتجر -->
     <div id="themeTab" class="tab-section">
       <div class="card">
-        <h2>🎨 تخصيص اسم المظهر والخلفية</h2>
+        <h2>🎨 تخصيص اسم المتجر والخلفية</h2>
         
         <div class="form-group">
           <label>اسم المتجر (الذي يظهر في أعلى الشعار):</label>
@@ -97,8 +97,8 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 
         <div class="form-group">
           <label>رابط صورة خلفية المنيو (Menu Background Image URL):</label>
-          <input type="url" id="menuBgImageInput" placeholder="ضع رابط الصورة هنا (اتركه فارغاً للاكتفاء باللون)">
-          <small style="color: #666;">يمكنك وضع رابط أي صورة تريدها لتظهر كخلفية لصفحة المتجر.</small>
+          <input type="url" id="menuBgImageInput" placeholder="ضع رابط الصورة هنا">
+          <small style="color: #666;">يمكنك استخدام رابط الصورة مباشرة أو رابط ImgBB مثل: https://i.ibb.co/C31M5pTr/IMG-20261007-WA0027.jpg</small>
         </div>
 
         <div class="grid-2">
@@ -120,7 +120,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 
         <div class="grid-2">
           <div class="form-group">
-            <label>لون الخلفية (الافتراضي أو خلفية لونية مع الصورة):</label>
+            <label>لون الخلفية (في حال عدم وجود صورة):</label>
             <div class="color-picker-group">
               <input type="color" id="bgColorInput" value="#f4f5f7">
               <span id="bgVal">#f4f5f7</span>
@@ -178,7 +178,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
     <div id="sTab" class="tab-section">
       <div class="card">
         <h2>⚙️ الإعدادات العامة</h2>
-        <div class="form-group"><label>رقم الواتساب (صيغة لاتي مثل 00201140653708):</label><input type="text" id="whatsappInput"></div>
+        <div class="form-group"><label>رقم الواتساب (مثال: 00201140653708):</label><input type="text" id="whatsappInput"></div>
         <button class="btn btn-primary" id="saveSettingsBtn">حفظ الإعدادات</button>
       </div>
     </div>
@@ -526,7 +526,6 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       const uPrice = Number(document.getElementById("pUnitPrice").value);
       if(!uPrice) {
         saveBtn.disabled = false; saveBtn.innerText = "حفظ المنتج";
-        return alert("حفظ المنتج");
         return alert("يرجى إدخال سعر الوحدة!");
       }
       payload.pricing = { unitPrice: uPrice, unitLabel: document.getElementById("pUnitLabel").value.trim()||"علبة" };
