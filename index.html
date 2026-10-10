@@ -109,7 +109,7 @@
 
   <header>
     <div class="header-container">
-      <div class="logo-area"><h1 onclick="window.location.reload()">🍰 فستق حلب</h1></div>
+      <div class="logo-area"><h1 onclick="window.location.reload()">بيستاش دي الب </h1></div>
       <div class="search-bar">
         <input type="text" id="searchInput" placeholder="ابحث عن منتج..." oninput="window.filterProducts()">
       </div>
@@ -241,7 +241,10 @@
     onSnapshot(collection(db, "products"), snap => {
       allProducts = []; 
       snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
-      allProducts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      
+      // ثبات ترتيب المنتجات: ترتيب تصاعدي حسب وقت الإنشاء (الأول يظل في مكانه الأول دائماً)
+      allProducts.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+      
       extractCategories();
       renderProducts();
     });
@@ -264,11 +267,13 @@
 
     function extractCategories(settingsCats = []) {
       let set = new Set();
-      allProducts.forEach(p => { if(p.category) set.add(p.category.trim()); });
       if(Array.isArray(settingsCats)) {
         settingsCats.forEach(c => { if(c.trim()) set.add(c.trim()); });
       }
-      dynamicCategories = Array.from(set);
+      allProducts.forEach(p => { if(p.category) set.add(p.category.trim()); });
+      
+      // تثبيت ترتيب الأقسام أبجدياً أو حسب الإعدادات لكي لا تتحرك أبداً
+      dynamicCategories = Array.from(set).sort((a, b) => a.localeCompare(b, 'ar'));
       renderCategories(dynamicCategories);
     }
 
@@ -284,7 +289,6 @@
       bar.innerHTML = html;
     }
 
-    // تصدير دالة تصفية الأقسام المباشرة إلى نطاق window لتستجيب دائماً
     window.selectCategory = (cat) => {
       selectedCat = cat;
       document.querySelectorAll(".cat-btn").forEach(b => {
