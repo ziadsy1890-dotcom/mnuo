@@ -220,22 +220,9 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBoQHatPvFXnmCuI1M1UJcUWWQsB7vk3g0",
-  authDomain: "pistach-d-alep.firebaseapp.com",
-  projectId: "pistach-d-alep",
-  storageBucket: "pistach-d-alep.firebasestorage.app",
-  messagingSenderId: "288943885593",
-  appId: "1:288943885593:web:4737041244be376c274988"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+import { auth, db } from "./firebase-config.js";
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import { collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
 let currentCategories = ["حلويات", "مكسرات", "مشروبات", "فواكه مجففة"];
 let productsData = [];
@@ -484,64 +471,4 @@ window.updateOrderStatus = async (id, status) => {
 window.addDeliveryZone = async () => {
   const name = document.getElementById("zoneNameInput").value.trim();
   const fee = Number(document.getElementById("zoneFeeInput").value);
-  if (!name || isNaN(fee)) return alert("يرجى إدخال اسم المنطقة والتكلفة بشكل صحيح");
-
-  const storeRef = doc(db, "settings", "store");
-  const docSnap = await getDoc(storeRef);
-  let currentZones = docSnap.exists() && docSnap.data().deliveryZones ? docSnap.data().deliveryZones : [];
-
-  currentZones.push({ name, fee });
-  await setDoc(storeRef, { deliveryZones: currentZones }, { merge: true });
-  document.getElementById("zoneNameInput").value = "";
-  document.getElementById("zoneFeeInput").value = "";
-};
-
-function renderZones(zones) {
-  const container = document.getElementById("zonesListContainer");
-  container.innerHTML = zones.map((z, idx) => `
-    <div style="display:flex; justify-content:space-between; margin-bottom:5px; background:#f9f9f9; padding:8px; border-radius:5px;">
-      <span>📌 ${escapeHtml(z.name)}: <strong>${z.fee} جنيه</strong></span>
-      <button class="btn btn-danger" style="padding:2px 8px;" onclick="deleteZone(${idx})">حذف</button>
-    </div>
-  `).join("");
-}
-
-window.deleteZone = async (index) => {
-  const storeRef = doc(db, "settings", "store");
-  const docSnap = await getDoc(storeRef);
-  if (docSnap.exists() && docSnap.data().deliveryZones) {
-    let zones = docSnap.data().deliveryZones;
-    zones.splice(index, 1);
-    await setDoc(storeRef, { deliveryZones: zones }, { merge: true });
-  }
-};
-
-window.saveStoreSettings = async () => {
-  const whatsappNumber = document.getElementById("whatsappInput").value.trim();
-  const categories = document.getElementById("categoriesInput").value.split(",").map(c => c.trim()).filter(Boolean);
-
-  try {
-    await setDoc(doc(db, "settings", "store"), { whatsappNumber, categories }, { merge: true });
-    alert("تم حفظ إعدادات المتجر بنجاح");
-  } catch (e) {
-    alert("حدث خطأ في حفظ الإعدادات");
-  }
-};
-
-function renderReports() {
-  const container = document.getElementById("reportsContentContainer");
-  const totalSales = ordersData.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
-  container.innerHTML = `
-    <p>📦 **إجمالي عدد المنتجات:** ${productsData.length}</p>
-    <p>📋 **إجمالي عدد الطلبات:** ${ordersData.length}</p>
-    <p>💰 **إجمالي المبيعات:** ${totalSales} جنيه</p>
-  `;
-}
-
-function escapeHtml(str) {
-  return String(str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
-</script>
-
-</body>
-</html>
+  if (!name || is
