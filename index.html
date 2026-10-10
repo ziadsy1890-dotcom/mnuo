@@ -238,12 +238,10 @@
       }
     };
 
-    // جلب المنتجات وتوليد الأقسام ديناميكياً منها ومن الإعدادات
     onSnapshot(collection(db, "products"), snap => {
       allProducts = []; 
       snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
       allProducts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-      
       extractCategories();
       renderProducts();
     });
@@ -256,8 +254,9 @@
           deliveryZones = data.deliveryZones;
           renderZonesSelect();
         }
-        if(data.categories) {
-          // دمج الأقسام الواردة من الإعدادات
+        if(data.categoriesList) {
+          extractCategories(data.categoriesList.filter(c => !c.hidden).map(c => c.name));
+        } else if(data.categories) {
           extractCategories(data.categories);
         }
       }
@@ -265,15 +264,10 @@
 
     function extractCategories(settingsCats = []) {
       let set = new Set();
-      // إضافة الأقسام الموجودة أصلاً في المنتجات المضافة
       allProducts.forEach(p => { if(p.category) set.add(p.category.trim()); });
-      // إضافة الأقسام القادمة من الإعدادات إن وجدت
       if(Array.isArray(settingsCats)) {
         settingsCats.forEach(c => { if(c.trim()) set.add(c.trim()); });
-      } else if(typeof settingsCats === 'string') {
-        settingsCats.split(',').forEach(c => { if(c.trim()) set.add(c.trim()); });
       }
-      
       dynamicCategories = Array.from(set);
       renderCategories(dynamicCategories);
     }
@@ -415,6 +409,7 @@
       updateCartUI();
     };
 
+    // معالجة وتنظيف رقم الواتساب لضمان فتحه بنجاح
     window.submitOrder = async () => {
       const name = document.getElementById("custName").value.trim();
       const phone = document.getElementById("custPhone").value.trim();
@@ -447,8 +442,14 @@
         msg += "التوصيل: " + currentFee + " ج\n";
         msg += "الإجمالي النهائي: " + grandTotal + " ج";
 
+        // تنظيف رقم الواتساب وإزالة أي مسافات أو رموز لضمان قبول الواتساب للرابط
+        let cleanPhone = whatsappNumber.replace(/\D/g, ''); 
+        if(cleanPhone.startsWith("0")) {
+          cleanPhone = "20" + cleanPhone.substring(1); // تحويل الرقم المصري من 01xxxx الى 201xxxx
+        }
+
         const encodedMessage = encodeURIComponent(msg);
-        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+        const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
 
         cart = [];
         updateCartUI();
