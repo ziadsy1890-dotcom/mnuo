@@ -25,6 +25,8 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 .form-group { margin-bottom: 15px; }
 .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
 .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+.color-picker-group { display: flex; align-items: center; gap: 10px; }
+.color-picker-group input[type="color"] { width: 45px; height: 38px; border: none; cursor: pointer; background: transparent; }
 .product-row, .category-row { display: flex; gap: 12px; align-items: center; border-bottom: 1px solid #eee; padding: 12px 0; justify-content: space-between; }
 .product-row img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; background: #f0f0f0; }
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 15px; }
@@ -54,10 +56,11 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
 
     <div class="admin-tabs">
       <button class="active" onclick="switchTab('pTab', this)">📦 المنتجات</button>
-      <button onclick="switchTab('catTab', this)">🏷️ إدارة الأقسام وتنسيقها</button>
+      <button onclick="switchTab('catTab', this)">🏷️ إدارة الأقسام</button>
+      <button onclick="switchTab('themeTab', this)">🎨 تخصيص المظهر</button>
       <button onclick="switchTab('oTab', this)">📋 الطلبات</button>
       <button onclick="switchTab('dTab', this)">🛵 التوصيل</button>
-      <button onclick="switchTab('sTab', this)">⚙️ إعدادات المتجر</button>
+      <button onclick="switchTab('sTab', this)">⚙️ الإعدادات</button>
       <button onclick="switchTab('rTab', this)">📊 التقارير</button>
     </div>
 
@@ -67,28 +70,86 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       <div class="card"><h2>قائمة المنتجات</h2><div id="productsContainer">جاري التحميل...</div></div>
     </div>
 
-    <!-- 2. إدارة وترتيب الأقسام -->
+    <!-- 2. إدارة الأقسام -->
     <div id="catTab" class="tab-section">
       <div class="card">
         <h2>➕ إضافة قسم جديد</h2>
         <div style="display: flex; gap: 10px; margin-top: 10px;">
-          <input type="text" id="newCatName" placeholder="اسم القسم الجديد (مثال: الأكثر مبيعاً)" style="flex:1; padding:10px; border:1px solid #ccc; border-radius:6px;">
+          <input type="text" id="newCatName" placeholder="اسم القسم الجديد" style="flex:1; padding:10px; border:1px solid #ccc; border-radius:6px;">
           <button class="btn btn-success" onclick="addNewCategory()">إضافة القسم</button>
         </div>
       </div>
       <div class="card">
-        <h2>🏷️ ترتيب الأقسام (حدد موقع كل قسم)</h2>
-        <p style="font-size:12px; color:#666; margin-bottom:10px;">القسم الأول في الأعلى هو الذي سيظهر أولاً في متجرك وتظهر منتجاته أولاً للزبائن.</p>
+        <h2>🏷️ ترتيب وتعديل الأقسام</h2>
         <div id="categoriesListContainer">جاري التحميل...</div>
       </div>
     </div>
 
-    <!-- 3. الطلبات -->
+    <!-- 3. تخصيص المظهر المباشر -->
+    <div id="themeTab" class="tab-section">
+      <div class="card">
+        <h2>🎨 تخصيص ألوان وشكل المتجر</h2>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>اللون الرئيسي (الهيدر والأزرار):</label>
+            <div class="color-picker-group">
+              <input type="color" id="primaryColorInput" value="#1e3d2f">
+              <span id="primaryVal">#1e3d2f</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>اللون الفرعي (الشعار والتنبيهات):</label>
+            <div class="color-picker-group">
+              <input type="color" id="accentColorInput" value="#c5a059">
+              <span id="accentVal">#c5a059</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>لون خلفية المتجر:</label>
+            <div class="color-picker-group">
+              <input type="color" id="bgColorInput" value="#f4f5f7">
+              <span id="bgVal">#f4f5f7</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>نوع الخط العربي:</label>
+            <select id="fontFamilySelect">
+              <option value="Tajawal">Tajawal (تجوال - عصري)</option>
+              <option value="Cairo">Cairo (القاهرة - واضح وحاد)</option>
+              <option value="Almarai">Almarai (المراعي - ناعم وبسيط)</option>
+              <option value="Readex Pro">Readex Pro (ريدكس - تقني مريح)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>تدوير حواف البطاقات (Pixels):</label>
+            <input type="number" id="cardRadiusInput" value="12" min="0" max="30">
+          </div>
+          <div class="form-group">
+            <label>بروز ظلال بطاقة المنتج:</label>
+            <select id="cardShadowSelect">
+              <option value="soft">خفيف ناعم (مستحسن)</option>
+              <option value="strong">قوي وبارز</option>
+              <option value="none">بدون ظلال (مسطح)</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn btn-success" style="width: 100%; padding: 12px; margin-top: 10px;" id="saveThemeBtn">💾 حفظ وتطبيق المظهر فوراً</button>
+      </div>
+    </div>
+
+    <!-- 4. الطلبات -->
     <div id="oTab" class="tab-section">
       <div class="card"><h2>الطلبات الواردة</h2><div id="ordersContainer">جاري التحميل...</div></div>
     </div>
 
-    <!-- 4. التوصيل -->
+    <!-- 5. التوصيل -->
     <div id="dTab" class="tab-section">
       <div class="card">
         <h2>🛵 مناطق التوصيل</h2>
@@ -101,7 +162,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       </div>
     </div>
 
-    <!-- 5. الإعدادات -->
+    <!-- 6. الإعدادات -->
     <div id="sTab" class="tab-section">
       <div class="card">
         <h2>⚙️ الإعدادات العامة</h2>
@@ -110,7 +171,7 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
       </div>
     </div>
 
-    <!-- 6. التقارير -->
+    <!-- 7. التقارير -->
     <div id="rTab" class="tab-section">
       <div class="card"><h2>📊 الإحصائيات العامة</h2><div id="reportsContainer">جاري الحساب...</div></div>
     </div>
@@ -234,11 +295,44 @@ body { font-family: Tahoma, Arial, sans-serif; background: #f4f6f8; margin: 0; p
         renderCategoriesAdmin();
         updateCategorySelectOptions();
         if(data.deliveryZones) renderZones(data.deliveryZones);
+
+        // تعبئة إعدادات المظهر المحددة سابقاً
+        if(data.theme) {
+          document.getElementById("primaryColorInput").value = data.theme.primaryColor || '#1e3d2f';
+          document.getElementById("primaryVal").innerText = data.theme.primaryColor || '#1e3d2f';
+          document.getElementById("accentColorInput").value = data.theme.accentColor || '#c5a059';
+          document.getElementById("accentVal").innerText = data.theme.accentColor || '#c5a059';
+          document.getElementById("bgColorInput").value = data.theme.bgColor || '#f4f5f7';
+          document.getElementById("bgVal").innerText = data.theme.bgColor || '#f4f5f7';
+          document.getElementById("fontFamilySelect").value = data.theme.fontFamily || 'Tajawal';
+          document.getElementById("cardRadiusInput").value = data.theme.cardRadius || 12;
+          document.getElementById("cardShadowSelect").value = data.theme.cardShadow || 'soft';
+        }
       }
     });
   }
 
-  // --- إدارة وترتيب الأقسام ---
+  // ربط ملتقط الألوان بالنصوص الحية
+  document.getElementById("primaryColorInput").addEventListener("input", (e) => document.getElementById("primaryVal").innerText = e.target.value);
+  document.getElementById("accentColorInput").addEventListener("input", (e) => document.getElementById("accentVal").innerText = e.target.value);
+  document.getElementById("bgColorInput").addEventListener("input", (e) => document.getElementById("bgVal").innerText = e.target.value);
+
+  // حفظ المظهر في Firebase
+  document.getElementById("saveThemeBtn").addEventListener("click", async () => {
+    const theme = {
+      primaryColor: document.getElementById("primaryColorInput").value,
+      accentColor: document.getElementById("accentColorInput").value,
+      bgColor: document.getElementById("bgColorInput").value,
+      fontFamily: document.getElementById("fontFamilySelect").value,
+      cardRadius: Number(document.getElementById("cardRadiusInput").value),
+      cardShadow: document.getElementById("cardShadowSelect").value
+    };
+
+    const storeRef = doc(db, "settings", "store");
+    await setDoc(storeRef, { theme }, { merge: true });
+    alert("✨ تم حفظ المظهر وتطبيقه على المتجر بنجاح!");
+  });
+
   window.addNewCategory = async () => {
     const input = document.getElementById("newCatName");
     const name = input.value.trim();
