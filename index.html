@@ -57,11 +57,8 @@
       --accent: #d4af37;
       --bg-body: #11261d;
       --header-bg: rgba(17, 38, 29, 0.9);
-      --card-bg: rgba(255, 255, 255, 0.94);
+      --card-bg: rgba(255, 255, 255, 0.96);
       --card-text: #0f172a;
-      
-      --card-padding: 14px;
-      --card-title-size: 16px;
       
       --cat-bg: rgba(255, 255, 255, 0.9);
       --cat-text: #0f172a;
@@ -143,22 +140,22 @@
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); 
     }
 
+    /* تقسيم الشبكة ببطاقات ضيقة وأنيقة */
     .products-grid { 
       display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
-      gap: 16px; 
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); 
+      gap: 14px; 
     }
     
+    /* تصميم البطاقة للتركيز التام على الصورة */
     .product-card {
       background: var(--card-bg); 
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border-radius: var(--radius); 
-      border: 1.5px solid rgba(255, 255, 255, 0.7);
+      border: 1.5px solid rgba(255, 255, 255, 0.8);
       display: flex; 
       flex-direction: column;
-      padding: 14px; 
-      gap: 12px; 
       box-shadow: var(--card-shadow);
       color: var(--card-text); 
       transition: all 0.25s ease; 
@@ -168,36 +165,117 @@
     }
     .product-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); }
     
+    /* جعل حاوية الصورة تأخذ المساحة الأكبر مع إبقاء الصورة واضحة تماماً */
+    .product-img-wrapper {
+      position: relative;
+      width: 100%;
+      height: 280px; /* ارتفاع كبير يتيح رؤية تفاصيل المنتجات بجودة عالية */
+      overflow: hidden;
+    }
+
     .product-card img { 
       width: 100%; 
-      height: 180px; 
+      height: 100%; 
       object-fit: cover; 
-      border-radius: 12px; 
       background: #e2e8f0; 
-      border: 1px solid rgba(0,0,0,0.1); 
+      transition: transform 0.3s ease;
     }
-    
-    .product-info { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-    .product-title { font-size: 16px; font-weight: 900; color: var(--card-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .product-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; height: 34px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-weight: 600; }
-    
-    .product-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; gap: 8px; }
-    .unit-select { padding: 6px 8px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 12px; background: #ffffff; font-weight: 800; color: #0f172a; outline: none; cursor: pointer; }
-    .price-tag { font-size: 16px; font-weight: 900; color: var(--primary); white-space: nowrap; }
+
+    .product-card:hover img {
+      transform: scale(1.03);
+    }
+
+    /* طبقة تدرج ظلي ناعم بأسفل الصورة لإبراز الكتابة فوقها إن وُجدت */
+    .img-gradient-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(to top, rgba(0,0,0,0.35), transparent);
+      pointer-events: none;
+    }
+
+    /* تفاصيل الكتابة تحت الصورة بشكل مرن ومريح للعين */
+    .product-info { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 8px; 
+      padding: 12px; 
+      width: 100%; 
+      background: var(--card-bg);
+    }
+
+    .product-title { 
+      font-size: 15px; 
+      font-weight: 900; 
+      color: var(--card-text); 
+      white-space: nowrap; 
+      overflow: hidden; 
+      text-overflow: ellipsis; 
+    }
+
+    .product-controls { 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      gap: 6px; 
+    }
+
+    .unit-select { 
+      padding: 5px 8px; 
+      border-radius: 8px; 
+      border: 1.5px solid #cbd5e1; 
+      font-size: 11.5px; 
+      background: #ffffff; 
+      font-weight: 800; 
+      color: #0f172a; 
+      outline: none; 
+      cursor: pointer; 
+    }
+
+    .price-tag { 
+      font-size: 15px; 
+      font-weight: 900; 
+      color: var(--primary); 
+      white-space: nowrap; 
+    }
+
     .add-btn { 
-      background: var(--primary); color: #fff; padding: 8px 14px; border-radius: 10px; 
-      font-size: 12.5px; font-weight: 900; border: none; cursor: pointer; transition: all 0.2s ease; 
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); white-space: nowrap;
+      background: var(--primary); 
+      color: #fff; 
+      padding: 7px 12px; 
+      border-radius: 9px; 
+      font-size: 12px; 
+      font-weight: 900; 
+      border: none; 
+      cursor: pointer; 
+      transition: all 0.2s ease; 
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
+      white-space: nowrap;
     }
     .add-btn:active { transform: scale(0.94); }
+
+    .product-desc { 
+      font-size: 11.5px; 
+      color: var(--text-muted); 
+      line-height: 1.4; 
+      height: 32px; 
+      overflow: hidden; 
+      display: -webkit-box; 
+      -webkit-line-clamp: 2; 
+      -webkit-box-orient: vertical; 
+      font-weight: 600; 
+    }
 
     @media (max-width: 480px) {
       .header-container { gap: 8px; }
       .logo-area h1 { font-size: 16px; }
       .search-bar input { padding: 8px 12px; font-size: 12px; }
       .whatsapp-header-btn { padding: 7px 10px; font-size: 11px; }
-      .products-grid { grid-template-columns: 1fr; gap: 12px; }
-      .product-card { padding: 12px; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .product-img-wrapper { height: 210px; } /* حجم الصورة الجذاب على الهواتف */
+      .product-info { padding: 9px; gap: 6px; }
     }
 
     .floating-cart-btn {
@@ -510,7 +588,7 @@
             </select>`;
           defaultPrice = p.pricing?.kilo || p.price;
         } else {
-          optionsHTML = `<span style="font-size:12px; color:#64748b; font-weight:800;">${p.pricing?.unitLabel || 'علبة'}</span>`;
+          optionsHTML = `<span style="font-size:11.5px; color:#64748b; font-weight:800;">${p.pricing?.unitLabel || 'علبة'}</span>`;
           defaultPrice = p.pricing?.unitPrice || p.price;
         }
 
@@ -521,7 +599,10 @@
 
         return `
           <div class="product-card">
-            <img src="${imgSrc}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null; this.src='${fallbackImg}';">
+            <div class="product-img-wrapper">
+              <img src="${imgSrc}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null; this.src='${fallbackImg}';">
+              <div class="img-gradient-overlay"></div>
+            </div>
             <div class="product-info">
               <div class="product-title">${escapeHtml(p.name)}</div>
               <div class="product-controls">
