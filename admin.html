@@ -471,4 +471,64 @@ window.updateOrderStatus = async (id, status) => {
 window.addDeliveryZone = async () => {
   const name = document.getElementById("zoneNameInput").value.trim();
   const fee = Number(document.getElementById("zoneFeeInput").value);
-  if (!name || is
+  if (!name || isNaN(fee)) return alert("يرجى إدخال اسم المنطقة والتكلفة بشكل صحيح");
+
+  const storeRef = doc(db, "settings", "store");
+  const docSnap = await getDoc(storeRef);
+  let currentZones = docSnap.exists() && docSnap.data().deliveryZones ? docSnap.data().deliveryZones : [];
+
+  currentZones.push({ name, fee });
+  await setDoc(storeRef, { deliveryZones: currentZones }, { merge: true });
+  document.getElementById("zoneNameInput").value = "";
+  document.getElementById("zoneFeeInput").value = "";
+};
+
+function renderZones(zones) {
+  const container = document.getElementById("zonesListContainer");
+  container.innerHTML = zones.map((z, idx) => `
+    <div style="display:flex; justify-content:space-between; margin-bottom:5px; background:#f9f9f9; padding:8px; border-radius:5px;">
+      <span>📌 ${escapeHtml(z.name)}: <strong>${z.fee} جنيه</strong></span>
+      <button class="btn btn-danger" style="padding:2px 8px;" onclick="deleteZone(${idx})">حذف</button>
+    </div>
+  `).join("");
+}
+
+window.deleteZone = async (index) => {
+  const storeRef = doc(db, "settings", "store");
+  const docSnap = await getDoc(storeRef);
+  if (docSnap.exists() && docSnap.data().deliveryZones) {
+    let zones = docSnap.data().deliveryZones;
+    zones.splice(index, 1);
+    await setDoc(storeRef, { deliveryZones: zones }, { merge: true });
+  }
+};
+
+window.saveStoreSettings = async () => {
+  const whatsappNumber = document.getElementById("whatsappInput").value.trim();
+  const categories = document.getElementById("categoriesInput").value.split(",").map(c => c.trim()).filter(Boolean);
+
+  try {
+    await setDoc(doc(db, "settings", "store"), { whatsappNumber, categories }, { merge: true });
+    alert("تم حفظ إعدادات المتجر بنجاح");
+  } catch (e) {
+    alert("حدث خطأ في حفظ الإعدادات");
+  }
+};
+
+function renderReports() {
+  const container = document.getElementById("reportsContentContainer");
+  const totalSales = ordersData.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
+  container.innerHTML = `
+    <p>📦 <strong>إجمالي عدد المنتجات:</strong> ${productsData.length}</p>
+    <p>📋 <strong>إجمالي عدد الطلبات:</strong> ${ordersData.length}</p>
+    <p>💰 <strong>إجمالي المبيعات:</strong> ${totalSales} جنيه</p>
+  `;
+}
+
+function escapeHtml(str) {
+  return String(str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+</script>
+
+</body>
+</html>
