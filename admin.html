@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة التحكم | بيستاش دي ألب</title>
+  <title>لوحة التحكم الشاملة | بيستاش دي ألب</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -18,9 +18,9 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-    body { background: var(--bg); color: var(--text); padding: 20px 10px; direction: rtl; }
+    body { background: var(--bg); color: var(--text); padding: 20px 10px; direction: rtl; padding-bottom: 80px; }
     
-    .admin-container { max-width: 700px; margin: 0 auto; }
+    .admin-container { max-width: 800px; margin: 0 auto; }
     .header-title { text-align: center; margin-bottom: 25px; color: var(--primary); font-size: 24px; font-weight: 900; }
     
     .admin-card { 
@@ -34,31 +34,36 @@
 
     .card-title { font-size: 17px; font-weight: 900; color: var(--primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
     
-    .form-group { margin-bottom: 16px; }
+    .form-group { margin-bottom: 15px; }
     label { display: block; font-weight: 800; font-size: 13.5px; margin-bottom: 6px; color: #334155; }
-    input[type="text"], input[type="url"], select { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid var(--border); outline: none; font-weight: 700; font-size: 14px; transition: border-color 0.2s; }
-    input:focus { border-color: var(--primary); }
+    input[type="text"], input[type="url"], input[type="number"], select, textarea { 
+      width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid var(--border); outline: none; font-weight: 700; font-size: 14px; transition: border-color 0.2s; 
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--primary); }
 
     .color-picker-wrapper { display: flex; align-items: center; gap: 12px; background: #f1f5f9; padding: 10px 14px; border-radius: 12px; border: 1.5px solid var(--border); }
     input[type="color"] { border: none; width: 42px; height: 42px; border-radius: 8px; cursor: pointer; background: none; }
     .color-info { font-weight: 700; font-size: 12.5px; color: #64748b; }
 
-    .btn-save { 
-      width: 100%; padding: 15px; background: var(--primary); color: #fff; 
-      font-weight: 900; border: none; border-radius: 14px; cursor: pointer; 
-      font-size: 16px; box-shadow: 0 4px 15px rgba(17, 38, 29, 0.25); transition: transform 0.2s;
+    .btn-main { 
+      width: 100%; padding: 14px; background: var(--primary); color: #fff; 
+      font-weight: 900; border: none; border-radius: 12px; cursor: pointer; 
+      font-size: 15px; box-shadow: 0 4px 15px rgba(17, 38, 29, 0.2); transition: transform 0.2s;
     }
-    .btn-save:active { transform: scale(0.98); }
+    .btn-main:active { transform: scale(0.98); }
+
+    .item-row { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px 14px; border-radius: 10px; margin-bottom: 8px; border: 1px solid var(--border); }
+    .btn-danger { background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 12px; }
   </style>
 </head>
 <body>
 
   <div class="admin-container">
-    <h1 class="header-title">⚙️ لوحة تحكم متجر بيستاش دي ألب</h1>
+    <h1 class="header-title">⚙️ لوحة التحكم الشاملة</h1>
 
-    <!-- قسم الإعدادات الأساسية -->
+    <!-- 1. الإعدادات الأساسية والثيم -->
     <div class="admin-card">
-      <div class="card-title"><i class="fa-solid fa-store"></i> الإعدادات الأساسية</div>
+      <div class="card-title"><i class="fa-solid fa-store"></i> الإعدادات الأساسية والهيدر</div>
       <div class="form-group">
         <label>اسم المتجر</label>
         <input type="text" id="storeNameInput" placeholder="بيستاش دي ألب">
@@ -71,65 +76,98 @@
         <label>رابط صورة خلفية المنيو الكاملة (URL) 🖼️</label>
         <input type="url" id="menuBgImageInput" placeholder="https://example.com/background.jpg">
       </div>
-    </div>
 
-    <!-- قسم تخصيص الألوان والهيدر -->
-    <div class="admin-card">
-      <div class="card-title"><i class="fa-solid fa-palette"></i> تخصيص الألوان والهيدر</div>
-      
-      <!-- بطاقة تغيير لون الهيدر -->
-      <div class="form-group">
-        <label>لون مستطيل الهيدر العلوي (اسم المتجر والبحث) 🎨</label>
+      <!-- تخصيص الألوان والهيدر -->
+      <div class="form-group" style="margin-top: 20px;">
+        <label>🎨 لون مستطيل الهيدر العلوي (Header Background)</label>
         <div class="color-picker-wrapper">
           <input type="color" id="headerBgColorInput" value="#11261d">
           <span class="color-info">اختر لون شريط التحكم العلوي</span>
         </div>
       </div>
-
-      <!-- بطاقة اللون الرئيسي -->
       <div class="form-group">
         <label>اللون الرئيسي للمتجر (Primary)</label>
         <div class="color-picker-wrapper">
           <input type="color" id="primaryColorInput" value="#11261d">
-          <span class="color-info">لون الأزرار العائمة والمناطق الأساسية</span>
+          <span class="color-info">لون الأزرار والعناصر الرئيسية</span>
         </div>
       </div>
-
-      <!-- بطاقة اللون الفرعي -->
       <div class="form-group">
         <label>اللون الفرعي والتأكيدي (Accent)</label>
         <div class="color-picker-wrapper">
           <input type="color" id="accentColorInput" value="#d4af37">
-          <span class="color-info">لون الحدود، الأيقونات والنصوص المميزة</span>
+          <span class="color-info">لون الحدود والأيقونات المميزة</span>
         </div>
       </div>
-
-      <!-- بطاقة لون خلفية المنيو البديلة -->
       <div class="form-group">
-        <label>لون خلفية الصفحة (عند عدم وجود صورة)</label>
+        <label>لون الخلفية (عند عدم وجود صورة)</label>
         <div class="color-picker-wrapper">
           <input type="color" id="bgColorInput" value="#11261d">
-          <span class="color-info">لون الخلفية الأساسي للمتجر</span>
+          <span class="color-info">اللون الأساسي للخلفية</span>
         </div>
       </div>
-
-      <!-- بطاقة لون كروت المنتجات -->
       <div class="form-group">
         <label>لون كروت المنتجات</label>
         <div class="color-picker-wrapper">
           <input type="color" id="cardBgColorInput" value="#ffffff">
-          <span class="color-info">خلفية بطاقات المنتجات والأصناف</span>
+          <span class="color-info">خلفية كروت الأكل</span>
         </div>
       </div>
+
+      <button class="btn-main" onclick="window.saveStoreSettings()" style="margin-top: 15px;">💾 حفظ الإعدادات والألوان</button>
     </div>
 
-    <!-- زر حفظ التغييرات -->
-    <button class="btn-save" onclick="window.saveAllSettings()">💾 حفظ كافة التعديلات والتطبيقات</button>
+    <!-- 2. إدارة مناطق التوصيل -->
+    <div class="admin-card">
+      <div class="card-title"><i class="fa-solid fa-truck-fast"></i> مناطق التوصيل وأسعارها</div>
+      <div class="form-group"><label>اسم المنطقة</label><input type="text" id="zoneNameInput" placeholder="مثال: المعادي"></div>
+      <div class="form-group"><label>سعر التوصيل (جنيه)</label><input type="number" id="zoneFeeInput" placeholder="50"></div>
+      <button class="btn-main" onclick="window.addDeliveryZone()" style="background: #3b82f6;">➕ إضافة منطقة توصيل</button>
+      <div id="zonesListContainer" style="margin-top: 15px;"></div>
+    </div>
+
+    <!-- 3. إضافة منتج جديد -->
+    <div class="admin-card">
+      <div class="card-title"><i class="fa-solid fa-plus-circle"></i> إضافة منتج جديد للمنيو</div>
+      <div class="form-group"><label>اسم المنتج</label><input type="text" id="prodNameInput" placeholder="مثال: بقلاوة بالفستق"></div>
+      <div class="form-group"><label>القسم / التصنيف</label><input type="text" id="prodCatInput" placeholder="مثال: شرقيات"></div>
+      <div class="form-group"><label>رابط الصورة (URL)</label><input type="url" id="prodImageInput" placeholder="https://..."></div>
+      <div class="form-group"><label>وصف المنتج</label><textarea id="prodDescInput" rows="2" placeholder="مكونات المنتج..."></textarea></div>
+      
+      <div class="form-group">
+        <label>نوع البيع والتسعير</label>
+        <select id="prodSaleType" onchange="window.toggleSaleTypeFields()">
+          <option value="unit">بالقطعة / العلبة (سعر ثابت)</option>
+          <option value="weight">بالوزن (كيلو / نصف / ربع)</option>
+        </select>
+      </div>
+
+      <div id="unitPricingBox" class="form-group">
+        <label>اسم الوحدة (مثال: علبة، طبق)</label>
+        <input type="text" id="unitLabelInput" value="علبة">
+        <label style="margin-top: 8px;">سعر الوحدة (ج)</label>
+        <input type="number" id="unitPriceInput" placeholder="120">
+      </div>
+
+      <div id="weightPricingBox" class="form-group" style="display:none;">
+        <label>سعر الكيلو (ج)</label><input type="number" id="priceKilo" placeholder="300">
+        <label style="margin-top: 8px;">سعر النصف كيلو (ج)</label><input type="number" id="priceHalf" placeholder="160">
+        <label style="margin-top: 8px;">سعر الربع كيلو (ج)</label><input type="number" id="priceQuarter" placeholder="90">
+      </div>
+
+      <button class="btn-main" onclick="window.addNewProduct()" style="background: #10b981;">➕ إضافة المنتج للمنيو</button>
+    </div>
+
+    <!-- 4. قائمة المنتجات الحالية -->
+    <div class="admin-card">
+      <div class="card-title"><i class="fa-solid fa-boxes-stacked"></i> المنتجات الحالية في المنيو</div>
+      <div id="productsListContainer">جاري تحميل المنتجات...</div>
+    </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot, addDoc, deleteDoc, doc as firestoreDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBNy3ZPbr_cVJC2ZUzBVf8jxWdFlABYIiw",
@@ -143,17 +181,20 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // تحميل الإعدادات عند فتح اللوحة
+    let deliveryZones = [], allProducts = [];
+
+    // تحميل الإعدادات عند الفتح
     async function loadSettings() {
       try {
-        const docRef = doc(db, "settings", "store");
-        const docSnap = await getDoc(docRef);
-
+        const docSnap = await getDoc(doc(db, "settings", "store"));
         if (docSnap.exists()) {
           const data = docSnap.data();
           if (data.storeName) document.getElementById("storeNameInput").value = data.storeName;
           if (data.whatsappNumber) document.getElementById("whatsappInput").value = data.whatsappNumber;
-
+          if (data.deliveryZones) {
+            deliveryZones = data.deliveryZones;
+            renderZonesAdmin();
+          }
           if (data.theme) {
             const t = data.theme;
             if (t.headerBgColor) document.getElementById("headerBgColorInput").value = t.headerBgColor;
@@ -164,13 +205,10 @@
             if (t.menuBgImage) document.getElementById("menuBgImageInput").value = t.menuBgImage;
           }
         }
-      } catch (e) {
-        console.error("خطأ في تحميل البيانات:", e);
-      }
+      } catch (e) { console.error(e); }
     }
 
-    // دالة حفظ التغييرات في Firebase وفي الذاكرة المحلية لتفادي الوميض
-    window.saveAllSettings = async () => {
+    window.saveStoreSettings = async () => {
       const storeName = document.getElementById("storeNameInput").value.trim();
       const whatsappNumber = document.getElementById("whatsappInput").value.trim();
       const menuBgImage = document.getElementById("menuBgImageInput").value.trim();
@@ -186,18 +224,116 @@
 
       try {
         await setDoc(doc(db, "settings", "store"), {
-          storeName: storeName,
-          whatsappNumber: whatsappNumber,
-          theme: theme
+          storeName, whatsappNumber, deliveryZones, theme
         }, { merge: true });
 
-        // حفظ متزامن في localstorage للتطبيق الفوري وبدون وميض
         localStorage.setItem('cached_store_theme', JSON.stringify(theme));
         if (storeName) localStorage.setItem('cached_store_name', storeName);
 
-        alert("تم حفظ جميع التعديلات بنجاح! 🎉");
-      } catch (e) {
-        alert("حدث خطأ أثناء حفظ التعديلات، يرجى المحاولة مرة أخرى.");
+        alert("تم حفظ الإعدادات والثيم بنجاح! 🎉");
+      } catch(e) { alert("حدث خطأ أثناء الحفظ."); }
+    };
+
+    window.addDeliveryZone = async () => {
+      const name = document.getElementById("zoneNameInput").value.trim();
+      const fee = Number(document.getElementById("zoneFeeInput").value);
+      if(!name || isNaN(fee)) return alert("أدخل اسم المنطقة وسعر التوصيل بشكل صحيح");
+
+      deliveryZones.push({ name, fee });
+      document.getElementById("zoneNameInput").value = "";
+      document.getElementById("zoneFeeInput").value = "";
+      renderZonesAdmin();
+      await saveZonesToFirebase();
+    };
+
+    window.removeZone = async (idx) => {
+      deliveryZones.splice(idx, 1);
+      renderZonesAdmin();
+      await saveZonesToFirebase();
+    };
+
+    function renderZonesAdmin() {
+      const container = document.getElementById("zonesListContainer");
+      if(!deliveryZones.length) { container.innerHTML = "<small style='color:#64748b;'>لا توجد مناطق مضافة بعد.</small>"; return; }
+      container.innerHTML = deliveryZones.map((z, i) => `
+        <div class="item-row">
+          <span><strong>${z.name}</strong> - ${z.fee} جنيه</span>
+          <button class="btn-danger" onclick="window.removeZone(${i})">حذف</button>
+        </div>
+      `).join("");
+    }
+
+    async function saveZonesToFirebase() {
+      await setDoc(doc(db, "settings", "store"), { deliveryZones }, { merge: true });
+    }
+
+    window.toggleSaleTypeFields = () => {
+      const type = document.getElementById("prodSaleType").value;
+      if(type === 'weight') {
+        document.getElementById("weightPricingBox").style.display = "block";
+        document.getElementById("unitPricingBox").style.display = "none";
+      } else {
+        document.getElementById("weightPricingBox").style.display = "none";
+        document.getElementById("unitPricingBox").style.display = "block";
+      }
+    };
+
+    window.addNewProduct = async () => {
+      const name = document.getElementById("prodNameInput").value.trim();
+      const category = document.getElementById("prodCatInput").value.trim() || "عام";
+      const image = document.getElementById("prodImageInput").value.trim();
+      const description = document.getElementById("prodDescInput").value.trim();
+      const saleType = document.getElementById("prodSaleType").value;
+
+      if(!name) return alert("يرجى إدخال اسم المنتج!");
+
+      let pricing = {}, price = 0;
+      if(saleType === 'weight') {
+        pricing = {
+          kilo: Number(document.getElementById("priceKilo").value) || 0,
+          half: Number(document.getElementById("priceHalf").value) || 0,
+          quarter: Number(document.getElementById("priceQuarter").value) || 0
+        };
+        price = pricing.kilo;
+      } else {
+        pricing = {
+          unitLabel: document.getElementById("unitLabelInput").value.trim() || "علبة",
+          unitPrice: Number(document.getElementById("unitPriceInput").value) || 0
+        };
+        price = pricing.unitPrice;
+      }
+
+      try {
+        await addDoc(collection(db, "products"), {
+          name, category, image, description, saleType, pricing, price, createdAt: Date.now(), hidden: false
+        });
+        alert("تمت إضافة المنتج بنجاح! 🍰");
+        document.getElementById("prodNameInput").value = "";
+        document.getElementById("prodImageInput").value = "";
+        document.getElementById("prodDescInput").value = "";
+      } catch(e) { alert("خطأ في إضافة المنتج."); }
+    };
+
+    onSnapshot(collection(db, "products"), snap => {
+      allProducts = [];
+      snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+      renderProductsAdmin();
+    });
+
+    function renderProductsAdmin() {
+      const container = document.getElementById("productsListContainer");
+      if(!allProducts.length) { container.innerHTML = "<small style='color:#64748b;'>لا توجد منتجات حالياً.</small>"; return; }
+      container.innerHTML = allProducts.map(p => `
+        <div class="item-row">
+          <div><strong>${p.name}</strong> <small style="color:#64748b">(${p.category})</small></div>
+          <button class="btn-danger" onclick="window.deleteProduct('${p.id}')">حذف</button>
+        </div>
+      `).join("");
+    }
+
+    window.deleteProduct = async (id) => {
+      if(confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
+        await deleteDoc(doc(db, "products", id));
       }
     };
 
