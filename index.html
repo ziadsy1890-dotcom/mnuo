@@ -61,7 +61,6 @@
       --card-text: #0f172a;
       
       --card-padding: 14px;
-      --card-img-size: 100px;
       --card-title-size: 16px;
       
       --cat-bg: rgba(255, 255, 255, 0.9);
@@ -146,7 +145,7 @@
 
     .products-grid { 
       display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
       gap: 16px; 
     }
     
@@ -156,19 +155,35 @@
       -webkit-backdrop-filter: blur(10px);
       border-radius: var(--radius); 
       border: 1.5px solid rgba(255, 255, 255, 0.7);
-      display: flex; padding: var(--card-padding); gap: 14px; align-items: center; box-shadow: var(--card-shadow);
-      color: var(--card-text); transition: all 0.25s ease; position: relative; overflow: hidden; width: 100%;
+      display: flex; 
+      flex-direction: column;
+      padding: 14px; 
+      gap: 12px; 
+      box-shadow: var(--card-shadow);
+      color: var(--card-text); 
+      transition: all 0.25s ease; 
+      position: relative; 
+      overflow: hidden; 
+      width: 100%;
     }
     .product-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); }
-    .product-card img { width: var(--card-img-size); height: var(--card-img-size); object-fit: cover; border-radius: 14px; background: #e2e8f0; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
     
-    .product-info { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-    .product-title { font-size: var(--card-title-size); font-weight: 900; color: var(--card-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .product-desc { font-size: 11.5px; color: var(--text-muted); line-height: 1.4; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-weight: 600; }
+    .product-card img { 
+      width: 100%; 
+      height: 180px; 
+      object-fit: cover; 
+      border-radius: 12px; 
+      background: #e2e8f0; 
+      border: 1px solid rgba(0,0,0,0.1); 
+    }
     
-    .product-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; gap: 6px; flex-wrap: wrap; }
-    .unit-select { padding: 6px 10px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 12px; background: #ffffff; font-weight: 800; color: #0f172a; outline: none; cursor: pointer; }
-    .price-tag { font-size: 16.5px; font-weight: 900; color: var(--primary); white-space: nowrap; }
+    .product-info { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .product-title { font-size: 16px; font-weight: 900; color: var(--card-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .product-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; height: 34px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-weight: 600; }
+    
+    .product-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; gap: 8px; }
+    .unit-select { padding: 6px 8px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-size: 12px; background: #ffffff; font-weight: 800; color: #0f172a; outline: none; cursor: pointer; }
+    .price-tag { font-size: 16px; font-weight: 900; color: var(--primary); white-space: nowrap; }
     .add-btn { 
       background: var(--primary); color: #fff; padding: 8px 14px; border-radius: 10px; 
       font-size: 12.5px; font-weight: 900; border: none; cursor: pointer; transition: all 0.2s ease; 
@@ -182,8 +197,7 @@
       .search-bar input { padding: 8px 12px; font-size: 12px; }
       .whatsapp-header-btn { padding: 7px 10px; font-size: 11px; }
       .products-grid { grid-template-columns: 1fr; gap: 12px; }
-      .product-card { padding: 12px; gap: 12px; }
-      :root { --card-img-size: 85px; --card-title-size: 15px; }
+      .product-card { padding: 12px; }
     }
 
     .floating-cart-btn {
@@ -483,7 +497,6 @@
         return; 
       }
 
-      // اعتماد رابط الصورة من إعدادات المتجر في لوحة التحكم حصراً
       const fallbackImg = storeSettings.defaultImage || "";
 
       grid.innerHTML = filtered.map(p => {
@@ -511,12 +524,12 @@
             <img src="${imgSrc}" alt="${escapeHtml(p.name)}" onerror="this.onerror=null; this.src='${fallbackImg}';">
             <div class="product-info">
               <div class="product-title">${escapeHtml(p.name)}</div>
-              <div class="product-desc">${escapeHtml(p.description || '')}</div>
               <div class="product-controls">
                 ${optionsHTML}
                 <span class="price-tag" id="price-${p.id}">${defaultPrice} ج</span>
                 <button class="add-btn" onclick="window.addToCart('${p.id}')">إضافة 🛒</button>
               </div>
+              <div class="product-desc">${escapeHtml(p.description || '')}</div>
             </div>
           </div>`;
       }).join("");
