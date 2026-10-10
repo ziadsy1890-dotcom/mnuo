@@ -80,14 +80,57 @@
     .price-tag { font-size: 15px; font-weight: 800; color: var(--primary); }
     .add-btn { background: var(--primary); color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; }
 
-    /* Floating Cart */
+    /* Floating Circular Cart Button */
     .floating-cart-btn {
-      position: fixed; bottom: 15px; left: 15px; right: 15px; max-width: 450px; margin: 0 auto;
-      background: var(--primary); color: #fff; padding: 12px 20px; border-radius: 30px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: space-between;
-      z-index: 999; font-weight: 700; cursor: pointer; border: 1px solid var(--accent);
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 65px;
+      height: 65px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      cursor: pointer;
+      border: 2px solid var(--accent);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .cart-badge { background: var(--accent); color: #111; padding: 2px 8px; border-radius: 12px; font-size: 12px; }
+    .floating-cart-btn:active {
+      transform: scale(0.92);
+    }
+    .cart-icon-container {
+      position: relative;
+      font-size: 22px;
+      line-height: 1;
+      margin-top: -2px;
+    }
+    .cart-badge {
+      position: absolute;
+      top: -8px;
+      right: -12px;
+      background: var(--accent);
+      color: #111;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 800;
+      border: 1px solid #fff;
+    }
+    .cart-total-text {
+      font-size: 9px;
+      font-weight: 800;
+      margin-top: 3px;
+      color: #f3f4f6;
+      white-space: nowrap;
+      max-width: 55px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     /* Modals & Drawers */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; justify-content: flex-end; }
@@ -128,9 +171,13 @@
     </div>
   </div>
 
+  <!-- Circular Floating Cart Button -->
   <div class="floating-cart-btn" onclick="window.openCartDrawer()">
-    <div>🛒 السلة <span class="cart-badge" id="cartCount">0</span></div>
-    <div id="cartTotal">0 جنيه</div>
+    <div class="cart-icon-container">
+      🛒
+      <span class="cart-badge" id="cartCount">0</span>
+    </div>
+    <div class="cart-total-text" id="cartTotal">0 ج</div>
   </div>
 
   <!-- Cart Modal -->
@@ -207,7 +254,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let allProducts = [], cart = [], deliveryZones = [], whatsappNumber = "201140653708";
+    let allProducts = [], cart = [], deliveryZones = [], whatsappNumber = "00201140653708";
     let selectedCat = "الكل", currentFee = 0, dynamicCategories = [];
 
     onAuthStateChanged(auth, user => {
@@ -246,7 +293,6 @@
       renderProducts();
     });
 
-    // استماع مباشر لتغييرات مظهر وإعدادات المتجر
     onSnapshot(doc(db, "settings", "store"), dSnap => {
       if(dSnap.exists()){
         const data = dSnap.data();
@@ -261,7 +307,6 @@
           extractCategories(data.categories);
         }
 
-        // تطبيق تخصيص المظهر ديناميكياً
         if(data.theme) {
           applyDynamicTheme(data.theme);
         }
@@ -421,7 +466,7 @@
       const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
       const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       document.getElementById("cartCount").innerText = totalCount;
-      document.getElementById("cartTotal").innerText = subtotal + " جنيه";
+      document.getElementById("cartTotal").innerText = subtotal + " ج";
       document.getElementById("subtotalText").innerText = subtotal + " جنيه";
       document.getElementById("deliveryText").innerText = currentFee + " جنيه";
       document.getElementById("grandTotalText").innerText = (subtotal + currentFee) + " جنيه";
@@ -498,12 +543,19 @@
         msg += "التوصيل: " + currentFee + " ج\n";
         msg += "الإجمالي النهائي: " + grandTotal + " ج";
 
+        // تنظيف وحساب الرقم تلقائياً بجميع حالاته (سواء كتب 0020 أو +20 أو 01)
         let cleanPhone = whatsappNumber.replace(/[^0-9]/g, '');
-        while(cleanPhone.startsWith('0')) {
-          cleanPhone = cleanPhone.substring(1);
-        }
-        if(!cleanPhone.startsWith('20')) {
-          cleanPhone = '20' + cleanPhone;
+        
+        // إذا بدأ الرقم بـ 0020، يتم تحويل البداية إلى 20
+        if (cleanPhone.startsWith('0020')) {
+          cleanPhone = cleanPhone.substring(2);
+        } else {
+          while(cleanPhone.startsWith('0')) {
+            cleanPhone = cleanPhone.substring(1);
+          }
+          if(!cleanPhone.startsWith('20')) {
+            cleanPhone = '20' + cleanPhone;
+          }
         }
 
         const encodedMessage = encodeURIComponent(msg);
