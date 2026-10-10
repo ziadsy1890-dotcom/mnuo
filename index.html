@@ -206,7 +206,7 @@
     const db = getFirestore(app);
 
     let allProducts = [], cart = [], deliveryZones = [], whatsappNumber = "201140653708";
-    let selectedCat = "الكل", currentFee = 0, cachedCategories = [];
+    let selectedCat = "الكل", currentFee = 0, dynamicCategories = [];
 
     onAuthStateChanged(auth, user => {
       const btn = document.getElementById("adminKeyBtn");
@@ -238,10 +238,13 @@
       }
     };
 
+    // جلب المنتجات وتوليد الأقسام ديناميكياً منها ومن الإعدادات
     onSnapshot(collection(db, "products"), snap => {
       allProducts = []; 
       snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
       allProducts.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      
+      extractCategories();
       renderProducts();
     });
 
@@ -249,19 +252,31 @@
       if(dSnap.exists()){
         const data = dSnap.data();
         if(data.whatsappNumber) whatsappNumber = data.whatsappNumber;
-        if(data.categories && Array.isArray(data.categories)) {
-          const newCatsJSON = JSON.stringify(data.categories);
-          if(newCatsJSON !== JSON.stringify(cachedCategories)) {
-            cachedCategories = data.categories;
-            renderCategories(cachedCategories);
-          }
-        }
         if(data.deliveryZones) {
           deliveryZones = data.deliveryZones;
           renderZonesSelect();
         }
+        if(data.categories) {
+          // دمج الأقسام الواردة من الإعدادات
+          extractCategories(data.categories);
+        }
       }
     });
+
+    function extractCategories(settingsCats = []) {
+      let set = new Set();
+      // إضافة الأقسام الموجودة أصلاً في المنتجات المضافة
+      allProducts.forEach(p => { if(p.category) set.add(p.category.trim()); });
+      // إضافة الأقسام القادمة من الإعدادات إن وجدت
+      if(Array.isArray(settingsCats)) {
+        settingsCats.forEach(c => { if(c.trim()) set.add(c.trim()); });
+      } else if(typeof settingsCats === 'string') {
+        settingsCats.split(',').forEach(c => { if(c.trim()) set.add(c.trim()); });
+      }
+      
+      dynamicCategories = Array.from(set);
+      renderCategories(dynamicCategories);
+    }
 
     function renderCategories(cats) {
       const bar = document.getElementById("categoriesBar");
@@ -285,7 +300,7 @@
       const query = document.getElementById("searchInput").value.trim().toLowerCase();
       
       const filtered = allProducts.filter(p => {
-        const matchCategory = (selectedCat === "الكل" || p.category === selectedCat);
+        const matchCategory = (selectedCat === "الكل" || (p.category && p.category.trim() === selectedCat));
         const matchSearch = p.name.toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query));
         return !p.hidden && matchCategory && matchSearch;
       });
