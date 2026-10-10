@@ -213,7 +213,7 @@
     </div>
   </header>
 
-  <!-- 1. Store Compact View -->
+  <!-- 1. Store View -->
   <div id="storeView">
     <div class="container">
       <div class="categories-bar" id="categoriesBar">
@@ -234,7 +234,7 @@
     </div>
   </div>
 
-  <!-- 2. Dashboard Compact View -->
+  <!-- 2. Dashboard View -->
   <div id="adminView" style="display: none;">
     <div class="container" style="max-width: 900px;">
       
@@ -345,37 +345,6 @@
     </div>
   </div>
 
-  <!-- Checkout Drawer -->
-  <div class="modal-overlay" id="checkoutModal">
-    <div class="modal-drawer">
-      <div class="drawer-header">
-        <h3>📝 إتمام الطلب</h3>
-        <button onclick="closeCheckoutDrawer()" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;">✕</button>
-      </div>
-      <div class="drawer-body">
-        <div class="form-group">
-          <label>الاسم بالكامل *</label>
-          <input type="text" id="custName" placeholder="الاسم">
-        </div>
-        <div class="form-group">
-          <label>رقم الهاتف *</label>
-          <input type="tel" id="custPhone" placeholder="01xxxxxxxxx">
-        </div>
-        <div class="form-group">
-          <label>منطقة التوصيل *</label>
-          <select id="custZone" onchange="calculateDelivery()"></select>
-        </div>
-        <div class="form-group">
-          <label>العنوان التفصيلي *</label>
-          <textarea id="custAddress" rows="2" placeholder="الشارع / رقم العمارة"></textarea>
-        </div>
-      </div>
-      <div class="drawer-footer">
-        <button class="btn btn-success" id="submitOrderBtn" style="width:100%;" onclick="processOrder()">📲 تأكيد وإرسال للواتساب</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Product Form Modal -->
   <div class="modal-overlay" id="productModal" style="justify-content:center; align-items:center; padding:12px;">
     <div class="modal-drawer" style="height:auto; max-height:85vh; border-radius:10px; max-width:480px;">
@@ -448,26 +417,24 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
+    // إعدادات المشروع الحقيقي الموحد
     const firebaseConfig = {
-      apiKey: "AIzaSyBoQHatPvFXnmCuI1M1UJcUWWQsB7vk3g0",
-      authDomain: "pistach-d-alep.firebaseapp.com",
-      projectId: "pistach-d-alep",
-      storageBucket: "pistach-d-alep.firebasestorage.app",
-      messagingSenderId: "288943885593",
-      appId: "1:288943885593:web:4737041244be376c274988"
+      apiKey: "AIzaSyBNy3ZPbr_cVJC2ZUzBVf8jxWdFlABYIiw",
+      authDomain: "pista-7a180.firebaseapp.com",
+      projectId: "pista-7a180",
+      storageBucket: "pista-7a180.firebasestorage.app",
+      messagingSenderId: "581989151860",
+      appId: "1:581989151860:web:ffb4a82297933ac6f90d21",
+      measurementId: "G-MZMW61H7QP"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let products = [];
+    let productsData = [];
     let ordersData = [];
     let currentCategories = ["حلويات", "مكسرات", "مشروبات", "فواكه مجففة"];
-    let storeSettings = { whatsappNumber: "201140653708", deliveryZones: [] };
-    let cart = JSON.parse(localStorage.getItem('pistach_cart')) || [];
-    let selectedCategory = 'الكل';
-    let currentDeliveryFee = 0;
 
     window.showView = (viewName) => {
       document.getElementById('storeView').style.display = viewName === 'storeView' ? 'block' : 'none';
@@ -481,16 +448,6 @@
       showView(isStoreVisible ? 'adminView' : 'storeView');
     };
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById("adminAuthPanel").style.display = "none";
-        document.getElementById("adminDashboard").style.display = "block";
-      } else {
-        document.getElementById("adminAuthPanel").style.display = "block";
-        document.getElementById("adminDashboard").style.display = "none";
-      }
-    });
-
     window.adminLogin = async () => {
       const email = document.getElementById("adminEmail").value.trim();
       const pass = document.getElementById("adminPassword").value;
@@ -498,7 +455,7 @@
       try {
         await signInWithEmailAndPassword(auth, email, pass);
         errEl.style.display = "none";
-      } catch (e) {
+      } catch (err) {
         errEl.innerText = "بيانات الدخول غير صحيحة";
         errEl.style.display = "block";
       }
@@ -506,11 +463,21 @@
 
     window.adminLogout = () => signOut(auth);
 
-    // Realtime listeners
-    function initListeners() {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("adminAuthPanel").style.display = "none";
+        document.getElementById("adminDashboard").style.display = "block";
+        initRealtimeListeners();
+      } else {
+        document.getElementById("adminAuthPanel").style.display = "block";
+        document.getElementById("adminDashboard").style.display = "none";
+      }
+    });
+
+    function initRealtimeListeners() {
       onSnapshot(collection(db, "products"), (snapshot) => {
-        products = [];
-        snapshot.forEach(docSnap => products.push({ id: docSnap.id, ...docSnap.data() }));
+        productsData = [];
+        snapshot.forEach(docSnap => productsData.push({ id: docSnap.id, ...docSnap.data() }));
         renderStoreProducts();
         renderAdminProducts();
         renderReports();
@@ -526,393 +493,57 @@
       onSnapshot(doc(db, "settings", "store"), (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data();
-          if (data.whatsappNumber) storeSettings.whatsappNumber = data.whatsappNumber;
-          if (data.deliveryZones) {
-            storeSettings.deliveryZones = data.deliveryZones;
-            renderAdminZones();
-            updateZoneDropdown();
-          }
+          if (data.whatsappNumber) document.getElementById("whatsappInput").value = data.whatsappNumber;
           if (data.categories) {
             currentCategories = data.categories;
-            renderCategoryBar();
+            document.getElementById("categoriesInput").value = currentCategories.join(", ");
             updateCategorySelect();
           }
         }
       });
     }
 
-    // Store Logic
-    function renderCategoryBar() {
-      const bar = document.getElementById("categoriesBar");
-      bar.innerHTML = `<button class="cat-btn ${selectedCategory === 'الكل' ? 'active' : ''}" onclick="filterCategory('الكل', this)">الكل</button>` +
-        currentCategories.map(c => `<button class="cat-btn ${selectedCategory === c ? 'active' : ''}" onclick="filterCategory('${c}', this)">${c}</button>`).join("");
-    }
-
-    window.filterCategory = (cat, btn) => {
-      selectedCategory = cat;
-      document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
-      if(btn) btn.classList.add("active");
-      renderStoreProducts();
-    };
-
-    window.handleSearch = () => renderStoreProducts();
-
     function renderStoreProducts() {
-      const container = document.getElementById("productsGrid");
-      const searchVal = document.getElementById("searchInput").value.trim().toLowerCase();
-
-      let visible = products.filter(p => !p.hidden);
-
-      if (selectedCategory !== 'الكل') {
-        visible = visible.filter(p => p.category === selectedCategory);
-      }
-      if (searchVal) {
-        visible = visible.filter(p => p.name?.toLowerCase().includes(searchVal) || p.category?.toLowerCase().includes(searchVal));
-      }
-
-      if (!visible.length) {
-        container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #6b7280;">لا توجد منتجات مطابقة</div>`;
+      const grid = document.getElementById("productsGrid");
+      if (!productsData.length) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 30px;">لا توجد منتجات حالياً.</div>';
         return;
       }
-
-      container.innerHTML = visible.map(p => {
-        const isWeight = p.saleType === "weight";
-        let options = [];
-        if (isWeight) {
-          if (p.pricing?.quarter) options.push({ label: 'ربع كيلو (250غ)', price: p.pricing.quarter });
-          if (p.pricing?.half) options.push({ label: 'نصف كيلو (500غ)', price: p.pricing.half });
-          if (p.pricing?.kilo || p.price) options.push({ label: 'كيلو (1000غ)', price: p.pricing?.kilo || p.price });
-        } else {
-          const uLabel = p.pricing?.unitLabel || 'قطعة';
-          const uPrice = p.pricing?.unitPrice || p.price || 0;
-          options.push({ label: uLabel, price: uPrice });
-        }
-
-        const initialPrice = options[0]?.price || 0;
-
-        return `
-          <div class="product-card">
-            <img src="${p.images?.[0] || p.image || 'https://via.placeholder.com/85'}" alt="">
-            <div class="product-info">
-              <div class="product-title">${escapeHtml(p.name)}</div>
-              <div class="product-desc">${escapeHtml(p.description || '')}</div>
-              <div class="product-controls">
-                ${options.length > 1 ? `
-                  <select class="unit-select" id="opt_${p.id}" onchange="updateCardPrice('${p.id}')">
-                    ${options.map((o, idx) => `<option value="${idx}" data-price="${o.price}">${o.label}</option>`).join('')}
-                  </select>
-                ` : `<span style="font-size:12px; color:#6b7280;">${options[0]?.label || ''}</span>`}
-                <span class="price-tag" id="price_${p.id}">${initialPrice} ج</span>
-              </div>
-              <button class="add-to-cart-btn" style="margin-top:6px;" onclick="addToCart('${p.id}')">➕ أضف للسلة</button>
+      grid.innerHTML = productsData.filter(p => !p.hidden).map(p => `
+        <div class="product-card">
+          <img src="${p.images?.[0] || p.image || 'https://via.placeholder.com/85'}" alt="">
+          <div class="product-info">
+            <div class="product-title">${escapeHtml(p.name)}</div>
+            <div class="product-desc">${escapeHtml(p.description || '')}</div>
+            <div class="product-controls">
+              <span class="price-tag">${p.price || 0} ج</span>
+              <button class="add-to-cart-btn">إضافة 🛒</button>
             </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    window.updateCardPrice = (pId) => {
-      const sel = document.getElementById(`opt_${pId}`);
-      if (!sel) return;
-      const price = sel.options[sel.selectedIndex].getAttribute("data-price");
-      document.getElementById(`price_${pId}`).innerText = `${price} ج`;
-    };
-
-    // Cart Logic
-    window.addToCart = (pId) => {
-      const p = products.find(item => item.id === pId);
-      if (!p) return;
-
-      const sel = document.getElementById(`opt_${pId}`);
-      let optionLabel = '', unitPrice = 0;
-
-      if (p.saleType === "weight") {
-        let opts = [];
-        if (p.pricing?.quarter) opts.push({ label: 'ربع كيلو (250غ)', price: p.pricing.quarter });
-        if (p.pricing?.half) opts.push({ label: 'نصف كيلو (500غ)', price: p.pricing.half });
-        if (p.pricing?.kilo || p.price) opts.push({ label: 'كيلو (1000غ)', price: p.pricing?.kilo || p.price });
-        const idx = sel ? sel.value : 0;
-        optionLabel = opts[idx].label;
-        unitPrice = opts[idx].price;
-      } else {
-        optionLabel = p.pricing?.unitLabel || 'قطعة';
-        unitPrice = p.pricing?.unitPrice || p.price || 0;
-      }
-
-      const cartKey = `${pId}_${optionLabel}`;
-      const existing = cart.find(item => item.key === cartKey);
-
-      if (existing) {
-        existing.quantity += 1;
-      } else {
-        cart.push({
-          key: cartKey,
-          id: pId,
-          name: p.name,
-          optionLabel,
-          unitPrice,
-          quantity: 1
-        });
-      }
-
-      saveCart();
-      openCartDrawer();
-    };
-
-    function saveCart() {
-      localStorage.setItem('pistach_cart', JSON.stringify(cart));
-      updateCartBadge();
-    }
-
-    function updateCartBadge() {
-      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-      const total = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
-      document.getElementById("cartCountBadge").innerText = count;
-      document.getElementById("cartTotalBadge").innerText = `${total} جنيه`;
-    }
-
-    window.openCartDrawer = () => {
-      renderCartDrawer();
-      document.getElementById("cartModal").style.display = "flex";
-    };
-    window.closeCartDrawer = () => document.getElementById("cartModal").style.display = "none";
-
-    function renderCartDrawer() {
-      const container = document.getElementById("cartItemsContainer");
-      if (!cart.length) {
-        container.innerHTML = `<p style="text-align:center; padding:30px; color:#9ca3af;">السلة فارغة حالياً</p>`;
-        updateCartTotals();
-        return;
-      }
-
-      container.innerHTML = cart.map((item, idx) => `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #eee;">
-          <div>
-            <strong>${escapeHtml(item.name)}</strong>
-            <div style="font-size:11px; color:#6b7280;">${item.optionLabel} - ${item.unitPrice} ج</div>
-          </div>
-          <div style="display:flex; align-items:center; gap:6px;">
-            <button class="btn btn-secondary" style="padding:2px 6px;" onclick="changeCartQty(${idx}, -1)">-</button>
-            <span>${item.quantity}</span>
-            <button class="btn btn-secondary" style="padding:2px 6px;" onclick="changeCartQty(${idx}, 1)">+</button>
-            <button class="btn btn-danger" style="padding:2px 6px;" onclick="removeCartItem(${idx})">🗑️</button>
           </div>
         </div>
       `).join("");
-
-      updateCartTotals();
     }
-
-    window.changeCartQty = (idx, delta) => {
-      cart[idx].quantity += delta;
-      if (cart[idx].quantity <= 0) cart.splice(idx, 1);
-      saveCart();
-      renderCartDrawer();
-    };
-
-    window.removeCartItem = (idx) => {
-      cart.splice(idx, 1);
-      saveCart();
-      renderCartDrawer();
-    };
-
-    function updateCartTotals() {
-      const subtotal = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
-      const grandTotal = subtotal + currentDeliveryFee;
-      document.getElementById("cartSubtotal").innerText = `${subtotal} جنيه`;
-      document.getElementById("cartDeliveryFee").innerText = `${currentDeliveryFee} جنيه`;
-      document.getElementById("cartGrandTotal").innerText = `${grandTotal} جنيه`;
-    }
-
-    // Checkout
-    window.showCheckoutForm = () => {
-      if (!cart.length) return alert("السلة فارغة!");
-      closeCartDrawer();
-      updateZoneDropdown();
-      document.getElementById("checkoutModal").style.display = "flex";
-    };
-    window.closeCheckoutDrawer = () => document.getElementById("checkoutModal").style.display = "none";
-
-    function updateZoneDropdown() {
-      const sel = document.getElementById("custZone");
-      if (!sel) return;
-      sel.innerHTML = `<option value="">اختر المنطقة</option>` +
-        storeSettings.deliveryZones.map((z, idx) => `<option value="${idx}">${z.name} (${z.fee} ج)</option>`).join("");
-    }
-
-    window.calculateDelivery = () => {
-      const sel = document.getElementById("custZone");
-      const idx = sel.value;
-      if (idx !== "") {
-        currentDeliveryFee = Number(storeSettings.deliveryZones[idx].fee);
-      } else {
-        currentDeliveryFee = 0;
-      }
-      updateCartTotals();
-    };
-
-    window.processOrder = async () => {
-      const name = document.getElementById("custName").value.trim();
-      const phone = document.getElementById("custPhone").value.trim();
-      const address = document.getElementById("custAddress").value.trim();
-      const zoneIdx = document.getElementById("custZone").value;
-
-      if (!name || !phone || !address || zoneIdx === "") return alert("يرجى ملء جميع البيانات المطلوب حسابها");
-
-      const zoneObj = storeSettings.deliveryZones[zoneIdx];
-      const subtotal = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
-      const grandTotal = subtotal + Number(zoneObj.fee);
-
-      const orderPayload = {
-        customer: { name, phone, address, zone: zoneObj.name },
-        items: cart,
-        subtotal,
-        deliveryFee: Number(zoneObj.fee),
-        grandTotal,
-        status: "pending",
-        createdAt: Date.now()
-      };
-
-      try {
-        const docRef = await addDoc(collection(db, "orders"), orderPayload);
-        alert("تم إرسال طلبك بنجاح!");
-
-        let msg = `*طلب جديد من المتجر* 🍰\n`;
-        msg += `رقم الطلب: #${docRef.id.slice(0, 6)}\n`;
-        msg += `الاسم: ${name}\nالهاتف: ${phone}\nالمنطقة: ${zoneObj.name}\nالعنوان: ${address}\n\n`;
-        msg += `*المنتجات:*\n`;
-        cart.forEach(i => { msg += `- ${i.name} (${i.optionLabel}) × ${i.quantity} = ${i.unitPrice * i.quantity} ج\n`; });
-        msg += `\nالمجموع: ${subtotal} ج\nالتوصيل: ${zoneObj.fee} ج\n*الإجمالي: ${grandTotal} ج*`;
-
-        const waUrl = `https://wa.me/${storeSettings.whatsappNumber}?text=${encodeURIComponent(msg)}`;
-        cart = [];
-        saveCart();
-        closeCheckoutDrawer();
-        window.open(waUrl, '_blank');
-      } catch (e) {
-        alert("حدث خطأ أثناء إتمام الطلب");
-      }
-    };
-
-    // Admin Dashboard Logic
-    window.switchAdminTab = (tabId, btn) => {
-      document.querySelectorAll(".tab-section").forEach(t => t.classList.remove("active"));
-      document.querySelectorAll(".admin-tabs button").forEach(b => b.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
-      btn.classList.add("active");
-    };
 
     function renderAdminProducts() {
       const container = document.getElementById("adminProductsContainer");
-      if (!products.length) {
+      if (!productsData.length) {
         container.innerHTML = "<p>لا توجد منتجات مسجلة.</p>";
         return;
       }
-
-      container.innerHTML = products.map(p => `
+      container.innerHTML = productsData.map(p => `
         <div class="product-row">
           <img src="${p.images?.[0] || p.image || 'https://via.placeholder.com/60'}" alt="">
           <div style="flex:1;">
-            <strong>${escapeHtml(p.name)}</strong> <small>(${p.category || 'عام'})</small><br>
-            <span class="badge ${p.hidden ? 'badge-hidden' : 'badge-visible'}">${p.hidden ? 'مخفي' : 'ظاهر'}</span>
+            <strong>${escapeHtml(p.name)}</strong><br>
+            <small>القسم: ${p.category || 'عام'}</small>
           </div>
-          <div style="display:flex; gap:4px;">
-            <button class="btn btn-warning" onclick="openProductModal('${p.id}')">✏️</button>
-            <button class="btn btn-secondary" onclick="toggleHideProduct('${p.id}', ${!p.hidden})">${p.hidden ? '👁️' : '🚫'}</button>
-            <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">🗑️</button>
+          <div>
+            <button class="btn btn-warning" onclick="openProductModal('${p.id}')">تعديل</button>
+            <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">حذف</button>
           </div>
         </div>
       `).join("");
     }
-
-    window.toggleHideProduct = async (id, hidden) => updateDoc(doc(db, "products", id), { hidden });
-    window.deleteProduct = async (id) => { if(confirm("هل تريد الحذف؟")) await deleteDoc(doc(db, "products", id)); };
-
-    window.openProductModal = (id = null) => {
-      updateCategorySelect();
-      document.getElementById("productModal").style.display = "flex";
-
-      if (id) {
-        const p = products.find(item => item.id === id);
-        document.getElementById("modalTitle").innerText = "تعديل المنتج";
-        document.getElementById("editProductId").value = id;
-        document.getElementById("pName").value = p.name || "";
-        document.getElementById("pCategory").value = p.category || currentCategories[0];
-        document.getElementById("pSaleType").value = p.saleType || "weight";
-        document.getElementById("pPriceQuarter").value = p.pricing?.quarter || "";
-        document.getElementById("pPriceHalf").value = p.pricing?.half || "";
-        document.getElementById("pPriceKilo").value = p.pricing?.kilo || p.price || "";
-        document.getElementById("pUnitLabel").value = p.pricing?.unitLabel || "";
-        document.getElementById("pUnitPrice").value = p.pricing?.unitPrice || p.price || "";
-        document.getElementById("pStock").value = p.stock ?? 100;
-        document.getElementById("pMaxQuantity").value = p.maxQuantity ?? 10;
-        document.getElementById("pDescription").value = p.description || "";
-        document.getElementById("pImage").value = p.images?.[0] || p.image || "";
-      } else {
-        document.getElementById("modalTitle").innerText = "إضافة منتج";
-        document.getElementById("editProductId").value = "";
-        document.getElementById("pName").value = "";
-        document.getElementById("pPriceQuarter").value = "";
-        document.getElementById("pPriceHalf").value = "";
-        document.getElementById("pPriceKilo").value = "";
-        document.getElementById("pUnitLabel").value = "";
-        document.getElementById("pUnitPrice").value = "";
-        document.getElementById("pDescription").value = "";
-        document.getElementById("pImage").value = "";
-      }
-      togglePricingFields();
-    };
-
-    window.closeProductModal = () => document.getElementById("productModal").style.display = "none";
-
-    window.togglePricingFields = () => {
-      const saleType = document.getElementById("pSaleType").value;
-      document.getElementById("weightFields").style.display = saleType === "weight" ? "block" : "none";
-      document.getElementById("unitFields").style.display = saleType === "unit" ? "block" : "none";
-    };
-
-    window.saveProduct = async () => {
-      const id = document.getElementById("editProductId").value;
-      const name = document.getElementById("pName").value.trim();
-      const category = document.getElementById("pCategory").value;
-      const saleType = document.getElementById("pSaleType").value;
-      const stock = Number(document.getElementById("pStock").value);
-      const maxQuantity = Number(document.getElementById("pMaxQuantity").value);
-      const description = document.getElementById("pDescription").value.trim();
-      const image = document.getElementById("pImage").value.trim();
-
-      if (!name) return alert("ادخل اسم المنتج");
-
-      let payload = { name, category, saleType, stock, maxQuantity, description, images: [image], updatedAt: Date.now() };
-
-      if (saleType === "weight") {
-        const kilo = Number(document.getElementById("pPriceKilo").value);
-        const half = Number(document.getElementById("pPriceHalf").value);
-        const quarter = Number(document.getElementById("pPriceQuarter").value);
-        if (!kilo) return alert("يرجى إدخال سعر الكيلو");
-        payload.pricing = { kilo, half: half || kilo / 2, quarter: quarter || kilo / 4 };
-        payload.price = kilo;
-      } else {
-        const uPrice = Number(document.getElementById("pUnitPrice").value);
-        const uLabel = document.getElementById("pUnitLabel").value.trim() || "قطعة";
-        if (!uPrice) return alert("يرجى إدخال السعر");
-        payload.pricing = { unitPrice: uPrice, unitLabel: uLabel };
-        payload.price = uPrice;
-      }
-
-      try {
-        if (id) {
-          await updateDoc(doc(db, "products", id), payload);
-        } else {
-          payload.hidden = false;
-          payload.createdAt = Date.now();
-          await addDoc(collection(db, "products"), payload);
-        }
-        closeProductModal();
-      } catch (e) {
-        alert("خطأ أثناء حفظ المنتج");
-      }
-    };
 
     function renderAdminOrders() {
       const container = document.getElementById("adminOrdersContainer");
@@ -920,92 +551,47 @@
         container.innerHTML = "<p>لا توجد طلبات واردة.</p>";
         return;
       }
-
-      container.innerHTML = ordersData.sort((a,b) => b.createdAt - a.createdAt).map(o => `
+      container.innerHTML = ordersData.map(o => `
         <div class="order-box">
-          <div style="display:flex; justify-content:space-between;">
-            <strong>طلب #${o.id.slice(0,6)}</strong>
-            <small>${new Date(o.createdAt).toLocaleString('ar-EG')}</small>
-          </div>
-          <div>👤 ${escapeHtml(o.customer?.name)} | 📞 ${o.customer?.phone}</div>
-          <div>📍 ${escapeHtml(o.customer?.address)} (${o.customer?.zone})</div>
-          <hr style="margin:5px 0;">
-          <div>${(o.items || []).map(i => `• ${i.name} (${i.optionLabel}) ×${i.quantity}`).join('<br>')}</div>
-          <hr style="margin:5px 0;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <strong>الإجمالي: ${o.grandTotal} ج</strong>
-            <select onchange="updateOrderStatus('${o.id}', this.value)">
-              <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>قيد الانتظار</option>
-              <option value="confirmed" ${o.status === 'confirmed' ? 'selected' : ''}>مؤكد</option>
-              <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>تم التوصيل</option>
-            </select>
-          </div>
+          <strong>طلب #${o.id.substring(0,6)}</strong> - الإجمالي: ${o.grandTotal || 0} ج
         </div>
       `).join("");
-    }
-
-    window.updateOrderStatus = async (id, status) => {
-      await updateDoc(doc(db, "orders", id), { status });
-    };
-
-    window.addDeliveryZone = async () => {
-      const name = document.getElementById("zoneNameInput").value.trim();
-      const fee = Number(document.getElementById("zoneFeeInput").value);
-      if (!name || isNaN(fee)) return alert("أدخل البيانات بشكل صحيح");
-
-      let zones = storeSettings.deliveryZones || [];
-      zones.push({ name, fee });
-      await setDoc(doc(db, "settings", "store"), { deliveryZones: zones }, { merge: true });
-      document.getElementById("zoneNameInput").value = "";
-      document.getElementById("zoneFeeInput").value = "";
-    };
-
-    function renderAdminZones() {
-      const container = document.getElementById("adminZonesContainer");
-      container.innerHTML = (storeSettings.deliveryZones || []).map((z, idx) => `
-        <div style="display:flex; justify-content:space-between; background:#f9fafb; padding:6px; margin-bottom:4px; border-radius:4px;">
-          <span>📌 ${z.name}: <strong>${z.fee} ج</strong></span>
-          <button class="btn btn-danger" style="padding:2px 6px;" onclick="deleteZone(${idx})">حذف</button>
-        </div>
-      `).join("");
-    }
-
-    window.deleteZone = async (index) => {
-      let zones = storeSettings.deliveryZones;
-      zones.splice(index, 1);
-      await setDoc(doc(db, "settings", "store"), { deliveryZones: zones }, { merge: true });
-    };
-
-    window.saveStoreSettings = async () => {
-      const whatsappNumber = document.getElementById("whatsappInput").value.trim();
-      const categories = document.getElementById("categoriesInput").value.split(",").map(c => c.trim()).filter(Boolean);
-      await setDoc(doc(db, "settings", "store"), { whatsappNumber, categories }, { merge: true });
-      alert("تم الحفظ بنجاح");
-    };
-
-    function updateCategorySelect() {
-      const sel = document.getElementById("pCategory");
-      if (sel) sel.innerHTML = currentCategories.map(c => `<option value="${c}">${c}</option>`).join("");
     }
 
     function renderReports() {
-      const container = document.getElementById("adminReportsContainer");
-      const totalSales = ordersData.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
-      container.innerHTML = `
-        <p>📦 **المنتجات:** ${products.length}</p>
-        <p>📋 **الطلبات:** ${ordersData.length}</p>
-        <p>💰 **المبيعات:** ${totalSales} جنيه</p>
+      document.getElementById("adminReportsContainer").innerHTML = `
+        <p>عدد المنتجات: <strong>${productsData.length}</strong></p>
+        <p>عدد الطلبات: <strong>${ordersData.length}</strong></p>
       `;
     }
+
+    window.switchAdminTab = (tabId, btn) => {
+      document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    };
+
+    window.openProductModal = (id = null) => {
+      updateCategorySelect();
+      document.getElementById("productModal").style.display = "flex";
+      document.getElementById("editProductId").value = id || "";
+    };
+
+    window.closeProductModal = () => document.getElementById("productModal").style.display = "none";
+
+    function updateCategorySelect() {
+      const sel = document.getElementById("pCategory");
+      sel.innerHTML = currentCategories.map(c => `<option value="${c}">${c}</option>`).join("");
+    }
+
+    window.deleteProduct = async (id) => {
+      if(confirm("هل تريد حذف هذا المنتج؟")) await deleteDoc(doc(db, "products", id));
+    };
 
     function escapeHtml(str) {
       return String(str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
-
-    // Startup
-    initListeners();
-    updateCartBadge();
   </script>
-
 </body>
 </html>
